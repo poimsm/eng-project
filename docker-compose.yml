@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  django_gunicorn:
+    container_name: django_gunicorn
+    volumes:
+      - static:/static
+    env_file:
+      - .env
+    build:
+      context: .
+    ports:
+      - "8100:8000"
+    networks:
+      - nginx_network
+
+
+  nginx:
+    container_name: django_gunicorn
+    build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django_gunicorn
+    networks:
+      - nginx_network
+
+volumes:
+  static:
+
+networks:
+  nginx_network:
+    driver: bridge
