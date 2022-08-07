@@ -4,3 +4,5 @@ nltk==3.7
 textblob==0.17.1
 psycopg2==2.9.3
 Pillow==9.2.0
+djangorestframework==3.13.1
+djangorestframework-simplejwt==5.2.0

@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from textblob import TextBlob
+import logging
+
+# log = logging.getLogger(__name__)
+log = logging.getLogger('api_v1')
+
 
 import time
 
@@ -94,6 +99,8 @@ def check_verb(verb):
     return unique
 
 def hola(request):
+    print('ENTROOOOOOOOO AKIIIIIIIIIIIIII 222')
+    log.debug('HOOOOOLA MUNNNDOOOOOOO!!! <-------')
     synonyms = []
     for syn in wn.synsets('desks', pos=wn.NOUN):
         for lemma in syn.lemmas():
@@ -105,13 +112,13 @@ def hola(request):
     for syn in unique:
         result += syn + '; '
 
-    return HttpResponse(result)
+    return HttpResponse('holanda 222')
 
 def hola6(request):
     user_input = 'Get drawn byy'
     # match_question()
 
-    return HttpResponse(result)
+    return HttpResponse('result')
 
 def hola5(request):
     text = nltk.word_tokenize("all")
