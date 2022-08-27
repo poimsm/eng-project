@@ -1,194 +1,77 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
+from users.models import User
+from api.serializers import UserModelSerializer
+from users.serializers import CustomTokenObtainPairSerializer
+import uuid
 from textblob import TextBlob
-import logging
-
-# log = logging.getLogger(__name__)
-log = logging.getLogger('api_v1')
-
-
-import time
-
 import nltk
-# from nltk.corpus import wordnet
-# from nltk.stem import wordnet
 from nltk.corpus import wordnet as wn
-# from nltk.stem.wordnet import WordNetLemmatiz
-
-words = [
-    'jump',
-    'run',
-    'read',
-    'swim',
-    'row'
-]
-
-def get_synonyms(word, pos):
-    for synset in wn.synsets(word, pos=pos_to_wordnet_pos(pos)):
-        for lemma in synset.lemmas():
-            yield lemma.name()
-
-def pos_to_wordnet_pos(penntag, returnNone=False):
-#    ' Mapping from POS tag word wordnet pos tag '
-    morphy_tag = {'NN':wn.NOUN, 'JJ':wn.ADJ,
-                  'VB':wn.VERB, 'RB':wn.ADV}
-    try:
-        return morphy_tag[penntag[:2]]
-    except:
-        return None if returnNone else ''
+from django.http import HttpResponse
 
 
-
-def extract_words(sentence):
-    blob = TextBlob(sentence)
-    text_lower = blob.lower()    
-    text_corrected = text_lower.correct()
-    text = TextBlob(str(text_corrected))
-    return text.words
-
-def get_meaning(sentence):
-    blob = TextBlob(sentence)
-    text_lower = blob.lower()    
-    text_corrected = text_lower.correct()
-    text = TextBlob(str(text_corrected))
-    return text.words
-
-def check_words(sentence):
-    blob = TextBlob(sentence)
-    text_lower = blob.lower()    
-    text_corrected = text_lower.correct()
-    text = TextBlob(str(text_corrected))
-    return text.words
-
-def get_tag(tag):
-    morphy_tag = {
-        'NN': wn.NOUN,
-        'JJ': wn.ADJ,
-        'VB': wn.VERB,
-        'RB': wn.ADV,
-        'VB': wn.VERB,
-        'VB': wn.VERB,
-        'VB': wn.VERB,
-        'VB': wn.VERB,
-        'VB': wn.VERB,
+@api_view(['POST'])
+def create_user(request):
+    uid = uuid.uuid4()
+    random_user = uid.hex
+    data = {
+        'username': 'random_user',
+        'email':  random_user + '@fake.com',
+        'password': random_user
     }
+    serializer = UserModelSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
 
-    if tag in morphy_tag:
-        return morphy_tag[tag]
-    else:
-        return '';
-    
+        class UserPayload:
+            id = serializer.data['id']
 
-def get_tag2(tag):
-    morphy_tag = {
-        'NN': 'wn.NOUN',
-        'JJ': 'wn.ADJ',
-        'VB': 'wn.VERB',
-        'RB': 'wn.ADV'
-    }
-    return morphy_tag[tag]
+        refresh = CustomTokenObtainPairSerializer().get_token(UserPayload)
 
-def check_verb(verb):
-    word = nltk.stem.WordNetLemmatizer().lemmatize(verb, wn.VERB)
+        return Response({
+            'user': serializer.data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def hola(request):
+    word = 'draw_back'
     synonyms = []
-    for syn in wn.synsets(word, pos=wn.VERB):
+    # for syn in wn.synsets(word, pos=wn.VERB):
+    
+    for syn in wn.synsets(word):
         for lemma in syn.lemmas():
             synonyms.append(lemma.name())
 
     unique = sorted(set(synonym for synonym in synonyms if synonym != word))
-    return unique
-
-def hola(request):
-    print('ENTROOOOOOOOO AKIIIIIIIIIIIIII 222')
-    log.debug('HOOOOOLA MUNNNDOOOOOOO!!! <-------')
-    synonyms = []
-    for syn in wn.synsets('desks', pos=wn.NOUN):
-        for lemma in syn.lemmas():
-            synonyms.append(lemma.name())
-
-    unique = sorted(set(synonym for synonym in synonyms if synonym != 'take'))
-    
-    result = ''
-    for syn in unique:
-        result += syn + '; '
-
-    return HttpResponse('holanda 222')
-
-def hola6(request):
-    user_input = 'Get drawn byy'
-    # match_question()
-
-    return HttpResponse('result')
-
-def hola5(request):
-    text = nltk.word_tokenize("all")
-    # word = 'I like jumping'
-    word, tag = zip(*nltk.pos_tag(text))
-
-    return HttpResponse(tag[0])
-
-
-def hola4(request):
-    text = nltk.word_tokenize("I refuse to jump")
-    word = 'jumping'
-    word = nltk.stem.WordNetLemmatizer().lemmatize(word, wn.VERB)
-    synonyms = []
-    for syn in wn.synsets('jump', pos=wn.VERB):
-        for lemma in syn.lemmas():
-            synonyms.append(lemma.name())
-
-    unique = sorted(set(synonym for synonym in synonyms if synonym != 'jump'))
     
     result = ''
     for syn in unique:
         result += syn + '; '
 
     return HttpResponse(result)
+
+# def hola(request):
+#     word = 'deposit'
+#     dog = wn.synsets('animal', 'n')[0]
+#     paw = wn.synsets('cat', 'n')[0]
+
+#     print(type(dog), type(paw), dog.wup_similarity(paw))
+#     a = dog.wup_similarity(paw)
+
+#     return HttpResponse(a)
 
 def hola3(request):
-    text = nltk.word_tokenize("I refuse to jump")
+    word = 'deposit'
+    dog = wn.synsets('animal', 'n')[0]
+    paw = wn.synsets('cat', 'n')[0]
 
-    for word, tag in nltk.pos_tag(text):
-        print(f'word is {word}, POS is {tag}')
+    print(type(dog), type(paw), dog.wup_similarity(paw))
+    a = dog.wup_similarity(paw)
 
-    unique = sorted(set(synonym for synonym in get_synonyms(word, tag) if synonym != word))
-
-    result = ''
-    for synonym in unique:
-        result += synonym + '; '
-
-    return HttpResponse(result)
-
-
-def hola2(request):
-    # word = request.GET['var']
-    # syn = wordnet.synsets(word)
-    # aa = syn[0].definition()
-
-    # aa = nltk.__version__
-
-    user_input = 'Get drawn byy'
-    extract_words(user_input)
+    return HttpResponse(a)
 
     
-
-    result3 = 'NADA'
-
-    # for c in cc:
-    #     result3 += str(c) + '; '
-
-    # result2 = str(sentence.correct())
-
-    synonyms = []
-    for syn in wordnet.synsets('help'):
-        for lemma in syn.lemmas():
-            synonyms.append(lemma.name())
-
-    aa = ''
-    for syn in synonyms:
-        aa += syn + '; '
-
-
-    return HttpResponse(result3)
-    # return HttpResponse('hoolaaa 11')
-

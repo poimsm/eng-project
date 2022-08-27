@@ -22,11 +22,6 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class Tag(BaseModel):
-    name = models.CharField(max_length=140, blank=False, default='')
-    objects = models.Manager()
-
-
 class Difficulty(models.IntegerChoices):
     LOW = 0, 'Low'
     NORMAL = 1, 'Normal'
@@ -39,39 +34,24 @@ class Gender(models.IntegerChoices):
     FEMALE = 2, 'Female'
 
 
-class Category(BaseModel):
-    name = models.CharField(max_length=250, blank=False, default='')
-    comparative = models.BooleanField(default=False)
-    singular = models.BooleanField(default=False)
-    plural = models.BooleanField(default=False)
-    holiday = models.BooleanField(default=False)
-    fantasy = models.BooleanField(default=False)
-    describe_image = models.BooleanField(default=False)
-    size = models.IntegerField(default=0)
-    difficulty = models.PositiveSmallIntegerField(
-        choices=Difficulty.choices, default=Difficulty.NORMAL)
-    gender = models.PositiveSmallIntegerField(
-        choices=Gender.choices, default=Gender.EVERYTHING)
-    feeling = models.CharField(max_length=140, blank=True, default='')
-    tags = models.ManyToManyField(Tag)
+class Tag(BaseModel):
+    name = models.CharField(max_length=50, blank=False, null=False)
+    linked = models.BooleanField(default=False)
     objects = models.Manager()
 
 
 class Question(BaseModel):
     question = models.TextField(blank=False)
+    tags = models.ManyToManyField(Tag)
     rate = models.PositiveSmallIntegerField(default=5)
     index = models.PositiveSmallIntegerField(default=0)
+    parent_id = models.PositiveSmallIntegerField(
+        default=0, null=True, blank=True)
+    linked = models.BooleanField(default=False)
     image = models.ImageField(
         upload_to='questions_data/images', null=True, blank=True)
     # color_stuff = models.CharField(max_length=140, blank=False, default='') Tabla aparte?
     objects = models.Manager()
-
-    category = models.ForeignKey(        
-        Category,
-        # blank=True,
-        null=True,
-        on_delete=models.SET_NULL
-    )
 
 
 class WordType(models.IntegerChoices):
@@ -87,11 +67,13 @@ class LinkedWord(BaseModel):
     type = models.PositiveSmallIntegerField(
         null=False, blank=False, choices=WordType.choices)
     questions = models.ManyToManyField(Question)
+    word = models.CharField(max_length=30, blank=False, null=False)
+    linked = models.BooleanField(default=False)
     objects = models.Manager()
 
 
 class UserWord(BaseModel):
-    sentence = models.CharField(max_length=25, blank=False, null=False)
+    sentence = models.CharField(max_length=30, blank=False, null=False)
     meaning = models.CharField(max_length=100, blank=True, default='')
     total_uses = models.PositiveSmallIntegerField(default=0)
     last_use = models.DateTimeField()
