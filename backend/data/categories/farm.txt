@@ -63,7 +63,6 @@ horse
 incubator
 insecticide
 irrigation
-kid
 lamb
 land
 llama
