@@ -1,533 +1,606 @@
 [
     {
         "id": 1,
+        "difficulty": "easy",
+        "difficulty": "easy",
         "ready": true,
         "categories": ["food", "food_description", "cooking", "desserts"],
         "question": "Did you have breakfast already? What was it?"
     },
     {
         "id": 2,
+        "difficulty": "easy",
+        "difficulty": "easy",
         "ready": false,
         "categories": ["-"],
         "question": "How was your productive routine in quarantine? Describe it :D?"
     },
     {
         "id": 3,
+        "difficulty": "easy",
         "ready": true,
         "categories": ["sport", "routine", "cooking", "stores", "social_media", "relax", "summer"],
         "question": "What do you have to do today? A lot of.. 🤔?"
     },
     {
         "id": 4,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["stores"],
         "question": "Are you going out? Where?"
     },
     {
         "id": 5,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport", "routine", "cooking", "stores", "social_media", "relax", "summer"],
         "question": "What do you want to do today?"
     },
     {
         "id": 6,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["-"],
         "question": "Did you feed your pets today? ❤️"
     },
     {
         "id": 7,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport", "gym"],
         "question": "Do you workout? What did you do this morning at gym? 💪💪"
     },
     {
         "id": 8,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["planning", "routine"],
         "question": "What is your Today's Plan Of Attack?"
     },
     {
         "id": 9,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["bussy", "tasks", "morning"],
         "question": "Do you have the morning free? Definitely not? Because?"
     },
     {
         "id": 10,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["study", "schedule", "positive?"],
         "question": "Do you like to study in the morning? Is it better, or bad?"
     },
     {
         "id": 11,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["study", "schedule", "positive"],
         "question": "Do you think it is a good idea to add English to your morning routine?"
     },
     {
         "id": 12,
+        "difficulty": "easy",
         "ready": true,
         "categories": ["morning", "challenging"],
         "question": "Have you ever gotten up early? What was that for?"
     },
     {
         "id": 13,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["weather"],
         "question": "Is it very icy where do you live? How is outside just now?"
     },
     {
         "id": 14,
+        "difficulty": "easy",
         "ready": true,
         "categories": ["weather", "challenging"],
         "question": "Is it worth waking up early if everything were freezing to death outside?"
     },
     {
         "id": 15,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["weather"],
         "question": "Describe to me the day just like it is now. Sounds, atmosphere, details"
     },
     {
         "id": 16,
+        "difficulty": "easy",
         "ready": true,
         "categories": ["social_media", "people", "friendship"],
         "question": "Do you text your friends in the morning or do you skip doing it?"
     },
     {
         "id": 17,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["productive", "morning", "lazy_time"],
         "question": "Do you watch shows in the morning? On your laptop, TV, or do you think it's not SUPER productive? 🤓"
     },
     {
         "id": 18,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport", "frienship"],
         "question": "Have you ever gone out for a bike ride in the morning? Yes, with whom?"
     },
     {
         "id": 19,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport", "possitive"],
         "question": "How about cycling now? You down with it?"
     },
     {
         "id": 20,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "cooking", "happy", "happiness", "food_description"],
         "question": "What did you eat today? Can you describe it?"
     },
     {
         "id": 21,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["bad", "negative", "food"],
         "question": "Have you ever had to eat in a hurry? How was it!?"
     },
     {
         "id": 22,
+        "difficulty": "easy",
         "ready": true,
-        "categories": ["cooking", "friendship", "happy", "happiness", "good_vibe"],
+        "categories": ["cooking", "friendship", "happy", "happiness"],
         "question": "When a friend come over, do you like to cook for fun? Hm Like what?"
     },
     {
         "id": 23,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "desserts"],
         "question": "What food would you love to eat today? Explain me :P"
     },
     {
         "id": 24,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["cooking", "web", "social_media", "food", "desserts"],
         "question": "What delicious and truly perfect foods you have learned to cook?"
     },
     {
         "id": 25,
-        "ready": true,
-        "categories": ["drink", "love_it", "happy", "happiness"],
-        "question": "Do you like pork ribs? When do you eat them? With Coke, juice, Fanta maybe?"
+        "difficulty": "easy",
+        "ready": false,
+        "categories": ["food", "food_description"],
+        "question": "Do you like pork ribs? When do you eat them? With Coke, Water, Fanta maybe?"
     },
     {
         "id": 26,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["good", "bad", "food_description"],
         "question": "Have you ordered food online recently? How was it?"
     },
     {
         "id": 27,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "food_description", "family", "lunchtime?"],
         "question": "Who will you have lunch with today?"
     },
     {
         "id": 28,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "food_description", "pets", "lunchtime", "cute", "mixed"],
         "question": "Do your pets eat food at the same time as you?"
     },
     {
         "id": 29,
+        "difficulty": "easy",
         "ready": true,
+        "categoriesHMmm": ["noon", "lunch_time", "drinks", "healthy_food", "food", "time", ""],
         "categories": ["noon", "lunch_time", "drinks", "healthy_food", "food", "time", ""],
         "question": "Do you drink Coke, plain water, coffee or a soft drink at lunchtime? I'm hearinG! :D"
     },
     {
         "id": 30,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "food_description", "desserts", "snacks", "family", "friendship", "routine", "morning", "time"],
         "question": "What did you eat for breakfast today? At what time, with who? Describe it to me :D"
     },
     {
         "id": 31,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "food_description", "desserts", "driving", "work?", "routine", "dinner"],
         "question": "What did you eat for dinner today or what would be good for? Hmm"
     },
     {
         "id": 32,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "food_description", "desserts", "kitchen_utensils", "happy"],
         "question": "What did you eat for dinner today or what would be good for? Hmm"
     },
     {
         "id": 33,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["cooking", "food", "desserts", "good_vibe", "youtube?", "web?"],
         "question": "Hmm, is cooking difficult? Or do you usually cook damn delicious meals at home?"
     },
     {
         "id": 34,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["youtube", "cooking", "food", "desserts", "food_description"],
         "question": "Have you tried to cook something that you have seen on Youtube?"
     },
     {
         "id": 35,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "desserts", "food_description", "good_vibe", "money?"],
         "question": "What is your favorite restaurant? What makes it special? 🍖😊"
     },
     {
         "id": 36,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food_description"],
         "question": "What is your favorite vegan food? 🥗🍅😄"
     },
     {
         "id": 37,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["routine", "bad", "good_vibe"],
         "question": "Can you summarize your day?"
     },
     {
         "id": 38,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["weather", "-"],
         "question": "Hey, Too cold today?"
     },
     {
         "id": 39,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["good", "friendship", "-"],
         "question": "Tell me three good things about today. 🙊👌"
     },
     {
         "id": 40,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["friendship", "relax", "stores"],
         "question": "Did you hang out with someone? 🍺"
     },
     {
         "id": 41,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["study", "challenging", "sciences", "science"],
         "question": "Did you study today? What especially?"
     },
     {
         "id": 42,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["routine", "social_media", "food", "cooking", "sport"],
         "question": "What did you have to do today?"
     },
     {
         "id": 43,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["cooking", "routine", "food", "bad", "good"],
         "question": "Did you have to cook today? 🍖😏"
     },
     {
         "id": 44,
+        "difficulty": "easy",
         "ready": true,
         "categories": ["social_media", "morning", "friendship", "relax"],
         "question": "Do you check your social networks when you wake up?"
     },
     {
         "id": 45,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["jobs", "leader", "challenging", "job_tasks"],
         "question": "Hmm... What did you have to do at work?"
     },
     {
         "id": 46,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["-"],
         "question": "How is your productive morning routine in quarantine?"
     },
     {
         "id": 47,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["routine", "morning", "challenging", "sport", "gym"],
         "question": "Describe morning routine -"
     },
     {
         "id": 48,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["routine", "morning", "study", "challenging", "sport", "gym"],
         "question": "What were you in today's morning?"
     },
     {
         "id": 49,
+        "difficulty": "easy",
         "ready": true,
         "categories": ["study", "relax", "challenging", "emotions"],
         "question": "Do you study at night? How is your late night study session?"
     },
     {
         "id": 50,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["gym", "sport", "challenging", "routine", "emotions"],
         "question": "Do you do home workout? What is your everyday workout routine?"
     },
     {
         "id": 51,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["work", "study"],
         "question": "How many cups of coffee did you have today!? ☕"
     },
     {
         "id": 52,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["stores", "relax", "friendship", "sport", "social_media"],
         "question": "How would you like today to end?"
     },
     {
         "id": 53,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["routine", "planning", "stores", "cooking", "gym", "social_media"],
         "question": "What will you do tomorrow? Are you going to be busy? On what?"
     },
     {
         "id": 54,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["study", "relax", "cooking", "stores"],
         "question": "Something you gonna do now at night? Do you have something in mind?"
     },
     {
         "id": 55,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["xxxx"],
         "question": "As we all have believed that there will be a judgment day, it happened. A huge meteor fell on earth turning every human into transformers (Yes, autobots and decepticons like the movie Transformers) Depending on your personal traits and character, what vehicle would you be?"
     },
     {
         "id": 56,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["xxxx"],
         "question": "The zombie virus has broken out. It has infected over half of the population of the world. You were also unfortunately infected and have turned into a zombie. Your friends who you have travelled with are hesitating to kill you. Would you eat your best friend?"
     },
     {
         "id": 57,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "What if in the year 2045 you are powerful enough to start your own society. What kind of society would you establish? What would be the goal of your established society?"
     },
     {
         "id": 58,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "If you had the fascinating ability to live in any one's head (read their minds and know what they are thinking) for one whole hour. Whose head would you get in? Any particular reason?"
     },
     {
         "id": 59,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "So you got yourself a pet puppy from a local pet shop. You had fun with playing with him during day but never lets you sleep during the night because it keeps crying out. What do you do?"
     },
     {
         "id": 60,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "While walking down the subway late at night, a group of thugs point a knife at you and are about to kill you. However to show some mercy they allow you to make one phone call to just one person for 1 minute. Who would you call?"
     },
     {
         "id": 61,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "Let's say you walk into the kitchen and drink a pink drink thinking its juice but suddenly you become invisible after drinking.  What would you do first?"
     },
     {
         "id": 62,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "So there's this app and it's called the teleporter. Doesn't take up too much space on your phone so you download it. The description given is : “Think and concentrate on where you want to go then press the red button”. In a seconds time you are at Hawaii. Where do you go next? Why?"
     },     
     {
         "id": 65,
+        "difficulty": "easy",
         "categories": ["sport"],
         "question": "You are organizing your room when you come across a large, dark spider and grab a container to capture it but when you turn around it is gone! What do you do?"
     },
     {
         "id": 66,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "If they give you a Dragon Ball or Naruto statue, could you put it in your room? Would it take up a lot of space?"
     },
     {
         "id": 67,
+        "difficulty": "easy",
         "ready": true,
-        "categories": ["sport"],
+        "categories": ["scary"],
         "question": "A pink bunny is in your yard. It's very cute and fluffy. But... a bird flies over its head. The bunny leaps into the air and swallows the bird in one gulp. It turns to face the house. What do you do?"
     },
     {
         "id": 68,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "What would you miss most about your room =(? Would you remold your room? What would you definitely change?"
     },
     {
         "id": 69,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "What is the best memory you have of the University?"
     },
     {
         "id": 70,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "What is the strangest thing that happened to you when you went to school?"
     },
     {
         "id": 71,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "Have you ever gotten up early? What was that for?"
     },
     {
         "id": 72,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "Have you ever gone out for a bike ride in the morning? Yes, with whom?"
     },
     {
         "id": 73,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "What would you do differently if you could relive the past year?"
     },
     {
         "id": 74,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["sport"],
         "question": "What did you eat for dinner today or what would be good for? Hmm"
     },
     {
         "id": 75,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["cooking", "web", "social_media", "food", "desserts"],
         "question": "What delicious and truly perfect foods you have learned to cook?"
     },
     {
         "id": 76,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["food", "desserts"],
         "question": "Which food do you like the most?"
     },
     {
         "id": 77,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["stores", "-"],
         "question": "Did you eat at home today or at work, college or in what place?"
     },
     {
         "id": 78,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["stores", "-"],
         "question": "Everything alive in the world dies this instant. Without bacteria to decompose anything, what happens to the remains? What does this look like?"
     },
     {
         "id": 79,
+        "difficulty": "easy",
         "ready": true,
-        "categories": ["stores", "-"],
+        "categories": ["scary"],
         "question": "What vehicle would be the best one to start a >1000 km travel in a post apocalyptic zombie situation?"
     },
     {
         "id": 80,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["stores", "-"],
         "question": "Would it be more or less disastrous if a zombie is curable?"
     },
     {
         "id": 81,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["stores", "-"],
         "question": "What would human survivors eat in a post apocalyptic Nuclear winter?"
     },
     {
         "id": 82,
+        "difficulty": "easy",
         "ready": true,
-        "categories": ["stores", "-"],
+        "categories": [],
         "question": "What are the physical effects of a person living their entire life underground, and how would it affect them if they ever came up?"
     },
     {
         "id": 83,
+        "difficulty": "easy",
         "ready": false,
         "categories": ["stores", "-"],
         "question": "Is it safe to grow and eat food on post-nuclear-war land?"
     },
     {
         "id": 84,
+        "difficulty": "moderate",
         "ready": false,
         "categories": ["stores", "-"],
         "question": "You are an advanced AI that controls a smart house. How do you kill your master?"
     },
     {
+        "id": 85,
+        "difficulty": "easy",
         "ready": true,
-        "questions": [
-            {
-                "id": 85,
-                "categories": ["xxxx"],
-                "questions": "What do you do if you are running to your best and two big dogs appear in your way?"
-            },
-            {
-                "id": 86,
-                "categories": ["xxxx"],
-                "questions": "Ok, you keep running and suddenly your running app tells you that there is a 'social' point where more users have gathered! And if they give you an achievement, and access to more features just for going, would you go? How do you think people would be? Do you think they give you a gift like a t-shirt or something like that for participating?"
-            },
-            {
-                "id": 87,
-                "categories": ["xxxx"],
-                "questions": "What do you do if you are running to your best and two big dogs appear in your way?"
-            }
-        ]
+        "categories": ["camping", "weather", "relax"],
+        "question": "If you are camping in a HEAVY RAIN, what would be the most boring or amazing thing? 😏"
     },
     {
-        "ready": true,
-        "questions": [
-            {
-                "id": 88,
-                "categories": ["xxxx"],
-                "questions": "What do you do if you are running to your best and two big dogs appear in your way?"
-            },
-            {
-                "id": 89,
-                "categories": ["xxxx"],
-                "questions": "Ok, you keep running and suddenly your running app tells you that there is a 'social' point where more users have gathered! And if they give you an achievement, and access to more features just for going, would you go? How do you think people would be? Do you think they give you a gift like a t-shirt or something like that for participating?"
-            },
-            {
-                "id": 90,
-                "categories": ["xxxx"],
-                "questions": "What do you do if you are running to your best and two big dogs appear in your way?"
-            }
-        ]
-    }
+        "id": 86,
+        "difficulty": "easy",
+        "ready": false,
+        "categories": ["stores", "-"],
+        "question": "Do you prefer HOT DAY on the wild beach or solo Overnight on a mountain with amazing view? 👀"
+    },
+    {
+        "id": 87,
+        "difficulty": "complex",
+        "ready": false,
+        "categories": ["stores", "-"],
+        "question": "I'm stranded on an alien planet. How do I measure an earth year without a clock?"
+    },
+    {
+        "id": 88,
+        "difficulty": "complex",
+        "ready": false,
+        "categories": ["stores", "-"],
+        "question": "What range of sounds would a sentient vibrating crystal be able to make?"
+    }    
 ]

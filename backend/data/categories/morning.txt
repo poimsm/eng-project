@@ -45,8 +45,6 @@ yoga
 pilates
 walk
 sleep
-sport--->
-planear-->
 showertime
 bedtime
 outfit

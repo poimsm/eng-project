@@ -1,0 +1,11 @@
+zombie
+walker
+virus
+undead
+bloody
+corpse
+apocalypse
+brain
+bump
+swarm
+horde
