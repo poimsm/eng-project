@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "difficulty": "easy",
+        "ready": false,
+        "categories": ["food", "food_description", "cooking", "desserts"],
+        "question": "Did you have breakfast already? What was it?"
+    },
+    {
+        "id": 2,
+        "difficulty": "easy",
+        "ready": true,
+        "categories": ["supercat", "gato", "good_cat"],
+        "question": "xHow was your productive routine in quarantine? Describe it :D?"
+    },
+    {
+        "id": 10,
+        "difficulty": "easy",
+        "ready": true,
+        "categories": ["supercat", "gato", "good_cat"],
+        "question": "xHow was your productive routine in quarantine? Describe it :D?"
+    }
+]

@@ -5,8 +5,8 @@ User = get_user_model()
 
 
 class Status(models.IntegerChoices):
-    DELETED = 0, 'Deleted'
-    ACTIVE = 1, 'Active'
+    ACTIVE = 0, 'Active'
+    DELETED = 1, 'Deleted'
 
 
 class BaseModel(models.Model):
@@ -23,9 +23,9 @@ class BaseModel(models.Model):
 
 
 class Difficulty(models.IntegerChoices):
-    EASY = 0, 'Easy'
-    MODERATE = 1, 'Moderate'
-    COMPLEX = 2, 'Complex'
+    LOW = 0, 'Low'
+    NORMAL = 1, 'Normal'
+    HIGH = 2, 'High'
 
 
 class Gender(models.IntegerChoices):
@@ -40,40 +40,43 @@ class Tag(BaseModel):
     objects = models.Manager()
 
 
-class Word(BaseModel):
-    # questions = models.ManyToManyField(Question)
-    word = models.CharField(max_length=30, blank=False, null=False)
-    # linked = models.BooleanField(default=False)
-    objects = models.Manager()
-
-
 class Question(BaseModel):
-    id = models.IntegerField(primary_key=True)
     question = models.TextField(blank=False)
     tags = models.ManyToManyField(Tag)
     rate = models.PositiveSmallIntegerField(default=5)
-    difficulty = models.PositiveSmallIntegerField(
-        choices=Difficulty.choices,
-        default=Difficulty.EASY
-    )
+    index = models.PositiveSmallIntegerField(default=0)
+    parent_id = models.PositiveSmallIntegerField(
+        default=0, null=True, blank=True)
+    linked = models.BooleanField(default=False)
     image = models.ImageField(
         upload_to='questions_data/images', null=True, blank=True)
     # color_stuff = models.CharField(max_length=140, blank=False, default='') Tabla aparte?
     objects = models.Manager()
-    words = models.ManyToManyField(Word)
 
 
-    # word = models.ForeignKey(
-    #     Word,
-    #     on_delete=models.DO_NOTHING,
-    # )
+class WordType(models.IntegerChoices):
+    VERB = 0, 'Verb'
+    ADJ = 1, 'Adj'
+    ADJC = 2, 'Adj comparative'
+    ADJS = 3, 'Adj superlative'
+    NOUN = 4, 'Noun singular'
+    NOUNS = 5, 'Noun plural'
 
 
-class UserSentence(BaseModel):
-    sentence = models.CharField(max_length=20, blank=False, null=False)
-    meaning = models.CharField(max_length=20, blank=True, default='')
+class LinkedWord(BaseModel):
+    type = models.PositiveSmallIntegerField(
+        null=False, blank=False, choices=WordType.choices)
+    questions = models.ManyToManyField(Question)
+    word = models.CharField(max_length=30, blank=False, null=False)
+    linked = models.BooleanField(default=False)
+    objects = models.Manager()
+
+
+class UserWord(BaseModel):
+    sentence = models.CharField(max_length=30, blank=False, null=False)
+    meaning = models.CharField(max_length=100, blank=True, default='')
     total_uses = models.PositiveSmallIntegerField(default=0)
-    last_time_used = models.DateTimeField()
+    last_use = models.DateTimeField()
     # Posiblemente agregar palabra dificil, palabra que quiero repetirla mas seguido
     known = models.BooleanField(default=False)
     objects = models.Manager()
@@ -86,7 +89,7 @@ class UserSentence(BaseModel):
 
 class UserQuestion(BaseModel):
     total_uses = models.PositiveSmallIntegerField(default=0)
-    last_time_used = models.DateTimeField()
+    last_use = models.DateTimeField()
     objects = models.Manager()
 
     question = models.ForeignKey(

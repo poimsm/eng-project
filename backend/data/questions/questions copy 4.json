@@ -436,7 +436,6 @@
     {
         "id": 65,
         "difficulty": "easy",
-        "ready": false,
         "categories": ["sports"],
         "question": "You are organizing your room when you come across a large, dark spider and grab a container to capture it but when you turn around it is gone! What do you do?"
     },
