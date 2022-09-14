@@ -1,4 +1,4 @@
-common_words = [
+common_words_list = [
     'the',
     'be',
     'to',

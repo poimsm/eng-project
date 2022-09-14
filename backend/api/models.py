@@ -56,17 +56,17 @@ class Question(BaseModel):
         choices=Difficulty.choices,
         default=Difficulty.EASY
     )
-    image = models.ImageField(
+    image_url = models.ImageField(
         upload_to='questions_data/images', null=True, blank=True)
     # color_stuff = models.CharField(max_length=140, blank=False, default='') Tabla aparte?
-    objects = models.Manager()
     words = models.ManyToManyField(Word)
+    objects = models.Manager()
 
-
-    # word = models.ForeignKey(
-    #     Word,
-    #     on_delete=models.DO_NOTHING,
-    # )
+class ImageActivity(BaseModel):
+    id = models.IntegerField(primary_key=True)
+    image_url = models.ImageField(
+        upload_to='questions_data/images', null=True, blank=True)
+    objects = models.Manager()
 
 
 class UserSentence(BaseModel):
