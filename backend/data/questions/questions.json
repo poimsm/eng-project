@@ -535,7 +535,7 @@
         "id": 79,
         "difficulty": "easy",
         "ready": true,
-        "categories": ["scary"],
+        "categories": ["scary", "car", "driving"],
         "question": "What vehicle would be the best one to start a >1000 km travel in a post apocalyptic zombie situation?"
     },
     {

@@ -41,11 +41,11 @@ moonlight
 scream
 RIP
 vampire
+zombie
 costume
 flashlight
 frightful
 wicked
-zombie
 night
 ghastly
 creepy
@@ -80,3 +80,5 @@ coward
 shock
 terror
 funeral
+paranormal
+spiritual

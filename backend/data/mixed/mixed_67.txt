@@ -51,3 +51,7 @@ lovely
 cute
 charming
 bunny
+sneak_into
+sneak_in
+watch_out
+blow_up

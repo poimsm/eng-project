@@ -25,6 +25,10 @@ cobblestone
 construction
 court
 crash
+bump
+run_into
+run_over
+pull_over
 curve
 danger
 dent

@@ -1,9 +1,21 @@
-from django.urls import include, path
-from .views import create_user, hola
+from django.urls import re_path
+from rest_framework_simplejwt.views import (
+    TokenRefreshView, TokenVerifyView
+)
+from users.views import CustomTokenObtainPairView
+
+from .views import *
 
 app_name = 'api'
 
 urlpatterns = [
-    path('create-user/', create_user, name='create-user'),
-    path('hola/', hola, name='hola'),
+    re_path(r'hola\/?$', hola, name='hola'),
+    re_path(r'get-post\/?$', get_post, name='get-post'),
+
+    re_path(r'user/fake-user\/?$', create_fake_user),
+    re_path(r'user/register\/?$', user_register),
+    re_path(r'user/data\/?$', user_data),
+    re_path(r'user/sign-in\/?$', CustomTokenObtainPairView.as_view()),    
+    re_path(r'token/verify\/?$', TokenVerifyView.as_view()),
+    re_path(r'token/refresh\/?', TokenRefreshView.as_view()),
 ]

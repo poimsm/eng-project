@@ -1,0 +1,11 @@
+wake_up
+get_up
+calm_down
+look_for
+look_after
+look_forward
+count_on
+switch_on
+switch_off
+turn_on
+turn_off
