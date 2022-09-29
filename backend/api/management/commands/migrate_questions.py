@@ -34,6 +34,8 @@ class Command(BaseCommand):
             questions = json.load(jsonFile)
             jsonFile.close()
 
+            AUDIO_URL = settings.SITE_DOMAIN + '/media/audios/'
+
             print('Migrating questions...')
             for q in questions:
                 if not q['ready']:
@@ -89,7 +91,7 @@ class Command(BaseCommand):
                             id=q['id'],
                             difficulty=difficultyDic[q['difficulty']],
                             question=q['question'],
-                            voice_url=q['voice'],
+                            voice_url=AUDIO_URL + q['voice_file'],
                         )
                         question_obj.save()
 
