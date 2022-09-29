@@ -1,52 +1,52 @@
 [
     {
         "id": 1,
-        "example": "example_0001",
-        "image_url": "b_01.png"
+        "example_file": "example_0001",
+        "image_file": "b_01.png"
     },
     {
         "id": 2,
-        "example": "example_0001",
-        "image_url": "b_02.png"
+        "example_file": "example_0001",
+        "image_file": "b_02.png"
     },
     {
         "id": 3,
-        "example": null,
-        "image_url": "b_03.png"
+        "example_file": null,
+        "image_file": "b_03.png"
     },
     {
         "id": 4,
-        "example": "example_0001",
-        "image_url": "b_04.png"
+        "example_file": "example_0001",
+        "image_file": "b_04.png"
     },
     {
         "id": 5,
-        "example": null,
-        "image_url": "b_05.png"
+        "example_file": null,
+        "image_file": "b_05.png"
     },
     {
         "id": 6,
-        "example": "example_0001",
-        "image_url": "b_06.png"
+        "example_file": "example_0001",
+        "image_file": "b_06.png"
     },
     {
         "id": 7,
-        "example": "example_0001",
-        "image_url": "b_07.png"
+        "example_file": "example_0001",
+        "image_file": "b_07.png"
     },
     {
         "id": 8,
-        "example": null,
-        "image_url": "b_08.png"
+        "example_file": null,
+        "image_file": "b_08.png"
     },
     {
         "id": 9,
-        "example": null,
-        "image_url": "b_09.png"
+        "example_file": null,
+        "image_file": "b_09.png"
     },
     {
         "id": 10,
-        "example": null,
-        "image_url": "b_10.png"
+        "example_file": null,
+        "image_file": "b_10.png"
     }
 ]

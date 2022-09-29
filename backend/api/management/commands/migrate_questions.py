@@ -89,6 +89,7 @@ class Command(BaseCommand):
                             id=q['id'],
                             difficulty=difficultyDic[q['difficulty']],
                             question=q['question'],
+                            voice_url=q['voice'],
                         )
                         question_obj.save()
 
