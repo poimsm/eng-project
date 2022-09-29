@@ -97,13 +97,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'HOST': os.getenv('DB_HOST'),
-    'NAME': os.getenv('DB_NAME'),
-    'USER': os.getenv('DB_USER'),
-    'PASSWORD': os.getenv('DB_PASS'),
-  }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.getenv('DB_HOST'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASS'),
+    }
 }
 
 AUTH_USER_MODEL = 'users.User'
@@ -148,6 +148,16 @@ STATIC_URL = 'static/'
 
 MEDIA_ROOT = '/media/'
 MEDIA_URL = 'media/'
+
+if(DEBUG):
+    SITE_DOMAIN = 'http://localhost'
+    API_VERSION = 'v4'
+    BASE_URL = SITE_DOMAIN + '/api/' + API_VERSION
+else:
+    SITE_DOMAIN = 'http://localhost'
+    API_VERSION = 'v4'
+    BASE_URL = SITE_DOMAIN + '/api/' + API_VERSION
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

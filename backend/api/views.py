@@ -18,7 +18,7 @@ from django.http import JsonResponse
 
 
 from users.models import User
-from api.models import Word, Question, ImageActivity
+from api.models import Word, QuestionActivity, DescribeImageActivity
 from api.serializers import (
     QuestionModelSerializer,
     UserModelSerializer,
@@ -149,11 +149,11 @@ def hola(request):
 def hola3(request):
     sentence = "I'm likeee you-to combined hardwork"
 
-    # question_obj = Question.objects.get(id=12)
+    # question_obj = QuestionActivity.objects.get(id=12)
     # serializer = QuestionModelSerializer(question_obj)
     # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # images = ImageActivity.objects.all()
+    # images = DescribeImageActivity.objects.all()
     # aa = ImageActivityModelSerializer(images, many=True)
     # log.info(aa.data)
 
@@ -189,10 +189,10 @@ def create_activity_package(found_questions):
     activities = []
 
     if len(found_questions) < 5:
-        questions = Question.objects.exclude(id__in=ids)
+        questions = QuestionActivity.objects.exclude(id__in=ids)
         questions_serializer = QuestionModelSerializer(questions, many=True)
 
-        images = ImageActivity.objects.all()
+        images = DescribeImageActivity.objects.all()
         images_serializer = ImageActivityModelSerializer(images, many=True)
 
         total = 15 - len(found_questions)
@@ -219,10 +219,10 @@ def create_activity_package(found_questions):
         sample_found_questions = sample(found_questions, 5)
         ids = [q['id'] for q in sample_found_questions]
 
-        questions = Question.objects.exclude(id__in=ids)
+        questions = QuestionActivity.objects.exclude(id__in=ids)
         questions_serializer = QuestionModelSerializer(questions, many=True)
 
-        images = ImageActivity.objects.all()
+        images = DescribeImageActivity.objects.all()
         images_serializer = ImageActivityModelSerializer(images, many=True)
 
         sample_questions = sample(questions_serializer.data, 5)
@@ -293,7 +293,7 @@ def literal_search(words):
     for word in words:
         try:
             word_obj = Word.objects.get(word=word)
-            questions_list = Question.objects.filter(words__id=word_obj.id)
+            questions_list = QuestionActivity.objects.filter(words__id=word_obj.id)
             for q in questions_list:
                 questions.append({
                     'id': q.id,
@@ -318,7 +318,7 @@ def refined_search(words):
     for word in all_forms:
         try:
             word_obj = Word.objects.get(word=word)
-            questions_list = Question.objects.filter(words__id=word_obj.id)
+            questions_list = QuestionActivity.objects.filter(words__id=word_obj.id)
             for q in questions_list:
                 questions.append({
                     'id': q.id,

@@ -94,7 +94,7 @@ class Command(BaseCommand):
 
                     question_obj.words.add(word_obj)
 
-            print('Process completed')
+            print('Migration completed successfully')
 
         except:
             traceback.print_exc()

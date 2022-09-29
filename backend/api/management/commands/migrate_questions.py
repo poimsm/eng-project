@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api.models import Word, Question
+from api.models import QuestionActivity, Word, QuestionActivity
 
 from django.conf import settings
 import os
@@ -83,9 +83,9 @@ class Command(BaseCommand):
                         word_obj.save()
 
                     try:
-                        question_obj = Question.objects.get(id=q['id'])
-                    except Question.DoesNotExist:
-                        question_obj = Question(
+                        question_obj = QuestionActivity.objects.get(id=q['id'])
+                    except QuestionActivity.DoesNotExist:
+                        question_obj = QuestionActivity(
                             id=q['id'],
                             difficulty=difficultyDic[q['difficulty']],
                             question=q['question'],
@@ -94,7 +94,7 @@ class Command(BaseCommand):
 
                     question_obj.words.add(word_obj)
 
-            print('Process completed')
+            print('Migration completed successfully')
 
         except:
             traceback.print_exc()

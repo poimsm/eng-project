@@ -1,4 +1,3 @@
-from email.policy import default
 from django.db import models
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -7,6 +6,17 @@ User = get_user_model()
 class Status(models.IntegerChoices):
     DELETED = 0, 'Deleted'
     ACTIVE = 1, 'Active'
+
+
+class Difficulty(models.IntegerChoices):
+    EASY = 0, 'Easy'
+    MODERATE = 1, 'Moderate'
+    COMPLEX = 2, 'Complex'
+
+
+class ActivityTypes(models.IntegerChoices):
+    QUESTION = 0, 'Question'
+    DESCRIBE_IMAGE = 1, 'Describe Image'
 
 
 class BaseModel(models.Model):
@@ -22,32 +32,24 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class Difficulty(models.IntegerChoices):
-    EASY = 0, 'Easy'
-    MODERATE = 1, 'Moderate'
-    COMPLEX = 2, 'Complex'
-
-
-class Gender(models.IntegerChoices):
-    EVERYTHING = 0, 'Everything'
-    MALE = 1, 'Male'
-    FEMALE = 2, 'Female'
-
-
 class Tag(BaseModel):
     name = models.CharField(max_length=50, blank=False, null=False)
     linked = models.BooleanField(default=False)
     objects = models.Manager()
 
+    class Meta:
+        db_table = 'tags'
+
 
 class Word(BaseModel):
-    # questions = models.ManyToManyField(Question)
     word = models.CharField(max_length=30, blank=False, null=False)
-    # linked = models.BooleanField(default=False)
     objects = models.Manager()
 
+    class Meta:
+        db_table = 'words'
 
-class Question(BaseModel):
+
+class QuestionActivity(BaseModel):
     id = models.IntegerField(primary_key=True)
     question = models.TextField(blank=False)
     tags = models.ManyToManyField(Tag)
@@ -56,66 +58,110 @@ class Question(BaseModel):
         choices=Difficulty.choices,
         default=Difficulty.EASY
     )
-    image_url = models.ImageField(
-        upload_to='questions_data/images', null=True, blank=True)
-    # color_stuff = models.CharField(max_length=140, blank=False, default='') Tabla aparte?
+    image_url = models.TextField(null=False, blank=False)
+    voice_url = models.TextField(null=False, blank=False)
     words = models.ManyToManyField(Word)
     objects = models.Manager()
 
-class ImageActivity(BaseModel):
+    class Meta:
+        db_table = 'question_activities'
+
+
+class DescribeImageActivity(BaseModel):
     id = models.IntegerField(primary_key=True)
-    image_url = models.ImageField(
-        upload_to='questions_data/images', null=True, blank=True)
+    image_url = models.TextField(null=False, blank=False)
     objects = models.Manager()
+
+    class Meta:
+        db_table = 'describeimage_activities'
+
+
+class Example(BaseModel):
+    id = models.IntegerField(primary_key=True)
+    type = models.PositiveSmallIntegerField(
+        null=False,
+        choices=ActivityTypes.choices
+    )
+    example = models.JSONField()
+    voice_url = models.TextField(null=False, blank=False)
+    question_id = models.IntegerField(null=True)
+    word_id = models.IntegerField(null=True)
+    image_id = models.IntegerField(null=True)
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'examples'
+
+
+class Style(BaseModel):
+    background_word = models.CharField(max_length=20, blank=False, null=False)
+    background_screen = models.CharField(
+        max_length=20, blank=False, null=False)
+    activity_id = models.IntegerField(null=False)
+    type = models.PositiveSmallIntegerField(
+        null=False,
+        choices=ActivityTypes.choices
+    )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'styles'
 
 
 class UserSentence(BaseModel):
     sentence = models.CharField(max_length=20, blank=False, null=False)
-    meaning = models.CharField(max_length=20, blank=True, default='')
+    meaning = models.CharField(max_length=100, blank=True, default='')
     total_uses = models.PositiveSmallIntegerField(default=0)
     last_time_used = models.DateTimeField()
     # Posiblemente agregar palabra dificil, palabra que quiero repetirla mas seguido
-    known = models.BooleanField(default=False)
-    objects = models.Manager()
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
     )
-
-
-class UserQuestion(BaseModel):
-    total_uses = models.PositiveSmallIntegerField(default=0)
-    last_time_used = models.DateTimeField()
     objects = models.Manager()
 
-    question = models.ForeignKey(
-        Question,
-        on_delete=models.CASCADE
-    )
+    class Meta:
+        db_table = 'user_sentences'
 
+
+class UserActivityHistory(BaseModel):
+    total_uses = models.PositiveSmallIntegerField(default=0)
+    last_time_used = models.DateTimeField()
+    activity_id = models.IntegerField(null=False)
+    type = models.PositiveSmallIntegerField(
+        null=False,
+        choices=ActivityTypes.choices
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE
     )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'user_activity_history'
 
 
 class UserScreenFlow(BaseModel):
-    type = models.CharField(max_length=140, blank=False, null=False)
-    objects = models.Manager()
-
+    type = models.CharField(max_length=150, blank=False, null=False)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE
     )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'user_screenflow'
 
 
 class UserProfile(BaseModel):
     total_words = models.PositiveSmallIntegerField(default=0)
     verified = models.BooleanField(default=False)
-    objects = models.Manager()
-
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE
     )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'user_profiles'

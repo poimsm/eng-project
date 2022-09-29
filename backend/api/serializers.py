@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from users.models import User
-from api.models import ImageActivity, Word, Question
+from api.models import DescribeImageActivity, Word, QuestionActivity
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -20,12 +20,12 @@ class WordModelSerializer(serializers.ModelSerializer):
 class QuestionModelSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Question
+        model = QuestionActivity
         fields = ['id', 'question', 'image_url', 'difficulty']
 
 class ImageActivityModelSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = ImageActivity
+        model = DescribeImageActivity
         fields = ['id', 'image_url']
 

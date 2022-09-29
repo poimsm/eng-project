@@ -44,7 +44,7 @@ class Command(BaseCommand):
                 if(word_serializer.is_valid()):
                     word_serializer.save()
 
-            print('Process completed')
+            print('Migration completed successfully')
 
         except Exception as err:
             raise SystemExit(err)
