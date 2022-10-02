@@ -2,7 +2,7 @@ import json
 import os
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from api.models import DescribeImageActivity
+from api.models import ActivityTypes, DescribeImageActivity, Style
 from api.helpers import console
 
 
@@ -19,7 +19,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         console.info('--------------------------------')
-        console.info('     MIGRATE EXAMPLES INIT      ')
+        console.info('     MIGRATE IMAGES INIT        ')
         console.info('--------------------------------')
 
         console.info('Reading index...')
@@ -27,15 +27,19 @@ class Command(BaseCommand):
 
         IMAGE_URL = settings.SITE_DOMAIN + '/media/images/'
 
-        console.info('Audio base URL: ' + IMAGE_URL)
+        console.info('Image base URL: ' + IMAGE_URL)
 
         console.info('Migrating ' + str(len(images)) + ' images...')
         for img in images:
-            img_obj = DescribeImageActivity(
+            DescribeImageActivity(
                 id=img['id'],
                 image_url=IMAGE_URL + img['image_file']
-            )
+            ).save()
 
-            img_obj.save()
+            Style(
+                background_screen=img['style']['background_screen'],
+                activity_id=img['id'],
+                type=ActivityTypes.DESCRIBE_IMAGE
+            ).save()
 
         console.info('Migration completed successfully')

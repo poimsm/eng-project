@@ -77,16 +77,16 @@ class DescribeImageActivity(BaseModel):
 
 
 class Example(BaseModel):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, null=False, blank=False)
     type = models.PositiveSmallIntegerField(
         null=False,
+        blank=False,
         choices=ActivityTypes.choices
     )
-    example = models.JSONField()
+    example = models.JSONField(null=False, blank=False)
     voice_url = models.TextField(null=False, blank=False)
-    question_id = models.IntegerField(null=True)
-    word_id = models.IntegerField(null=True)
-    image_id = models.IntegerField(null=True)
+    activity_id = models.IntegerField(null=True, blank=True)
+    word_text = models.CharField(max_length=30, null=True, blank=True)
     objects = models.Manager()
 
     class Meta:
@@ -94,12 +94,13 @@ class Example(BaseModel):
 
 
 class Style(BaseModel):
-    background_word = models.CharField(max_length=20, blank=False, null=False)
+    background_word = models.CharField(max_length=20, blank=True, null=True)
     background_screen = models.CharField(
         max_length=20, blank=False, null=False)
     activity_id = models.IntegerField(null=False)
     type = models.PositiveSmallIntegerField(
         null=False,
+        blank=False,
         choices=ActivityTypes.choices
     )
     objects = models.Manager()
@@ -112,7 +113,7 @@ class UserSentence(BaseModel):
     sentence = models.CharField(max_length=20, blank=False, null=False)
     meaning = models.CharField(max_length=100, blank=True, default='')
     total_uses = models.PositiveSmallIntegerField(default=0)
-    last_time_used = models.DateTimeField()
+    last_time_used = models.DateTimeField(null=True)
     # Posiblemente agregar palabra dificil, palabra que quiero repetirla mas seguido
     user = models.ForeignKey(
         User,

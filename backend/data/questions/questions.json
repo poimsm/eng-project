@@ -5,7 +5,12 @@
         "ready": true,
         "categories": ["food", "food_description", "cooking", "desserts"],
         "question": "Did you have breakfast already? What was it?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 2,
@@ -20,7 +25,12 @@
         "ready": true,
         "categories": ["sports", "routine", "cooking", "stores", "social_media", "relax", "summer"],
         "question": "What do you have to do today? A lot of.. 🤔?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 4,
@@ -84,7 +94,12 @@
         "ready": true,
         "categories": ["morning", "challenging"],
         "question": "Have you ever gotten up early? What was that for?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 13,
@@ -99,7 +114,12 @@
         "ready": true,
         "categories": ["weather", "challenging"],
         "question": "Is it worth waking up early if everything were freezing to death outside?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 15,
@@ -114,7 +134,12 @@
         "ready": true,
         "categories": ["social_media", "people", "friendship"],
         "question": "Do you text your friends in the morning or do you skip doing it?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 17,
@@ -157,7 +182,12 @@
         "ready": true,
         "categories": ["cooking", "friendship", "happy", "happiness"],
         "question": "When a friend come over, do you like to cook for fun? Hm Like what?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 23,
@@ -312,7 +342,12 @@
         "ready": true,
         "categories": ["social_media", "morning", "friendship", "relax"],
         "question": "Do you check your social networks when you wake up?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 45,
@@ -348,7 +383,12 @@
         "ready": true,
         "categories": ["study", "relax", "challenging", "emotions"],
         "question": "Do you study at night? How is your late night study session?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 50,
@@ -461,7 +501,12 @@
         "ready": true,
         "categories": ["scary"],
         "question": "A pink bunny is in your yard. It's very cute and fluffy. But... a bird flies over its head. The bunny leaps into the air and swallows the bird in one gulp. It turns to face the house. What do you do?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 68,
@@ -546,7 +591,12 @@
         "ready": true,
         "categories": ["scary", "car", "driving"],
         "question": "What vehicle would be the best one to start a >1000 km travel in a post apocalyptic zombie situation?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 80,
@@ -568,7 +618,12 @@
         "ready": true,
         "categories": [],
         "question": "What are the physical effects of a person living their entire life underground, and how would it affect them if they ever came up?",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 83,
@@ -590,7 +645,12 @@
         "ready": true,
         "categories": ["camping", "weather", "relax"],
         "question": "If you are camping in a HEAVY RAIN, what would be the most boring or amazing thing? 😏",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_1.mp3",
+        "image_file": "image_0001.png",
+        "style": {
+            "background_word": "#444",
+            "background_screen": "#555"
+        }
     },
     {
         "id": 86,

@@ -12,7 +12,7 @@ class bcolors:
 class console(object):
     @staticmethod
     def info(msg):
-        print(bcolors.OKGREEN + 'INFO ' + msg + bcolors.ENDC)
+        print(bcolors.OKGREEN + msg + bcolors.ENDC)
     
     @staticmethod
     def debug(msg):

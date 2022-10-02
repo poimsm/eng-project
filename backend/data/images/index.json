@@ -2,51 +2,81 @@
     {
         "id": 1,
         "example_file": "example_0001",
-        "image_file": "b_01.png"
+        "image_file": "b_01.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 2,
         "example_file": "example_0001",
-        "image_file": "b_02.png"
+        "image_file": "b_02.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 3,
         "example_file": null,
-        "image_file": "b_03.png"
+        "image_file": "b_03.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 4,
         "example_file": "example_0001",
-        "image_file": "b_04.png"
+        "image_file": "b_04.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 5,
         "example_file": null,
-        "image_file": "b_05.png"
+        "image_file": "b_05.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 6,
         "example_file": "example_0001",
-        "image_file": "b_06.png"
+        "image_file": "b_06.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 7,
         "example_file": "example_0001",
-        "image_file": "b_07.png"
+        "image_file": "b_07.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 8,
         "example_file": null,
-        "image_file": "b_08.png"
+        "image_file": "b_08.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 9,
         "example_file": null,
-        "image_file": "b_09.png"
+        "image_file": "b_09.png",
+        "style": {
+            "background_screen": "#555"
+        }
     },
     {
         "id": 10,
         "example_file": null,
-        "image_file": "b_10.png"
+        "image_file": "b_10.png",
+        "style": {
+            "background_screen": "#555"
+        }
     }
 ]

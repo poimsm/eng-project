@@ -19,3 +19,5 @@ study
 emotions
 scary
 camping
+car
+driving

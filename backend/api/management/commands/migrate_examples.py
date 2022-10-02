@@ -39,11 +39,11 @@ class Command(BaseCommand):
 
             if ex['type'] == 'question_activity':
                 example_obj.type = ActivityTypes.QUESTION
-                example_obj.question_id = ex['question_id']
-                example_obj.word_id = ex['word_id']
+                example_obj.activity_id = ex['activity_id']
+                example_obj.word_text = ex['word_text']
             else:
                 example_obj.type = ActivityTypes.DESCRIBE_IMAGE
-                example_obj.image_id = ex['image_id']
+                example_obj.activity_id = ex['activity_id']
 
             example_obj.save()
 

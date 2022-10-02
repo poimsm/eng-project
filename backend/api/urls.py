@@ -12,6 +12,9 @@ urlpatterns = [
     re_path(r'hola\/?$', hola, name='hola'),
     re_path(r'get-post\/?$', get_post, name='get-post'),
 
+    re_path(r'sentence\/?$', user_sentences),
+    re_path(r'daily-activities\/?$', daily_activities),
+
     re_path(r'user/fake-user\/?$', create_fake_user),
     re_path(r'user/register\/?$', user_register),
     re_path(r'user/data\/?$', user_data),

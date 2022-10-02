@@ -10,6 +10,7 @@ from rest_framework.decorators import (
 )
 from django.contrib.auth.hashers import make_password
 from rest_framework.renderers import JSONRenderer
+from django.http import JsonResponse
 
 
 # Data
@@ -21,7 +22,7 @@ from api.data.slangs import slangs
 # Models & serializers
 from users.models import User
 from api.models import (
-    ActivityTypes, Word, QuestionActivity,
+    Word, QuestionActivity,
     DescribeImageActivity, UserSentence, Example, Style
 )
 from api.serializers import (
@@ -40,6 +41,7 @@ import uuid
 from textblob import TextBlob
 import nltk
 from nltk.corpus import wordnet as wn
+from django.http import HttpResponse
 from word_forms.word_forms import get_word_forms
 import logging
 from nltk.tokenize import word_tokenize
@@ -190,14 +192,16 @@ def user_sentences(request):
 def daily_activities(request):
     sentences = get_sentences(test_user_id)
     questions = get_questions(sentences)
-
     activities = create_activity_package(questions)
-    shuffle(activities)
+    # log.debug('LLEGOOOOooooo11!!! <-------')
+    # log.debug(activities)
+    # log.debug('activities!!! <-------')
+    # shuffle(activities)
 
-    activities = add_examples(activities)
-    activities = add_styles(activities)
+    # activities = add_examples(activities)
+    # activities = add_styles(activities)
 
-    return Response(activities, status=status.HTTP_200_OK)
+    return Response({'hooom': activities}, status=status.HTTP_200_OK)
 
 
 def get_questions(sentences):
@@ -241,6 +245,7 @@ def create_activity_package(found_questions):
     found_questions = copy.deepcopy(found_questions)
 
     if len(found_questions) < 5:
+        log.debug('ENTRO EN IFFFF')
         ids = [q['question']['id'] for q in found_questions]
         questions = QuestionActivity.objects.exclude(id__in=ids)
         questions_serializer = QuestionModelSerializer(questions, many=True)
@@ -267,12 +272,8 @@ def create_activity_package(found_questions):
                 'word': None
             })
     else:
-        found_questions_activities = []
-        for q in found_questions:
-            q['type'] = 'question'
-            found_questions_activities.append(q)
-
-        sample_found_questions = sample(found_questions_activities, 5)
+        log.debug('ENTRO EN ELSEEEEEE')
+        sample_found_questions = sample(found_questions, 5)
         ids = [q['question']['id'] for q in sample_found_questions]
 
         questions = QuestionActivity.objects.exclude(id__in=ids)
@@ -298,8 +299,7 @@ def create_activity_package(found_questions):
                 'word': None
             })
 
-    sample_found_questions = sample(found_questions, 5)
-    activities += sample_found_questions
+    activities += found_questions
     return activities
 
 
@@ -389,15 +389,44 @@ def refined_search(words):
     return questions
 
 
+def combine_unique3(list_to_combine):
+    log.debug('combine_unique2')
+    log.debug(list_to_combine)
+    list_to_combine = copy.deepcopy(list_to_combine)
+
+    list = []
+    for l in list_to_combine:
+        list += l    
+
+    memory = []
+    unique = []
+
+    for item in list:
+        q_id = item['question']['id']
+        if q_id not in memory:
+            memory.append(q_id)
+            unique.append(item)
+
+    return unique
+
+
+
+
 def combine_unique2(list_to_combine):
+
+    log.debug('combine_unique2')
+    log.debug(list_to_combine)
     list_to_combine = copy.deepcopy(list_to_combine)
 
     questions = []
     for l in list_to_combine:
-        questions += l
+        questions += l    
 
     memory = []
     unique = []
+
+    log.debug('questions')
+    log.debug(questions)
 
     for item in questions:
         q_id = item['question']['id']
@@ -405,34 +434,53 @@ def combine_unique2(list_to_combine):
             memory.append(q_id)
             unique.append(item)
 
+    log.debug('unique')
+    log.debug(unique)
+
+    log.debug('----------------------------------')
     new_questions = []
     for q_unique in unique:
-        all_questions = list(
-            filter(lambda q: q['question']['id'] == q_unique['question']['id'], questions))
+        all_questions = list(filter(lambda q: q['question']['id'] == q_unique['question']['id'], questions))
+        log.debug('all_questions')
+        log.debug('q_id: ' + str(q_unique['question']['id']))
+        log.debug(all_questions)
         words = []
         for q in all_questions:
             words.append(q['word'])
 
         words = combine_unique_words([words])
         shuffle(words)
+        log.debug('words')
+        log.debug(words)
         new_questions.append({
             'question': q_unique['question'],
             'word': words[0]
         })
 
+
+    log.debug('new_questions')
+    log.debug(new_questions)
+
     return new_questions
 
 
 def combine_unique_words(list_to_combine):
+    # log.debug('combine_unique_words')
+    # log.debug(list_to_combine)
+    # list_to_combine = copy.deepcopy(list_to_combine)
 
     list = []
     for l in list_to_combine:
         list += l
 
+    # log.debug('list')
+    # log.debug(list)
+
     memory = []
     unique = []
 
     for item in list:
+        # log.info(item)
         id = item['id']
         if id not in memory:
             memory.append(id)
@@ -441,14 +489,15 @@ def combine_unique_words(list_to_combine):
     return unique
 
 
+
 def combine_unique(list_to_combine):
+    log.debug('list_to_combine')
+    log.debug(list_to_combine)
     list_to_combine = copy.deepcopy(list_to_combine)
 
     list = []
     for l in list_to_combine:
         list += l
-
-    shuffle(list)
 
     memory = []
     unique = []
@@ -463,72 +512,15 @@ def combine_unique(list_to_combine):
 
 
 def add_examples(activities):
-    word_with_examples = ['smoke', 'stew', 'steep']
-    senteces = UserSentence.objects.filter(sentence__in=word_with_examples)
-
-    act_with_examples = []
-
-    if len(senteces) > 0:
-        sentences_text = [s.sentence for s in senteces]
-        examples = Example.objects.filter(
-            word_text__in=sentences_text, type=ActivityTypes.QUESTION)
-
-        if len(examples) >= 2:
-            q1 = QuestionActivity.objects.get(id=examples[0].activity_id)
-            w1 = Word(
-                id=-1,
-                word=senteces[0].sentence
-            )
-            act_with_examples.append({
-                'question': QuestionModelSerializer(q1).data,
-                'word': WordModelSerializer(w1).data,
-                'example': ExampleModelSerializer(examples[0]).data,
-                'type': 'question',
-            })
-
-            q2 = QuestionActivity.objects.get(id=examples[1].activity_id)
-            w2 = Word(
-                id=-1,
-                word=senteces[1].sentence
-            )
-            act_with_examples.append({
-                'question': QuestionModelSerializer(q2).data,
-                'word': WordModelSerializer(w2).data,
-                'example': ExampleModelSerializer(examples[1]).data,
-                'type': 'question',
-            })
-        elif len(examples) >= 1:
-            q1 = QuestionActivity.objects.get(id=examples[0].activity_id)
-            w1 = Word(
-                id=-1,
-                word=senteces[0].sentence
-            )
-            act_with_examples.append({
-                'question': QuestionModelSerializer(q1).data,
-                'word': WordModelSerializer(w1).data,
-                'example': ExampleModelSerializer(examples[0]).data,
-                'type': 'question',
-            })
-
-    examples_img = list(Example.objects.filter(
-        type=ActivityTypes.DESCRIBE_IMAGE))
-    shuffle(examples_img)
-
-    img = DescribeImageActivity.objects.get(id=examples_img[0].activity_id)
-
-    act_with_examples.append({
-        'image': ImageActivityModelSerializer(img).data,
-        'example': ExampleModelSerializer(examples_img[0]).data,
-        'type': 'describe_image',
-    })
-
-    return act_with_examples + activities
-
-
-def add_examples2(activities):
+    activities = copy.deepcopy(activities)
+    log.debug('LLEGOOOOooooo22!!! <-------')
+    log.debug(activities)
+    log.debug('activities!!! <-------')
     new_activities = []
     for act in activities:
+        # new_act = act
         new_act = copy.deepcopy(act)
+        # log.debug(new_act)
         if act['type'] == 'question' and act['word']:
             try:
                 example_obj = Example.objects.get(
@@ -541,10 +533,7 @@ def add_examples2(activities):
                 new_activities.append(new_act)
 
             except Example.DoesNotExist:
-                new_activities.append(new_act)
-        else:
-            new_activities.append(new_act)
-
+                pass
     return new_activities
 
 
@@ -552,24 +541,24 @@ def add_styles(activities):
     new_activities = []
     for act in activities:
         new_act = act
+        if act['type'] == 'question' and act['word']:
+            try:
+                example_obj = Example.objects.get(
+                    question_id=act['question']['id'],
+                    word_text=act['word']['word']
+                )
 
-        if act['type'] == 'question':
-            act_type = ActivityTypes.QUESTION
-            act_id = act['question']['id']
-        else:
-            act_type = ActivityTypes.DESCRIBE_IMAGE
-            act_id = act['image']['id']
+                serializer = ExampleModelSerializer(example_obj)
+                new_act['example'] = serializer.data
+                new_activities.append(new_act)
 
-        try:
-            style_obj = Style.objects.get(
-                activity_id=act_id,
-                type=act_type
-            )
-
-            serializer = StyleModelSerializer(style_obj)
-            new_act['style'] = serializer.data
-            new_activities.append(new_act)
-
-        except Style.DoesNotExist:
-            new_activities.append(act)
+            except Example.DoesNotExist:
+                pass
     return new_activities
+
+
+# def styles(request):
+#     return HttpResponse('add_word')
+
+# def hmm(request):
+#     return HttpResponse('add_word')
