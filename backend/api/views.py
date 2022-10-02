@@ -424,8 +424,8 @@ def combine_unique2(list_to_combine):
 
 
 def combine_unique_words(list_to_combine):
-
     list = []
+
     for l in list_to_combine:
         list += l
 
