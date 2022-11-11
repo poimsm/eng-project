@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "cover": "picture_01.png",
+        "video_file": "video.mp4",
+        "sentences": [
+            {
+                "sentence": "sentence_01",
+                "meaning": "meaning_01",
+                "type": 0
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "cover": "picture_01.png",
+        "video_file": "video.mp4",
+        "sentences": [
+            {
+                "sentence": "sentence_01",
+                "meaning": "meaning_01",
+                "type": 0
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "cover": "picture_01.png",
+        "video_file": "video.mp4",
+        "sentences": [
+            {
+                "sentence": "sentence_01",
+                "meaning": "meaning_01",
+                "type": 0
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "cover": "picture_01.png",
+        "video_file": "video.mp4",
+        "sentences": [
+            {
+                "sentence": "sentence_01",
+                "meaning": "meaning_01",
+                "type": 0
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "cover": "picture_01.png",
+        "video_file": "video.mp4",
+        "sentences": [
+            {
+                "sentence": "sentence_01",
+                "meaning": "meaning_01",
+                "type": 0
+            }
+        ]
+    }
+]

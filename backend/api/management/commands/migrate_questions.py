@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api.models import ActivityTypes, QuestionActivity, Word, QuestionActivity, Style
+from api.models import ActivityTypes, Question, Word, Style
 
 from django.conf import settings
 import os
@@ -88,9 +88,9 @@ class Command(BaseCommand):
                         word_obj.save()
 
                     try:
-                        question_obj = QuestionActivity.objects.get(id=q['id'])
-                    except QuestionActivity.DoesNotExist:
-                        question_obj = QuestionActivity(
+                        question_obj = Question.objects.get(id=q['id'])
+                    except Question.DoesNotExist:
+                        question_obj = Question(
                             id=q['id'],
                             question=q['question'],
                             voice_url=AUDIO_URL + q['voice_file'],
@@ -101,9 +101,15 @@ class Command(BaseCommand):
 
                         Style(
                             background_screen=q['style']['background_screen'],
-                            background_word=q['style']['background_word'],
-                            activity_id=q['id'],
-                            type=ActivityTypes.QUESTION
+                            background_challenge=q['style']['background_challenge'],
+                            use_gradient=q['style']['use_gradient'],
+                            bottom_gradient_color=q['style']['bottom_gradient_color'],
+                            top_gradient_color=q['style']['top_gradient_color'],
+                            question_position=q['style']['question_position'],
+                            image_position=q['style']['image_position'],
+                            question_font_size=q['style']['question_font_size'],
+                            question_opacity=q['style']['question_opacity'],
+                            question=question_obj
                         ).save()
 
                     question_obj.words.add(word_obj)

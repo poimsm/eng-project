@@ -12,16 +12,16 @@ class bcolors:
 class console(object):
     @staticmethod
     def info(msg):
-        print(bcolors.OKGREEN + msg + bcolors.ENDC)
+        print(bcolors.BOLD + '[INFO] ' + msg + bcolors.ENDC)
     
     @staticmethod
     def debug(msg):
-        print(bcolors.OKBLUE + 'DEBUG ' + msg + bcolors.ENDC)
+        print(bcolors.OKBLUE + '[DEBUG] ' + msg + bcolors.ENDC)
 
     @staticmethod
     def warning(msg):
-        print(bcolors.WARNING + 'WARNING ' + msg + bcolors.ENDC)
+        print(bcolors.WARNING + '[WARNING] ' + msg + bcolors.ENDC)
 
     @staticmethod
     def error(msg):
-        print(bcolors.FAIL + 'ERROR ' + msg + bcolors.ENDC)
+        print(bcolors.FAIL + '[ERROR] ' + msg + bcolors.ENDC)

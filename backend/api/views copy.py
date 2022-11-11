@@ -16,18 +16,18 @@ from rest_framework.renderers import JSONRenderer
 from api.data.common_words import common_words_list
 from api.data.phrasal_verbs import phrasal_verbs
 from api.data.slangs import slangs
-from api.data.expresions import expresions
 
 
 # Models & serializers
 from users.models import User
 from api.models import (
-    ActivityTypes, Word, Question,
-    UserSentence, Example, Style
+    ActivityTypes, Word, QuestionActivity,
+    DescribeImageActivity, UserSentence, Example, Style
 )
 from api.serializers import (
     QuestionModelSerializer,
     UserModelSerializer,
+    ImageActivityModelSerializer,
     UserSentenceModelSerializer,
     ExampleModelSerializer,
     StyleModelSerializer,
@@ -188,9 +188,8 @@ def user_sentences(request):
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
 def daily_activities(request):
-
     sentences = get_sentences(test_user_id)
-    questions = get_questions_per_sentence(sentences)
+    questions = get_questions(sentences)
 
     activities = create_activity_package(questions)
     shuffle(activities)
@@ -201,23 +200,13 @@ def daily_activities(request):
     return Response(activities, status=status.HTTP_200_OK)
 
 
-def get_questions_per_sentence(sentences):
-    questions_sentence = []
+def get_questions(sentences):
+    questions = []
     for sen in sentences:
-        questions_sentence.append({
-            'questions': get_questions(sen.sentence),
-            'word': UserSentenceModelSerializer(sen).data
-        })
+        questions += get_questions_by_sentence(sen)
 
-    result = []
-    for q_s in questions_sentence:
-        for q in q_s['questions']:
-            result.append({
-                'question': q['question'],
-                'word': q_s['word']
-            })
-
-    return result
+    questions = combine_unique([questions])
+    return questions
 
 
 def get_sentences(id):
@@ -225,12 +214,12 @@ def get_sentences(id):
     shuffle(all_sentences)
     range_total = 10 if len(all_sentences) > 10 else len(all_sentences)
     sentences_obj = [all_sentences[i] for i in range(range_total)]
-    # sentences = [sen.sentence for sen in sentences_obj]
+    sentences = [sen.sentence for sen in sentences_obj]
 
-    return sentences_obj
+    return sentences
 
 
-def get_questions(sentence):
+def get_questions_by_sentence(sentence):
     words = tokenize_words(str(sentence))
     literal_questions = literal_search(words)
 
@@ -251,14 +240,25 @@ def create_activity_package(found_questions):
     activities = []
     found_questions = copy.deepcopy(found_questions)
 
-    if len(found_questions) < 4:
+    if len(found_questions) < 5:
         ids = [q['question']['id'] for q in found_questions]
-        questions = Question.objects.exclude(id__in=ids)
+        questions = QuestionActivity.objects.exclude(id__in=ids)
         questions_serializer = QuestionModelSerializer(questions, many=True)
 
-        total = 6 - len(found_questions)
+        images = DescribeImageActivity.objects.all()
+        images_serializer = ImageActivityModelSerializer(images, many=True)
+
+        total = 15 - len(found_questions)
 
         sample_questions = sample(questions_serializer.data, round(total/2))
+        sample_imgs = sample(images_serializer.data, round(total/2))
+
+        for img in sample_imgs:
+            activities.append({
+                'image': img,
+                'type': 'describe_image',
+                'word': None
+            })
 
         for q in sample_questions:
             activities.append({
@@ -272,13 +272,17 @@ def create_activity_package(found_questions):
             q['type'] = 'question'
             found_questions_activities.append(q)
 
-        sample_found_questions = sample(found_questions_activities, 2)
+        sample_found_questions = sample(found_questions_activities, 5)
         ids = [q['question']['id'] for q in sample_found_questions]
 
-        questions = Question.objects.exclude(id__in=ids)
+        questions = QuestionActivity.objects.exclude(id__in=ids)
         questions_serializer = QuestionModelSerializer(questions, many=True)
 
-        sample_questions = sample(questions_serializer.data, 2)
+        images = DescribeImageActivity.objects.all()
+        images_serializer = ImageActivityModelSerializer(images, many=True)
+
+        sample_questions = sample(questions_serializer.data, 5)
+        sample_imgs = sample(images_serializer.data, 5)
 
         for q in sample_questions:
             activities.append({
@@ -287,7 +291,14 @@ def create_activity_package(found_questions):
                 'word': None
             })
 
-    sample_found_questions = sample(found_questions, 4)
+        for img in sample_imgs:
+            activities.append({
+                'image': img,
+                'type': 'describe_image',
+                'word': None
+            })
+
+    sample_found_questions = sample(found_questions, 5)
     activities += sample_found_questions
     return activities
 
@@ -338,7 +349,7 @@ def literal_search(words):
     for word in words:
         try:
             word_obj = Word.objects.get(word=word)
-            questions_list = Question.objects.filter(
+            questions_list = QuestionActivity.objects.filter(
                 words__id=word_obj.id)
             for q in questions_list:
                 questions.append({
@@ -363,7 +374,7 @@ def refined_search(words):
     for word in all_forms:
         try:
             word_obj = Word.objects.get(word=word)
-            questions_list = Question.objects.filter(
+            questions_list = QuestionActivity.objects.filter(
                 words__id=word_obj.id)
             for q in questions_list:
                 questions.append({
@@ -463,7 +474,7 @@ def add_examples(activities):
             word_text__in=sentences_text, type=ActivityTypes.QUESTION)
 
         if len(examples) >= 2:
-            q1 = Question.objects.get(id=examples[0].activity_id)
+            q1 = QuestionActivity.objects.get(id=examples[0].activity_id)
             w1 = Word(
                 id=-1,
                 word=senteces[0].sentence
@@ -475,7 +486,7 @@ def add_examples(activities):
                 'type': 'question',
             })
 
-            q2 = Question.objects.get(id=examples[1].activity_id)
+            q2 = QuestionActivity.objects.get(id=examples[1].activity_id)
             w2 = Word(
                 id=-1,
                 word=senteces[1].sentence
@@ -487,7 +498,7 @@ def add_examples(activities):
                 'type': 'question',
             })
         elif len(examples) >= 1:
-            q1 = Question.objects.get(id=examples[0].activity_id)
+            q1 = QuestionActivity.objects.get(id=examples[0].activity_id)
             w1 = Word(
                 id=-1,
                 word=senteces[0].sentence
@@ -498,6 +509,18 @@ def add_examples(activities):
                 'example': ExampleModelSerializer(examples[0]).data,
                 'type': 'question',
             })
+
+    examples_img = list(Example.objects.filter(
+        type=ActivityTypes.DESCRIBE_IMAGE))
+    shuffle(examples_img)
+
+    img = DescribeImageActivity.objects.get(id=examples_img[0].activity_id)
+
+    act_with_examples.append({
+        'image': ImageActivityModelSerializer(img).data,
+        'example': ExampleModelSerializer(examples_img[0]).data,
+        'type': 'describe_image',
+    })
 
     return act_with_examples + activities
 
@@ -530,16 +553,17 @@ def add_styles(activities):
     for act in activities:
         new_act = act
 
-        # if act['type'] == 'question':
-        #     act_type = ActivityTypes.QUESTION
-        #     act_id = act['question']['id']
-        # else:
-        #     act_type = ActivityTypes.DESCRIBE_IMAGE
-        #     act_id = act['image']['id']
+        if act['type'] == 'question':
+            act_type = ActivityTypes.QUESTION
+            act_id = act['question']['id']
+        else:
+            act_type = ActivityTypes.DESCRIBE_IMAGE
+            act_id = act['image']['id']
 
         try:
             style_obj = Style.objects.get(
-                question=act['question']['id']
+                activity_id=act_id,
+                type=act_type
             )
 
             serializer = StyleModelSerializer(style_obj)

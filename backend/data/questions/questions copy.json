@@ -35,15 +35,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -111,15 +104,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -138,15 +124,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -165,15 +144,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -220,15 +192,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -387,15 +352,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -435,15 +393,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -560,15 +511,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -657,15 +601,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -691,15 +628,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -725,15 +655,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {

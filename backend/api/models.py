@@ -19,6 +19,28 @@ class ActivityTypes(models.IntegerChoices):
     DESCRIBE_IMAGE = 1, 'Describe Image'
 
 
+class QuestionTypes(models.IntegerChoices):
+    NORMAL = 0, 'Normal'
+    DESCRIBE_IMAGE = 1, 'Describe image'
+    TEACHER = 2, 'Teacher'
+
+
+class WordTypes(models.IntegerChoices):
+    NORMAL = 0, 'Normal'
+    GROUP = 1, 'Group'
+
+
+class WordOrigin(models.IntegerChoices):
+    RANDOM = 0, 'Random generated'
+    SAVED = 1, 'Saved from library'
+    USER = 2, 'Created by user'
+
+
+class SourceTypes(models.IntegerChoices):
+    SHORT_VIDEO = 0, 'Short video'
+    INFO_CARD = 1, 'Info card'
+
+
 class BaseModel(models.Model):
     id = models.AutoField(primary_key=True)
     status = models.PositiveSmallIntegerField(
@@ -49,7 +71,7 @@ class Word(BaseModel):
         db_table = 'words'
 
 
-class QuestionActivity(BaseModel):
+class Question(BaseModel):
     id = models.IntegerField(primary_key=True)
     question = models.TextField(blank=False)
     tags = models.ManyToManyField(Tag)
@@ -64,16 +86,41 @@ class QuestionActivity(BaseModel):
     objects = models.Manager()
 
     class Meta:
-        db_table = 'question_activities'
+        db_table = 'questions'
 
 
-class DescribeImageActivity(BaseModel):
+class ShortVideo(BaseModel):
     id = models.IntegerField(primary_key=True)
-    image_url = models.TextField(null=False, blank=False)
+    cover = models.TextField(null=False, blank=False)
+    url = models.TextField(null=False, blank=False)
     objects = models.Manager()
 
     class Meta:
-        db_table = 'describeimage_activities'
+        db_table = 'short_videos'
+
+
+class InfoCard(BaseModel):
+    id = models.IntegerField(primary_key=True)
+    image_url = models.TextField(null=False, blank=False)
+    voice_url = models.TextField(null=False, blank=False)
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'info_cards'
+
+
+class Collocation(BaseModel):
+    text = models.CharField(max_length=150, null=True, blank=True)
+    info_card = models.ForeignKey(
+        InfoCard,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'collocations'
 
 
 class Example(BaseModel):
@@ -85,36 +132,98 @@ class Example(BaseModel):
     )
     example = models.JSONField(null=False, blank=False)
     voice_url = models.TextField(null=False, blank=False)
-    activity_id = models.IntegerField(null=True, blank=True)
     word_text = models.CharField(max_length=30, null=True, blank=True)
     objects = models.Manager()
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         db_table = 'examples'
 
 
 class Style(BaseModel):
-    background_word = models.CharField(max_length=20, blank=True, null=True)
-    background_screen = models.CharField(
-        max_length=20, blank=False, null=False)
-    activity_id = models.IntegerField(null=False)
-    type = models.PositiveSmallIntegerField(
-        null=False,
-        blank=False,
-        choices=ActivityTypes.choices
-    )
+    background_screen = models.CharField(max_length=20, blank=False, null=False)
+    background_challenge = models.CharField(max_length=20, blank=True, null=True)
+    use_gradient = models.BooleanField(default=False)
+    bottom_gradient_color = models.CharField(max_length=20, blank=True, null=True)
+    top_gradient_color = models.CharField(max_length=20, blank=True, null=True)
+    question_position = models.DecimalField(default=0.3, max_digits=3, decimal_places=2)
+    image_position = models.DecimalField(default=0.1, max_digits=3, decimal_places=2)
+    question_font_size = models.DecimalField(default=21.0, max_digits=3, decimal_places=1)
+    question_opacity = models.DecimalField(default=0.4, max_digits=3, decimal_places=2)
     objects = models.Manager()
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+    )
 
     class Meta:
         db_table = 'styles'
 
+class Sentence(BaseModel):
+    sentence = models.CharField(max_length=20, blank=False, null=False)
+    meaning = models.CharField(max_length=100, blank=True, default='')
+    type = models.PositiveSmallIntegerField(
+        null=False,
+        blank=False,
+        choices=WordTypes.choices
+    )
+    source_type = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        choices=SourceTypes.choices
+    )
+    short_video = models.ForeignKey(
+        ShortVideo,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    info_card = models.ForeignKey(
+        InfoCard,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'sentences'
 
 class UserSentence(BaseModel):
     sentence = models.CharField(max_length=20, blank=False, null=False)
     meaning = models.CharField(max_length=100, blank=True, default='')
     total_uses = models.PositiveSmallIntegerField(default=0)
     last_time_used = models.DateTimeField(null=True)
-    # Posiblemente agregar palabra dificil, palabra que quiero repetirla mas seguido
+    type = models.PositiveSmallIntegerField(
+        null=False,
+        blank=False,
+        choices=WordTypes.choices
+    )
+    origin = models.PositiveSmallIntegerField(
+        null=False,
+        blank=False,
+        choices=WordOrigin.choices
+    )
+    source_type = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        choices=SourceTypes.choices
+    )
+    short_video = models.ForeignKey(
+        ShortVideo,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    info_card = models.ForeignKey(
+        InfoCard,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -128,9 +237,10 @@ class UserSentence(BaseModel):
 class UserActivityHistory(BaseModel):
     total_uses = models.PositiveSmallIntegerField(default=0)
     last_time_used = models.DateTimeField()
-    activity_id = models.IntegerField(null=False)
+    activity_id = models.IntegerField(null=False, blank=False)
     type = models.PositiveSmallIntegerField(
         null=False,
+        blank=False,
         choices=ActivityTypes.choices
     )
     user = models.ForeignKey(
@@ -140,7 +250,7 @@ class UserActivityHistory(BaseModel):
     objects = models.Manager()
 
     class Meta:
-        db_table = 'user_activity_history'
+        db_table = 'user_history'
 
 
 class UserScreenFlow(BaseModel):

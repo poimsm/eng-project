@@ -35,15 +35,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -111,15 +104,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -138,15 +124,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -165,15 +144,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -220,15 +192,8 @@
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -381,21 +346,14 @@
     {
         "id": 44,
         "difficulty": "easy",
-        "ready": true,
+        "ready": false,
         "categories": ["social_media", "morning", "friendship", "relax"],
         "question": "Do you check your social networks when you wake up?",
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -429,21 +387,14 @@
     {
         "id": 49,
         "difficulty": "easy",
-        "ready": true,
+        "ready": false,
         "categories": ["study", "relax", "challenging", "emotions"],
         "question": "Do you study at night? How is your late night study session?",
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -554,21 +505,14 @@
     {
         "id": 67,
         "difficulty": "easy",
-        "ready": true,
+        "ready": false,
         "categories": ["scary"],
         "question": "A pink bunny is in your yard. It's very cute and fluffy. But... a bird flies over its head. The bunny leaps into the air and swallows the bird in one gulp. It turns to face the house. What do you do?",
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -651,21 +595,14 @@
     {
         "id": 79,
         "difficulty": "easy",
-        "ready": true,
+        "ready": false,
         "categories": ["scary", "car", "driving"],
         "question": "What vehicle would be the best one to start a >1000 km travel in a post apocalyptic zombie situation?",
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -685,21 +622,14 @@
     {
         "id": 82,
         "difficulty": "easy",
-        "ready": true,
+        "ready": false,
         "categories": [],
         "question": "What are the physical effects of a person living their entire life underground, and how would it affect them if they ever came up?",
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {
@@ -719,21 +649,14 @@
     {
         "id": 85,
         "difficulty": "easy",
-        "ready": true,
+        "ready": false,
         "categories": ["camping", "weather", "relax"],
         "question": "If you are camping in a HEAVY RAIN, what would be the most boring or amazing thing? 😏",
         "voice_file": "audio_1.mp3",
         "image_file": "image_0001.png",
         "style": {
-            "background_screen": "#555",
-            "background_challenge": "#444",
-            "use_gradient": false,
-            "bottom_gradient_color": null,
-            "top_gradient_color": null,
-            "question_position": 0.3,
-            "image_position": 0.1,
-            "question_font_size": 21.0,
-            "question_opacity": 0.4
+            "background_word": "#444",
+            "background_screen": "#555"
         }
     },
     {

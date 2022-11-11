@@ -1,8 +1,9 @@
 from rest_framework import serializers
+from django.db import models
 
 from users.models import User
 from api.models import (
-    DescribeImageActivity, UserSentence, Word, QuestionActivity,
+    UserSentence, Word, Question,
     Example, Style
 )
 
@@ -10,7 +11,7 @@ from api.models import (
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
+        fields = '__all__'
 
 
 class WordModelSerializer(serializers.ModelSerializer):
@@ -19,23 +20,14 @@ class WordModelSerializer(serializers.ModelSerializer):
         model = Word
         fields = '__all__'
 
-
 class QuestionModelSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = QuestionActivity
-        fields = ['id', 'question', 'image_url', 'voice_url', 'difficulty']
-
-
-class ImageActivityModelSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = DescribeImageActivity
-        fields = ['id', 'image_url']
+        model = Question
+        fields = ['id', 'question', 'image_url', 'voice_url']
 
 
 class UserSentenceModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = UserSentence
         fields = '__all__'
