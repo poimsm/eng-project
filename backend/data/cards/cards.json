@@ -5,9 +5,10 @@
         "audio_file": "audio.mp3",
         "sentences": [
             {
-                "sentence": "sentence_01",
-                "meaning": "meaning_01",
-                "type": 0
+                "sentence": "Destroy",
+                "meaning": "",
+                "extras": "Thanks you;Destroy;Forward now;Catdog;Splendid",
+                "type": 1
             }
         ]
     },
@@ -19,6 +20,7 @@
             {
                 "sentence": "sentence_01",
                 "meaning": "meaning_01",
+                "extras": "",
                 "type": 0
             }
         ]
@@ -31,6 +33,7 @@
             {
                 "sentence": "sentence_01",
                 "meaning": "meaning_01",
+                "extras": "",
                 "type": 0
             }
         ]
@@ -43,6 +46,7 @@
             {
                 "sentence": "sentence_01",
                 "meaning": "meaning_01",
+                "extras": "",
                 "type": 0
             }
         ]
@@ -55,6 +59,7 @@
             {
                 "sentence": "sentence_01",
                 "meaning": "meaning_01",
+                "extras": "",
                 "type": 0
             }
         ]

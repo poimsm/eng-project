@@ -1,5 +1,8 @@
 from django.core.management.base import BaseCommand
-from api.models import UserSentence
+from api.models import (
+    UserSentence, Sentence, ShortVideo, InfoCard,
+    WordOrigin, WordTypes, SourceTypes
+)
 from users.models import User
 from api.helpers import console
 from datetime import date
@@ -27,7 +30,7 @@ class Command(BaseCommand):
 
         UserSentence(
             type=0,
-            origin=0,          
+            origin=0,
             sentence='hang out',
             meaning='hang out with friends',
             last_time_used=date.today(),
@@ -78,5 +81,43 @@ class Command(BaseCommand):
             last_time_used=date.today(),
             user=user
         ).save()
+
+        # --------------------------VIDEO---------------------------------------------
+        console.info('Adding video sentences...')
+        video_obj = ShortVideo.objects.get(id=1)
+        sentence_obj = Sentence.objects.filter(short_video=video_obj.id)
+
+        for sen in sentence_obj:
+            UserSentence(
+                sentence=sen.sentence,
+                meaning=sen.meaning,
+                extras=sen.extras,
+                last_time_used=date.today(),
+                type=sen.type,
+                origin=WordOrigin.SAVED,
+                source_type=SourceTypes.SHORT_VIDEO,
+                short_video=video_obj,
+                user=user
+            ).save()
+        # --------------------------VIDEO---------------------------------------------
+
+        # --------------------------CARDS---------------------------------------------
+        console.info('Adding card sentences...')
+        card_obj = InfoCard.objects.get(id=1)
+        sentence_obj = Sentence.objects.filter(info_card=card_obj.id)
+
+        for sen in sentence_obj:
+            UserSentence(
+                sentence=sen.sentence,
+                meaning=sen.meaning,
+                extras=sen.extras,
+                last_time_used=date.today(),
+                type=sen.type,
+                origin=WordOrigin.SAVED,
+                source_type=SourceTypes.INFO_CARD,
+                info_card=card_obj,
+                user=user
+            ).save()
+        # --------------------------CARDS---------------------------------------------
 
         console.info('Migration completed successfully')

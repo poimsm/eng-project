@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api.models import InfoCard, Sentence
+from api.models import InfoCard, Sentence, SourceTypes
 
 from django.conf import settings
 import os
@@ -45,8 +45,9 @@ class Command(BaseCommand):
                     Sentence(
                         sentence=sen['sentence'],
                         meaning=sen['meaning'],
+                        extras=sen['extras'],
                         type=sen['type'],
-                        source_type=1,
+                        source_type=SourceTypes.INFO_CARD,
                         info_card=card_obj
                     ).save()
 

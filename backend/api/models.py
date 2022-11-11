@@ -144,15 +144,22 @@ class Example(BaseModel):
 
 
 class Style(BaseModel):
-    background_screen = models.CharField(max_length=20, blank=False, null=False)
-    background_challenge = models.CharField(max_length=20, blank=True, null=True)
+    background_screen = models.CharField(
+        max_length=20, blank=False, null=False)
+    background_challenge = models.CharField(
+        max_length=20, blank=True, null=True)
     use_gradient = models.BooleanField(default=False)
-    bottom_gradient_color = models.CharField(max_length=20, blank=True, null=True)
+    bottom_gradient_color = models.CharField(
+        max_length=20, blank=True, null=True)
     top_gradient_color = models.CharField(max_length=20, blank=True, null=True)
-    question_position = models.DecimalField(default=0.3, max_digits=3, decimal_places=2)
-    image_position = models.DecimalField(default=0.1, max_digits=3, decimal_places=2)
-    question_font_size = models.DecimalField(default=21.0, max_digits=3, decimal_places=1)
-    question_opacity = models.DecimalField(default=0.4, max_digits=3, decimal_places=2)
+    question_position = models.DecimalField(
+        default=0.3, max_digits=3, decimal_places=2)
+    image_position = models.DecimalField(
+        default=0.1, max_digits=3, decimal_places=2)
+    question_font_size = models.DecimalField(
+        default=21.0, max_digits=3, decimal_places=1)
+    question_opacity = models.DecimalField(
+        default=0.4, max_digits=3, decimal_places=2)
     objects = models.Manager()
     question = models.ForeignKey(
         Question,
@@ -162,9 +169,11 @@ class Style(BaseModel):
     class Meta:
         db_table = 'styles'
 
+
 class Sentence(BaseModel):
     sentence = models.CharField(max_length=20, blank=False, null=False)
     meaning = models.CharField(max_length=100, blank=True, default='')
+    extras = models.TextField(blank=True, default='')
     type = models.PositiveSmallIntegerField(
         null=False,
         blank=False,
@@ -192,9 +201,11 @@ class Sentence(BaseModel):
     class Meta:
         db_table = 'sentences'
 
+
 class UserSentence(BaseModel):
     sentence = models.CharField(max_length=20, blank=False, null=False)
     meaning = models.CharField(max_length=100, blank=True, default='')
+    extras = models.TextField(blank=True, default='')
     total_uses = models.PositiveSmallIntegerField(default=0)
     last_time_used = models.DateTimeField(null=True)
     type = models.PositiveSmallIntegerField(

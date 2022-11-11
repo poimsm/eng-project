@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api.models import ShortVideo, Sentence
+from api.models import ShortVideo, Sentence, SourceTypes
 
 from django.conf import settings
 import os
@@ -45,8 +45,9 @@ class Command(BaseCommand):
                     Sentence(
                         sentence=sen['sentence'],
                         meaning=sen['meaning'],
+                        extras=sen['extras'],
                         type=sen['type'],
-                        source_type=0,
+                        source_type=SourceTypes.SHORT_VIDEO,
                         short_video=video_obj
                     ).save()
 
