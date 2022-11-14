@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api.models import InfoCard, Sentence, SourceTypes
+from api.models import InfoCard, Sentence, SourceTypes, Collocation
 
 from django.conf import settings
 import os
@@ -47,6 +47,13 @@ class Command(BaseCommand):
                         meaning=sen['meaning'],
                         extras=sen['extras'],
                         type=sen['type'],
+                        source_type=SourceTypes.INFO_CARD,
+                        info_card=card_obj
+                    ).save()
+
+                for coll in card['collocations']:
+                    Collocation(
+                        text=coll,
                         source_type=SourceTypes.INFO_CARD,
                         info_card=card_obj
                     ).save()

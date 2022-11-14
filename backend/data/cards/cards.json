@@ -10,6 +10,20 @@
                 "extras": "Thanks you;Destroy;Forward now;Catdog;Splendid",
                 "type": 1
             }
+        ],
+        "collocations": [
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]",
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]"
         ]
     },
     {
@@ -23,7 +37,8 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     },
     {
         "id": 3,
@@ -36,7 +51,8 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     },
     {
         "id": 4,
@@ -49,7 +65,8 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     },
     {
         "id": 5,
@@ -62,6 +79,7 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     }
 ]

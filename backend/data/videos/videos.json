@@ -10,7 +10,8 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     },
     {
         "id": 2,
@@ -23,7 +24,8 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     },
     {
         "id": 3,
@@ -36,7 +38,8 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     },
     {
         "id": 4,
@@ -49,7 +52,8 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     },
     {
         "id": 5,
@@ -62,6 +66,7 @@
                 "extras": "",
                 "type": 0
             }
-        ]
+        ],
+        "collocations": []
     }
 ]

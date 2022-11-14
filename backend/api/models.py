@@ -111,6 +111,17 @@ class InfoCard(BaseModel):
 
 class Collocation(BaseModel):
     text = models.CharField(max_length=150, null=True, blank=True)
+    source_type = models.PositiveSmallIntegerField(
+        null=False,
+        blank=False,
+        choices=SourceTypes.choices
+    )
+    short_video = models.ForeignKey(
+        ShortVideo,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
     info_card = models.ForeignKey(
         InfoCard,
         null=True,
