@@ -9,16 +9,19 @@ from .views import *
 app_name = 'api'
 
 urlpatterns = [
+    # @app
     re_path(r'hola\/?$', hola, name='hola'),
     re_path(r'get-post\/?$', get_post, name='get-post'),
-
+    re_path(r'short-video\/?$', short_video),
+    re_path(r'info-card\/?$', info_card),
     re_path(r'sentence\/?$', user_sentences),
     re_path(r'daily-activities\/?$', daily_activities),
 
+    # @authentication
     re_path(r'user/fake-user\/?$', create_fake_user),
     re_path(r'user/register\/?$', user_register),
     re_path(r'user/data\/?$', user_data),
-    re_path(r'user/sign-in\/?$', CustomTokenObtainPairView.as_view()),    
+    re_path(r'user/sign-in\/?$', CustomTokenObtainPairView.as_view()),
     re_path(r'token/verify\/?$', TokenVerifyView.as_view()),
     re_path(r'token/refresh\/?', TokenRefreshView.as_view()),
 ]

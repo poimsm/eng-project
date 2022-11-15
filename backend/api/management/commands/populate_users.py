@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from api.models import (
-    UserSentence, Sentence, ShortVideo, InfoCard,
+    UserSentence, ResourceSentence, ShortVideo, InfoCard,
     WordOrigin, WordTypes, SourceTypes
 )
 from users.models import User
@@ -13,20 +13,20 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         console.info('--------------------------------')
-        console.info('      MIGRATE USER INIT         ')
+        console.info('    POPULATE USER               ')
         console.info('--------------------------------')
 
-        console.info('Creating test user...')
+        console.info('Creating fake user...')
         user = User(
             id=1,
             username='test',
             email='test@fake.com',
             password='123456'
         )
-
+        
         user.save()
 
-        console.info('Creating user sentences...')
+        console.info('Adding user-entered sentences...')
 
         UserSentence(
             type=0,
@@ -83,9 +83,10 @@ class Command(BaseCommand):
         ).save()
 
         # --------------------------VIDEO---------------------------------------------
-        console.info('Adding video sentences...')
+        console.info('Adding videos to user favorites...')
         video_obj = ShortVideo.objects.get(id=1)
-        sentence_obj = Sentence.objects.filter(short_video=video_obj.id)
+        sentence_obj = ResourceSentence.objects.filter(
+            short_video=video_obj.id)
 
         for sen in sentence_obj:
             UserSentence(
@@ -102,9 +103,9 @@ class Command(BaseCommand):
         # --------------------------VIDEO---------------------------------------------
 
         # --------------------------CARDS---------------------------------------------
-        console.info('Adding card sentences...')
+        console.info('Adding cards to user favorites...')
         card_obj = InfoCard.objects.get(id=1)
-        sentence_obj = Sentence.objects.filter(info_card=card_obj.id)
+        sentence_obj = ResourceSentence.objects.filter(info_card=card_obj.id)
 
         for sen in sentence_obj:
             UserSentence(
@@ -120,4 +121,4 @@ class Command(BaseCommand):
             ).save()
         # --------------------------CARDS---------------------------------------------
 
-        console.info('Migration completed successfully')
+        console.info('Successfully completed!')

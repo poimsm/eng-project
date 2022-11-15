@@ -1,4 +1,5 @@
 # Framework
+import math
 import re
 import copy
 
@@ -23,7 +24,9 @@ from api.data.expresions import expresions
 from users.models import User
 from api.models import (
     ActivityTypes, Word, Question,
-    UserSentence, Example, Style
+    UserSentence, Example, Style, ShortVideo,
+    InfoCard, FavoriteResource, SourceTypes,
+    WordTypes, WordOrigin, ResourceSentence,
 )
 from api.serializers import (
     QuestionModelSerializer,
@@ -31,7 +34,10 @@ from api.serializers import (
     UserSentenceModelSerializer,
     ExampleModelSerializer,
     StyleModelSerializer,
-    WordModelSerializer
+    WordModelSerializer,
+    ShortVideoModelSerializer,
+    InfoCardModelSerializer,
+    FavoriteResourceModelSerializer
 )
 from users.serializers import CustomTokenObtainPairSerializer
 
@@ -146,12 +152,179 @@ def hola(request):
 
 @api_view(['GET', 'POST', 'PUT'])
 @renderer_classes([JSONRenderer])
+def short_video(request):
+    if request.method == 'GET':
+        videos = ShortVideo.objects.all().order_by('-created')
+        user_videos = FavoriteResource.objects.filter(
+            source_type=SourceTypes.SHORT_VIDEO,
+            user=1,
+            is_active=True,
+        )
+
+        video_serializer = ShortVideoModelSerializer(videos, many=True)
+        video_data = video_serializer.data
+
+        result = []
+        for video in video_data:
+            is_favorite = False
+            for user_vid in user_videos:
+                if video['id'] == user_vid.id:
+                    is_favorite = True
+            video['is_favorite'] = is_favorite
+            result.append(video)
+
+        return Response(result, status=status.HTTP_200_OK)
+
+    if request.method == 'POST':
+        data = request.data.copy()
+
+        resource_data = {
+            'user': 1,
+            'short_video': data['video_id'],
+            'source_type': SourceTypes.SHORT_VIDEO,
+        }
+
+        resource_serializer = FavoriteResourceModelSerializer(
+            data=resource_data)
+        if resource_serializer.is_valid():
+            resource_serializer.save()
+
+            sentences = ResourceSentence.objects.filter(
+                short_videos=data['video_id'],
+                is_active=True
+            )
+
+            for sen in sentences:
+                sen_data = {
+                    'sentence': sen.sentence,
+                    'meaning': sen.meaning,
+                    'extras': sen.extras,
+                    'type': sen.type,
+                    'short_video': data['video_id'],
+                    'source_type': SourceTypes.SHORT_VIDEO,
+                    'user': 1,
+                }
+
+                user_sen_serializer = UserSentenceModelSerializer(
+                    data=sen_data)
+
+                if user_sen_serializer.is_valid():
+                    user_sen_serializer.save()
+
+            return Response(resource_serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'PUT':
+        data = request.data.copy()
+
+        sentences = UserSentence.objects.filter(
+            user=1,
+            short_video=data['video_id'],
+            is_active=True
+        ).update(is_active=False)
+        return Response({}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST', 'PUT'])
+@renderer_classes([JSONRenderer])
+def info_card(request):
+    if request.method == 'GET':
+        videos = ShortVideo.objects.all().order_by('-created')
+        user_videos = FavoriteResource.objects.filter(
+            source_type=SourceTypes.SHORT_VIDEO,
+            user=1,
+            is_active=True,
+        )
+
+        video_serializer = ShortVideoModelSerializer(videos, many=True)
+        video_data = video_serializer.data
+
+        result = []
+        for video in video_data:
+            is_favorite = False
+            for user_vid in user_videos:
+                if video['id'] == user_vid.id:
+                    is_favorite = True
+            video['is_favorite'] = is_favorite
+            result.append(video)
+
+        return Response(result, status=status.HTTP_200_OK)
+
+    if request.method == 'POST':
+        data = request.data.copy()
+
+        resource_data = {
+            'user': 1,
+            'short_video': data['video_id'],
+            'source_type': SourceTypes.SHORT_VIDEO,
+        }
+
+        resource_serializer = FavoriteResourceModelSerializer(
+            data=resource_data)
+        if resource_serializer.is_valid():
+            resource_serializer.save()
+
+            sentences = ResourceSentence.objects.filter(
+                short_videos=data['video_id'],
+                is_active=True
+            )
+
+            for sen in sentences:
+                sen_data = {
+                    'sentence': sen.sentence,
+                    'meaning': sen.meaning,
+                    'extras': sen.extras,
+                    'type': sen.type,
+                    'short_video': data['video_id'],
+                    'source_type': SourceTypes.SHORT_VIDEO,
+                    'user': 1,
+                }
+
+                user_sen_serializer = UserSentenceModelSerializer(
+                    data=sen_data)
+
+                if user_sen_serializer.is_valid():
+                    user_sen_serializer.save()
+
+            return Response(resource_serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'PUT':
+        data = request.data.copy()
+
+        sentences = UserSentence.objects.filter(
+            user=1,
+            short_video=data['video_id'],
+            is_active=True
+        ).update(is_active=False)
+        return Response({}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST', 'PUT'])
+@renderer_classes([JSONRenderer])
 def user_sentences(request):
     if request.method == 'GET':
+        page = int(request.GET.get('page', 1))
+        per_page = 20
+
         sentences = UserSentence.objects.filter(
             user__id=test_user_id).order_by('-created')
-        serializer = UserSentenceModelSerializer(sentences, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        total = sentences.count()
+        start = (page - 1)*per_page
+        end = page*per_page
+
+        serializer = UserSentenceModelSerializer(
+            sentences[start:end], many=True)
+
+        return Response({
+            'data': serializer.data,
+            'total_items': total,
+            'current_page': page,
+            'total_pages': math.ceil(total / per_page)
+        }, status=status.HTTP_200_OK)
 
     if request.method == 'POST':
         data = request.data.copy()
@@ -179,7 +352,7 @@ def user_sentences(request):
                 sentence, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
         except UserSentence.DoesNotExist:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)

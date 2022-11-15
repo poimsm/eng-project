@@ -15,7 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         console.info('--------------------------------')
-        console.info('    MIGRATE QUESTIONS INIT      ')
+        console.info('    POPULATE QUESTIONS          ')
         console.info('--------------------------------')
 
         try:
@@ -38,7 +38,7 @@ class Command(BaseCommand):
             AUDIO_URL = settings.SITE_DOMAIN + '/media/audios/'
 
             console.info('Audio base URL: ' + AUDIO_URL)
-            console.info('Migrating ' + str(len(questions)) + ' questions...')
+            console.info('Creating ' + str(len(questions)) + ' questions...')
 
             for q in questions:
                 if not q['ready']:
@@ -114,7 +114,8 @@ class Command(BaseCommand):
 
                     question_obj.words.add(word_obj)
 
-            console.info('Migration completed successfully')
+            console.info('Successfully completed!')
 
         except:
             traceback.print_exc()
+            console.error('Process Failed!')

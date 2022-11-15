@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api.models import InfoCard, Sentence, SourceTypes, Collocation
+from api.models import InfoCard, ResourceSentence, SourceTypes, Collocation
 
 from django.conf import settings
 import os
@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         console.info('--------------------------------')
-        console.info('    MIGRATE CARDS INIT          ')
+        console.info('    POPULATE CARDS              ')
         console.info('--------------------------------')
 
         try:
@@ -30,7 +30,7 @@ class Command(BaseCommand):
             IMAGE_URL = settings.SITE_DOMAIN + '/media/card_images/'
 
             console.info('Audio base URL: ' + AUDIO_URL)
-            console.info('Migrating ' + str(len(cards)) + ' cards...')
+            console.info('Creating ' + str(len(cards)) + ' cards...')
 
             for card in cards:
                 card_obj = InfoCard(
@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 card_obj.save()
 
                 for sen in card['sentences']:
-                    Sentence(
+                    ResourceSentence(
                         sentence=sen['sentence'],
                         meaning=sen['meaning'],
                         extras=sen['extras'],
@@ -58,7 +58,8 @@ class Command(BaseCommand):
                         info_card=card_obj
                     ).save()
 
-            console.info('Migration completed successfully')
+            console.info('Successfully completed!')
 
         except:
             traceback.print_exc()
+            console.error('Process Failed!')

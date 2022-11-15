@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         print('--------------------------------')
-        print('      MIGRATE WORDS INIT        ')
+        print('      POPULATE WORDS            ')
         print('--------------------------------')
 
         try:
@@ -44,7 +44,7 @@ class Command(BaseCommand):
                 if(word_serializer.is_valid()):
                     word_serializer.save()
 
-            print('Migration completed successfully')
+            print('Successfully completed!')
 
         except Exception as err:
             raise SystemExit(err)

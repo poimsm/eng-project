@@ -109,6 +109,34 @@ class InfoCard(BaseModel):
         db_table = 'info_cards'
 
 
+class FavoriteResource(BaseModel):
+    short_video = models.ForeignKey(
+        ShortVideo,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    info_card = models.ForeignKey(
+        InfoCard,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    source_type = models.PositiveSmallIntegerField(
+        null=False,
+        blank=False,
+        choices=SourceTypes.choices
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'favorite_resources'
+
+
 class Collocation(BaseModel):
     text = models.CharField(max_length=150, null=True, blank=True)
     source_type = models.PositiveSmallIntegerField(
@@ -181,7 +209,7 @@ class Style(BaseModel):
         db_table = 'styles'
 
 
-class Sentence(BaseModel):
+class ResourceSentence(BaseModel):
     sentence = models.CharField(max_length=20, blank=False, null=False)
     meaning = models.CharField(max_length=100, blank=True, default='')
     extras = models.TextField(blank=True, default='')
@@ -210,7 +238,7 @@ class Sentence(BaseModel):
     objects = models.Manager()
 
     class Meta:
-        db_table = 'sentences'
+        db_table = 'resource_sentences'
 
 
 class UserSentence(BaseModel):
