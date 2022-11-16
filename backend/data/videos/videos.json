@@ -7,7 +7,7 @@
         "sentences": [
             {
                 "sentence": "sentence_01",
-                "meaning": "meaning_01",
+                "meaning": "video_meaning",
                 "extras": "",
                 "type": 0
             }
@@ -22,7 +22,7 @@
         "sentences": [
             {
                 "sentence": "sentence_01",
-                "meaning": "meaning_01",
+                "meaning": "video_meaning",
                 "extras": "",
                 "type": 0
             }
@@ -37,7 +37,7 @@
         "sentences": [
             {
                 "sentence": "sentence_01",
-                "meaning": "meaning_01",
+                "meaning": "video_meaning",
                 "extras": "",
                 "type": 0
             }
@@ -52,7 +52,7 @@
         "sentences": [
             {
                 "sentence": "sentence_01",
-                "meaning": "meaning_01",
+                "meaning": "video_meaning",
                 "extras": "",
                 "type": 0
             }
@@ -67,7 +67,7 @@
         "sentences": [
             {
                 "sentence": "sentence_01",
-                "meaning": "meaning_01",
+                "meaning": "video_meaning",
                 "extras": "",
                 "type": 0
             }

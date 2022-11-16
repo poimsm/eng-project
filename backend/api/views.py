@@ -27,6 +27,7 @@ from api.models import (
     UserSentence, Example, Style, ShortVideo,
     InfoCard, FavoriteResource, SourceTypes,
     WordTypes, WordOrigin, ResourceSentence,
+    Status,
 )
 from api.serializers import (
     QuestionModelSerializer,
@@ -150,7 +151,7 @@ def hola(request):
     return Response({'len': hasSlang}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'POST', 'PUT'])
+@api_view(['GET', 'POST', 'DELETE'])
 @renderer_classes([JSONRenderer])
 def short_video(request):
     if request.method == 'GET':
@@ -158,7 +159,7 @@ def short_video(request):
         user_videos = FavoriteResource.objects.filter(
             source_type=SourceTypes.SHORT_VIDEO,
             user=1,
-            is_active=True,
+            status=Status.ACTIVE,
         )
 
         video_serializer = ShortVideoModelSerializer(videos, many=True)
@@ -168,7 +169,7 @@ def short_video(request):
         for video in video_data:
             is_favorite = False
             for user_vid in user_videos:
-                if video['id'] == user_vid.id:
+                if video['id'] == user_vid.short_video.id:
                     is_favorite = True
             video['is_favorite'] = is_favorite
             result.append(video)
@@ -186,12 +187,12 @@ def short_video(request):
 
         resource_serializer = FavoriteResourceModelSerializer(
             data=resource_data)
-        if resource_serializer.is_valid():
+        if resource_serializer.is_valid(raise_exception=True):
             resource_serializer.save()
 
             sentences = ResourceSentence.objects.filter(
-                short_videos=data['video_id'],
-                is_active=True
+                short_video=data['video_id'],
+                status=Status.ACTIVE
             )
 
             for sen in sentences:
@@ -200,6 +201,7 @@ def short_video(request):
                     'meaning': sen.meaning,
                     'extras': sen.extras,
                     'type': sen.type,
+                    'origin': WordOrigin.SAVED,
                     'short_video': data['video_id'],
                     'source_type': SourceTypes.SHORT_VIDEO,
                     'user': 1,
@@ -208,46 +210,49 @@ def short_video(request):
                 user_sen_serializer = UserSentenceModelSerializer(
                     data=sen_data)
 
-                if user_sen_serializer.is_valid():
+                if user_sen_serializer.is_valid(raise_exception=True):
                     user_sen_serializer.save()
 
             return Response(resource_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
-    if request.method == 'PUT':
+    if request.method == 'DELETE':
         data = request.data.copy()
+        FavoriteResource.objects.filter(
+            user=1,
+            short_video=data['video_id']
+        ).update(status=Status.DELETED)
 
-        sentences = UserSentence.objects.filter(
+        UserSentence.objects.filter(
             user=1,
             short_video=data['video_id'],
-            is_active=True
-        ).update(is_active=False)
+        ).update(status=Status.DELETED)
         return Response({}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'POST', 'PUT'])
+@api_view(['GET', 'POST', 'DELETE'])
 @renderer_classes([JSONRenderer])
 def info_card(request):
     if request.method == 'GET':
-        videos = ShortVideo.objects.all().order_by('-created')
-        user_videos = FavoriteResource.objects.filter(
-            source_type=SourceTypes.SHORT_VIDEO,
+        cards = InfoCard.objects.all().order_by('-created')
+        user_cards = FavoriteResource.objects.filter(
+            source_type=SourceTypes.INFO_CARD,
             user=1,
-            is_active=True,
+            status=Status.ACTIVE
         )
 
-        video_serializer = ShortVideoModelSerializer(videos, many=True)
-        video_data = video_serializer.data
+        card_serializer = InfoCardModelSerializer(cards, many=True)
+        cards_data = sample(card_serializer.data, 2)
 
         result = []
-        for video in video_data:
+        for card in cards_data:
             is_favorite = False
-            for user_vid in user_videos:
-                if video['id'] == user_vid.id:
+            for user_card in user_cards:
+                if card['id'] == user_card.info_card.id:
                     is_favorite = True
-            video['is_favorite'] = is_favorite
-            result.append(video)
+            card['is_favorite'] = is_favorite
+            result.append(card)
 
         return Response(result, status=status.HTTP_200_OK)
 
@@ -256,18 +261,18 @@ def info_card(request):
 
         resource_data = {
             'user': 1,
-            'short_video': data['video_id'],
-            'source_type': SourceTypes.SHORT_VIDEO,
+            'info_card': data['card_id'],
+            'source_type': SourceTypes.INFO_CARD,
         }
 
         resource_serializer = FavoriteResourceModelSerializer(
             data=resource_data)
-        if resource_serializer.is_valid():
+        if resource_serializer.is_valid(raise_exception=True):
             resource_serializer.save()
 
             sentences = ResourceSentence.objects.filter(
-                short_videos=data['video_id'],
-                is_active=True
+                info_card=data['card_id'],
+                status=Status.ACTIVE
             )
 
             for sen in sentences:
@@ -276,33 +281,37 @@ def info_card(request):
                     'meaning': sen.meaning,
                     'extras': sen.extras,
                     'type': sen.type,
-                    'short_video': data['video_id'],
-                    'source_type': SourceTypes.SHORT_VIDEO,
+                    'origin': WordOrigin.SAVED,
+                    'info_card': data['card_id'],
+                    'source_type': SourceTypes.INFO_CARD,
                     'user': 1,
                 }
 
                 user_sen_serializer = UserSentenceModelSerializer(
                     data=sen_data)
 
-                if user_sen_serializer.is_valid():
+                if user_sen_serializer.is_valid(raise_exception=True):
                     user_sen_serializer.save()
 
             return Response(resource_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
-    if request.method == 'PUT':
+    if request.method == 'DELETE':
         data = request.data.copy()
-
-        sentences = UserSentence.objects.filter(
+        FavoriteResource.objects.filter(
             user=1,
-            short_video=data['video_id'],
-            is_active=True
-        ).update(is_active=False)
+            info_card=data['card_id']
+        ).update(status=Status.DELETED)
+
+        UserSentence.objects.filter(
+            user=1,
+            info_card=data['card_id']
+        ).update(status=Status.DELETED)
         return Response({}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'POST', 'PUT'])
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @renderer_classes([JSONRenderer])
 def user_sentences(request):
     if request.method == 'GET':
@@ -310,7 +319,9 @@ def user_sentences(request):
         per_page = 20
 
         sentences = UserSentence.objects.filter(
-            user__id=test_user_id).order_by('-created')
+            user__id=test_user_id,
+            status=Status.ACTIVE
+        ).order_by('-created')
 
         total = sentences.count()
         start = (page - 1)*per_page
@@ -354,6 +365,16 @@ def user_sentences(request):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        except UserSentence.DoesNotExist:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'DELETE':
+        try:
+            data = request.data.copy()
+            UserSentence.objects.update_or_create(id=data['id'], defaults={
+                'status': Status.DELETED
+            })
+            return Response({}, status=status.HTTP_200_OK)
         except UserSentence.DoesNotExist:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
