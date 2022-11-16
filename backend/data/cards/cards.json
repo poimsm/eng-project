@@ -1,6 +1,7 @@
 [
     {
         "id": 1,
+        "is_new": true,
         "image_file": "picture.png",
         "audio_file": "audio.mp3",
         "sentences": [
@@ -28,6 +29,7 @@
     },
     {
         "id": 2,
+        "is_new": true,
         "image_file": "picture.png",
         "audio_file": "audio.mp3",
         "sentences": [
@@ -42,6 +44,7 @@
     },
     {
         "id": 3,
+        "is_new": true,
         "image_file": "picture.png",
         "audio_file": "audio.mp3",
         "sentences": [
@@ -56,6 +59,7 @@
     },
     {
         "id": 4,
+        "is_new": true,
         "image_file": "picture.png",
         "audio_file": "audio.mp3",
         "sentences": [
@@ -70,6 +74,7 @@
     },
     {
         "id": 5,
+        "is_new": true,
         "image_file": "picture.png",
         "audio_file": "audio.mp3",
         "sentences": [

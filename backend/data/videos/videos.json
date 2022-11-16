@@ -1,6 +1,7 @@
 [
     {
         "id": 1,
+        "is_new": true,
         "cover": "picture_01.png",
         "video_file": "video.mp4",
         "sentences": [
@@ -15,6 +16,7 @@
     },
     {
         "id": 2,
+        "is_new": true,
         "cover": "picture_01.png",
         "video_file": "video.mp4",
         "sentences": [
@@ -29,6 +31,7 @@
     },
     {
         "id": 3,
+        "is_new": true,
         "cover": "picture_01.png",
         "video_file": "video.mp4",
         "sentences": [
@@ -43,6 +46,7 @@
     },
     {
         "id": 4,
+        "is_new": true,
         "cover": "picture_01.png",
         "video_file": "video.mp4",
         "sentences": [
@@ -57,6 +61,7 @@
     },
     {
         "id": 5,
+        "is_new": true,
         "cover": "picture_01.png",
         "video_file": "video.mp4",
         "sentences": [

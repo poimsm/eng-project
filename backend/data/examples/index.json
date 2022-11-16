@@ -1,60 +1,64 @@
 [
     {
         "id": 1,
-        "type": "describe_image",
-        "activity_id": 1,
+        "is_new": true,
+        "question_id": 1,
+        "word_text": null,
         "example_file": "example_1.json",
         "voice_file": "audio_1.mp3"
     },
     {
         "id": 2,
-        "type": "describe_image",
-        "activity_id": 2,
+        "is_new": true,
+        "question_id": 3,
+        "word_text": null,
         "example_file": "example_1.json",
         "voice_file": "audio_1.mp3"
     },
     {
         "id": 3,
-        "type": "describe_image",
-        "activity_id": 3,
+        "is_new": true,
+        "question_id": 12,
+        "word_text": null,
         "example_file": "example_1.json",
         "voice_file": "audio_1.mp3"
     },
     {
         "id": 4,
-        "type": "describe_image",
-        "activity_id": 4,
+        "is_new": true,
+        "question_id": 14,
+        "word_text": null,
         "example_file": "example_1.json",
         "voice_file": "audio_1.mp3"
     },    
     {
         "id": 5,
-        "type": "question_activity",
-        "activity_id": 1,
+        "is_new": true,
+        "question_id": 16,
         "word_text": "smoke",
         "example_file": "example_2.json",
         "voice_file": "audio_1.mp3"
     },
     {
         "id": 6,
-        "type": "question_activity",
-        "activity_id": 3,
+        "is_new": true,
+        "question_id": 22,
         "word_text": "smoke",
         "example_file": "example_4.json",
         "voice_file": "audio_1.mp3"
     },
     {
         "id": 7,
-        "type": "question_activity",
-        "activity_id": 22,
+        "is_new": true,
+        "question_id": 44,
         "word_text": "combine",
         "example_file": "example_2.json",
         "voice_file": "audio_1.mp3"
     },
     {
         "id": 8,
-        "type": "question_activity",
-        "activity_id": 49,
+        "is_new": true,
+        "question_id": 49,
         "word_text": "stew",
         "example_file": "example_4.json",
         "voice_file": "audio_1.mp3"

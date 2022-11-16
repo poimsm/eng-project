@@ -38,7 +38,12 @@ class Command(BaseCommand):
             AUDIO_URL = settings.SITE_DOMAIN + '/media/audios/'
 
             console.info('Audio base URL: ' + AUDIO_URL)
-            console.info('Creating ' + str(len(questions)) + ' questions...')
+
+            counter = 0
+            for q in questions:
+                if q['ready'] and q['is_new']: counter += 1
+
+            console.info('Creating ' + str(counter) + ' questions...')
 
             for q in questions:
                 if not q['ready']:
@@ -91,11 +96,12 @@ class Command(BaseCommand):
                         question_obj = Question.objects.get(id=q['id'])
                     except Question.DoesNotExist:
                         question_obj = Question(
-                            id=q['id'],
+                            id=q['id'],                            
                             question=q['question'],
                             voice_url=AUDIO_URL + q['voice_file'],
                             image_url=q['image_file'],
-                            difficulty=difficultyDic[q['difficulty']]
+                            difficulty=difficultyDic[q['difficulty']],
+                            type=q['type']
                         )
                         question_obj.save()
 

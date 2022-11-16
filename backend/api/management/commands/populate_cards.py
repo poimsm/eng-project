@@ -30,9 +30,17 @@ class Command(BaseCommand):
             IMAGE_URL = settings.SITE_DOMAIN + '/media/card_images/'
 
             console.info('Audio base URL: ' + AUDIO_URL)
-            console.info('Creating ' + str(len(cards)) + ' cards...')
+
+            counter = 0
+            for ex in cards:
+                if ex['is_new']: counter += 1
+
+            console.info('Creating ' + str(counter) + ' cards...')
+            
 
             for card in cards:
+                if not ex['is_new']: continue
+                
                 card_obj = InfoCard(
                     id=card['id'],
                     image_url=IMAGE_URL + card['image_file'],

@@ -30,9 +30,16 @@ class Command(BaseCommand):
             IMAGE_URL = settings.SITE_DOMAIN + '/media/card_images/'
 
             console.info('Audio base URL: ' + MEDIA_URL)
-            console.info('Creating ' + str(len(videos)) + ' videos...')
+
+            counter = 0;
+            for ex in videos:
+                if ex['is_new']: counter += 1
+
+            console.info('Creating ' + str(counter) + ' videos...')
 
             for video in videos:
+                if not ex['is_new']: continue
+                
                 video_obj = ShortVideo(
                     id=video['id'],
                     cover=IMAGE_URL + video['cover'],

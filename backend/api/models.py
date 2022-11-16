@@ -8,21 +8,21 @@ class Status(models.IntegerChoices):
     ACTIVE = 1, 'Active'
 
 
+class ActivityTypes(models.IntegerChoices):
+    QUESTION = 0, 'Question'
+    DESCRIBE_IMAGE = 1, 'Describe Image'
+
+
 class Difficulty(models.IntegerChoices):
     EASY = 0, 'Easy'
     MODERATE = 1, 'Moderate'
     COMPLEX = 2, 'Complex'
 
 
-class ActivityTypes(models.IntegerChoices):
-    QUESTION = 0, 'Question'
-    DESCRIBE_IMAGE = 1, 'Describe Image'
-
-
 class QuestionTypes(models.IntegerChoices):
     NORMAL = 0, 'Normal'
-    DESCRIBE_IMAGE = 1, 'Describe image'
-    TEACHER = 2, 'Teacher'
+    DESCRIBE_IMAGE = 1, 'Describe the image'
+    TEACHER = 2, 'You are a teacher'
 
 
 class WordTypes(models.IntegerChoices):
@@ -76,6 +76,9 @@ class Question(BaseModel):
     question = models.TextField(blank=False)
     tags = models.ManyToManyField(Tag)
     rate = models.PositiveSmallIntegerField(default=5)
+    type = models.PositiveSmallIntegerField(
+        choices=QuestionTypes.choices
+    )
     difficulty = models.PositiveSmallIntegerField(
         choices=Difficulty.choices,
         default=Difficulty.EASY
@@ -164,11 +167,6 @@ class Collocation(BaseModel):
 
 class Example(BaseModel):
     id = models.IntegerField(primary_key=True, null=False, blank=False)
-    type = models.PositiveSmallIntegerField(
-        null=False,
-        blank=False,
-        choices=ActivityTypes.choices
-    )
     example = models.JSONField(null=False, blank=False)
     voice_url = models.TextField(null=False, blank=False)
     word_text = models.CharField(max_length=30, null=True, blank=True)
@@ -284,14 +282,14 @@ class UserSentence(BaseModel):
         db_table = 'user_sentences'
 
 
-class UserActivityHistory(BaseModel):
+class UserHistory(BaseModel):
     total_uses = models.PositiveSmallIntegerField(default=0)
     last_time_used = models.DateTimeField()
-    activity_id = models.IntegerField(null=False, blank=False)
+    question_id = models.IntegerField(null=False, blank=False)
     type = models.PositiveSmallIntegerField(
         null=False,
         blank=False,
-        choices=ActivityTypes.choices
+        choices=QuestionTypes.choices
     )
     user = models.ForeignKey(
         User,

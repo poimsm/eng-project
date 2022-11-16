@@ -3,7 +3,7 @@ import os
 import traceback
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from api.models import Example, ActivityTypes
+from api.models import Example, Question
 from api.helpers import console
 
 
@@ -31,24 +31,25 @@ class Command(BaseCommand):
 
             console.info('Audio base URL: ' + AUDIO_URL)
 
-            console.info('Creating ' + str(len(examples)) + ' examples...')
+            counter = 0
             for ex in examples:
-                example_obj = Example(
+                if ex['is_new']: counter += 1
+
+            console.info('Creating ' + str(counter) + ' examples...')
+
+            for ex in examples:
+                if not ex['is_new']: continue
+                Example.objects.update_or_create(
                     id=ex['id'],
-                    voice_url=AUDIO_URL + ex['voice_file'],
-                    example=read_JSON_file(
-                        'data/examples/' + ex['example_file'])
+                    defaults={
+                        'id': ex['id'],
+                        'voice_url': AUDIO_URL + ex['voice_file'],
+                        'example': read_JSON_file(
+                            'data/examples/' + ex['example_file']),
+                        'question': Question.objects.get(id=ex['question_id']),
+                        'word_text': ex['word_text']
+                    }
                 )
-
-                if ex['type'] == 'question_activity':
-                    example_obj.type = ActivityTypes.QUESTION
-                    example_obj.activity_id = ex['activity_id']
-                    example_obj.word_text = ex['word_text']
-                else:
-                    example_obj.type = ActivityTypes.DESCRIBE_IMAGE
-                    example_obj.activity_id = ex['activity_id']
-
-                example_obj.save()
 
             console.info('Successfully completed!')
         except:
