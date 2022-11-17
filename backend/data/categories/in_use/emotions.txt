@@ -9,8 +9,8 @@ agony
 alarm
 amazement
 amusement
-anger
-angry
+anger 
+angry [easy] whatever meaning
 annoyance
 anticipation
 anxiety
@@ -55,15 +55,15 @@ earnest
 ecstasy
 ecstatic
 embarrassment
-emotion
-emotional
+emotion [easy] whatever meaning
+emotional [easy] whatever meaning
 enamored
 enjoyment
 enraged
 envious
 envy
-euphoria
-excited
+euphoria [easy] whatever meaning
+excited [easy] whatever meaning
 exhausted
 exuberant
 fascinated
@@ -89,7 +89,7 @@ interested
 isolation
 jealous
 keen
-lazy
+lazy [easy] whatever meaning
 liking
 lonely
 loneliness
@@ -108,7 +108,7 @@ rapture
 relief
 remorse
 resentment
-sad
+sad [easy] whatever meaning
 sadness
 sarcastic
 satisfaction
@@ -127,7 +127,7 @@ tenderness
 tense
 threatening
 tranquil
-trust
+trust [easy] whatever meaning
 uncomfortable
 vain
 wary

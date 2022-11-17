@@ -1,18 +1,17 @@
-age
-bake
-barbecue
+bake [easy] whatever meaning
+barbecue [easy] whatever meaning
 batter
 beat
 bind
 blanche
 blend
-boil
+boil [easy] whatever meaning
 bone
-bread
+bread [easy] whatever meaning
 brew
 brown
 brush
-burn
+burn [easy] whatever meaning
 butterfly
 can
 char
@@ -35,7 +34,7 @@ drain
 dry
 ferment
 filter
-flavor
+flavor [easy] whatever meaning
 flip
 fold
 freeze
@@ -52,21 +51,21 @@ hash
 heat
 hull
 ice
-juice
+juice [easy] whatever meaning
 layer
 mash
 measure
 melt
-microwave
+microwave [easy] whatever meaning
 mix
 mold
-oil
-peel
+oil [easy] whatever meaning
+peel [easy] whatever meaning
 pickle
 pit
 pop
 pour
-prepare
+prepare [easy] whatever meaning
 preserve
 press
 process
@@ -79,10 +78,10 @@ rise
 roast
 roll
 rub
-salt
+salt [easy] whatever meaning
 scoop
 score
-scramble
+scramble [easy] whatever meaning
 season
 separate
 serve

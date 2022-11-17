@@ -1,5 +1,5 @@
 community
-fun
+fun [easy] whatever meaning
 funny
 likeness
 barbeque
@@ -17,17 +17,16 @@ chill
 childhood
 guide
 advice
-bored
+bored [easy] whatever meaning
 talk
 meet
 beer
-play
 games
-play
+play [easy] whatever meaning
 sport
 travel
 biking
-cycling
+cycling [easy] whatever meaning
 sleepover
 conversation
 movie
@@ -35,9 +34,9 @@ bestfriend
 best_friend
 boyfriend
 girlfriend
-concert
+concert [easy] whatever meaning
 show
-recital
+recital [easy] whatever meaning
 event
 festival
 beerfest

@@ -1,11 +1,11 @@
 adventure
-animals
+animals [easy] whatever meaning
 backpack
 boots
 cabin
 camp
 camper
-campfire
+campfire [easy] whatever meaning
 campground
 canoe
 canteen
@@ -16,22 +16,22 @@ compass
 dugout
 equipment
 evergreen
-fishing
+fishing [easy] whatever meaning
 flashlight
-forest
+forest [easy] whatever meaning
 gear
-hammock
+hammock [easy] whatever meaning
 hat
 hike
 hunting
 hut
-insect
+insect [easy] whatever meaning
 kayak
-lake
+lake [easy] whatever meaning
 lantern
 map
 moon
-mountain
+mountain [easy] whatever meaning
 natural
 nature
 oar

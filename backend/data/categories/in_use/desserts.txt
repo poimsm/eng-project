@@ -1,19 +1,19 @@
 ambrosia
-brownie
+brownie [easy] whatever meaning
 cake
 cobbler
 cookie
 custard
-dessert
+dessert [easy] whatever meaning
 doughnut
 dumplings
 fudge
 gelatin
 gingerbread
-honey
+honey [easy] whatever meaning
 icing
-jam
-jelly
+jam [easy] whatever meaning
+jelly [easy] whatever meaning
 marshmallow
 molasses
 pancakes

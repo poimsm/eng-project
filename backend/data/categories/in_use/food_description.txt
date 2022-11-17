@@ -1,8 +1,8 @@
 taste
-tasty
+tasty [easy] whatever meaning
 delicious
-smell
-flavor
+smell [easy] whatever meaning
+flavor [easy] whatever meaning
 Acidic
 Aromatic
 Astringent
@@ -14,7 +14,7 @@ Bland
 salty
 Brackish
 Buttery
-Creamy
+Creamy [easy] whatever meaning
 crumbles
 Crumbly
 Delicate
@@ -64,8 +64,8 @@ gummy
 melty
 moist
 spongy
-soft
-boiled
+soft [easy] whatever meaning
+boiled [easy] whatever meaning
 broiled
 dehydrated
 fermented
@@ -73,7 +73,7 @@ glazed
 fried
 grilled
 simmered
-smoked
+smoked [easy] whatever meaning
 smothered
 stewed
 toasted

@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+MAX_SENTENCE_LENGTH = 20
+MAX_MEANING_LENGTH = 200
+
 
 class Status(models.IntegerChoices):
     DELETED = 0, 'Deleted'
@@ -17,6 +20,7 @@ class Difficulty(models.IntegerChoices):
     EASY = 0, 'Easy'
     MODERATE = 1, 'Moderate'
     COMPLEX = 2, 'Complex'
+    UNKNOWN = 3, 'Unknown'
 
 
 class QuestionTypes(models.IntegerChoices):
@@ -64,7 +68,13 @@ class Tag(BaseModel):
 
 
 class Word(BaseModel):
-    word = models.CharField(max_length=30, blank=False, null=False)
+    word = models.CharField(
+        max_length=MAX_SENTENCE_LENGTH, blank=False, null=False)
+    meaning = models.CharField(
+        max_length=MAX_MEANING_LENGTH, blank=True, null=True, default='')
+    difficulty = models.PositiveSmallIntegerField(
+        choices=Difficulty.choices
+    )
     objects = models.Manager()
 
     class Meta:
@@ -169,7 +179,8 @@ class Example(BaseModel):
     id = models.IntegerField(primary_key=True, null=False, blank=False)
     example = models.JSONField(null=False, blank=False)
     voice_url = models.TextField(null=False, blank=False)
-    word_text = models.CharField(max_length=30, null=True, blank=True)
+    word_text = models.CharField(
+        max_length=MAX_SENTENCE_LENGTH, null=True, blank=True)
     objects = models.Manager()
     question = models.ForeignKey(
         Question,
@@ -208,8 +219,10 @@ class Style(BaseModel):
 
 
 class ResourceSentence(BaseModel):
-    sentence = models.CharField(max_length=20, blank=False, null=False)
-    meaning = models.CharField(max_length=100, blank=True, default='')
+    sentence = models.CharField(
+        max_length=MAX_SENTENCE_LENGTH, blank=False, null=False)
+    meaning = models.CharField(
+        max_length=MAX_MEANING_LENGTH, blank=True, default='')
     extras = models.TextField(blank=True, default='')
     type = models.PositiveSmallIntegerField(
         null=False,
@@ -240,8 +253,10 @@ class ResourceSentence(BaseModel):
 
 
 class UserSentence(BaseModel):
-    sentence = models.CharField(max_length=20, blank=False, null=False)
-    meaning = models.CharField(max_length=100, blank=True, default='')
+    sentence = models.CharField(
+        max_length=MAX_SENTENCE_LENGTH, blank=False, null=False)
+    meaning = models.CharField(
+        max_length=MAX_MEANING_LENGTH, blank=True, default='')
     extras = models.TextField(blank=True, default='')
     total_uses = models.PositiveSmallIntegerField(default=0)
     last_time_used = models.DateTimeField(null=True)

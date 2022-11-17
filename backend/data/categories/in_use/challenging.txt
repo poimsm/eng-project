@@ -1,10 +1,9 @@
 resistance
-challenge
-effort
-work
+challenge [easy] whatever meaning
+work [easy]
 hustle
 struggle
-fight
+fight [easy] whatever meaning
 attempt
 encouragement
 courage
@@ -77,12 +76,11 @@ pursue
 Constancy
 firmness
 tenacity
-tenacity
 persistence
 patience
 insistence
 encouragement
-effort
+effort [easy] whatever meaning
 hardness
 commitment
 Persevere

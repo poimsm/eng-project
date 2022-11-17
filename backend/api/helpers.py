@@ -9,11 +9,12 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
 class console(object):
     @staticmethod
     def info(msg):
         print(bcolors.BOLD + '[INFO] ' + msg + bcolors.ENDC)
-    
+
     @staticmethod
     def debug(msg):
         print(bcolors.OKBLUE + '[DEBUG] ' + msg + bcolors.ENDC)
@@ -25,3 +26,11 @@ class console(object):
     @staticmethod
     def error(msg):
         print(bcolors.FAIL + '[ERROR] ' + msg + bcolors.ENDC)
+
+
+def unique(sequence):
+    result = []
+    for item in sequence:
+        if item not in result:
+            result.append(item)
+    return result

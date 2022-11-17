@@ -1,11 +1,11 @@
 almond
-apple
+apple [easy] whatever meaning
 apricot
 asparagus
 avocado
 bacon
 bake
-banana
+banana [easy] whatever meaning
 barbecue
 barley
 basil
@@ -17,11 +17,11 @@ biscuit
 bitter
 blackberry
 bland
-blueberry
+blueberry [easy] whatever meaning
 boil
 bowl
 bran
-bread
+bread [easy] whatever meaning
 breakfast
 broccoli
 buckwheat
@@ -40,11 +40,11 @@ celery
 cereal
 chard
 cheddar
-cheese
+cheese [easy] whatever meaning
 chef
 cherry
 chew
-chicken
+chicken [easy] whatever meaning
 chili
 chocolate
 chow
@@ -56,7 +56,7 @@ coconut
 coffee
 cook
 cookbook
-cookie
+cookie [easy] whatever meaning
 corn
 crab
 crackers
@@ -99,7 +99,7 @@ fork
 freezer
 fruit
 fry
-garlic
+garlic [easy] whatever meaning
 gastronomy
 gelatin
 ginger
@@ -112,7 +112,7 @@ greens
 grub
 gyro
 herbs
-ham
+ham [easy] whatever meaning
 hash
 herbs
 hunger
@@ -124,8 +124,8 @@ jug
 juice
 kale
 kettle
-kitchen
-knife
+kitchen [easy] whatever meaning
+knife [easy] whatever meaning
 lamb
 lard
 legumes
@@ -140,7 +140,7 @@ maize
 mango
 marmalade
 marshmallow
-mayonnaise
+mayonnaise [easy] whatever meaning
 meat
 melon
 menu
@@ -154,7 +154,7 @@ mug
 munch
 mushroom
 mussels
-mustard
+mustard [easy] whatever meaning
 mutton
 nectar
 nut
@@ -175,7 +175,7 @@ pasta
 pastry
 pate
 patty
-peanut
+peanut [easy] whatever meaning
 pea
 pear
 pecan
@@ -191,7 +191,7 @@ plum
 pomegranate
 pop
 popcorn
-pork
+pork [easy] whatever meaning
 pot
 potato
 preserves
@@ -264,14 +264,14 @@ thyme
 toast
 tomato
 tuna
-turkey
+turkey [easy] whatever meaning
 turmeric
 vanilla
 veal
 vitamin
 wafer
 waffle
-water
+water [easy] whatever meaning
 watermelon
 whey
 yam

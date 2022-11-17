@@ -1,20 +1,20 @@
-accelerate
+accelerate [easy] whatever meaning
 accelerator
-accident
-airbag
+accident [easy] whatever meaning
+airbag [easy] whatever meaning
 alley
 asphalt
 auto
-automobile
+automobile [easy] whatever meaning
 avenue
 barrier
-bicycle
-bike
+bicycle [easy] whatever meaning
+bike [easy] whatever meaning
 boulevard
 brakes
 bridge
-bus
-car
+bus [easy] whatever meaning
+car [easy] whatever meaning
 causeway
 caution
 chauffeur
@@ -47,7 +47,7 @@ freeway
 fuel
 garage
 gas
-gasoline
+gasoline [easy] whatever meaning
 gear
 go
 gps
@@ -61,7 +61,7 @@ indicator
 insurance
 interchange
 intersection
-kilometer
+kilometer [easy] whatever meaning
 lane
 license
 lights
@@ -70,7 +70,7 @@ map
 merge
 mile
 motor
-motorcycle
+motorcycle [easy] whatever meaning
 motorway
 mph
 oil
@@ -78,7 +78,7 @@ overpass
 park
 parkway
 pass
-pavement
+pavement [easy] whatever meaning
 pedal
 pedestrian
 police
@@ -108,7 +108,7 @@ terrace
 ticket
 tire
 toll
-traffic
+traffic [easy] whatever meaning
 transmission
 transportation
 truck

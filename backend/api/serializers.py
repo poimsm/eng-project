@@ -25,7 +25,13 @@ class QuestionModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['id', 'question', 'image_url', 'voice_url']
+        fields = ['id', 'question', 'image_url', 'voice_url', 'type']
+
+class QuestionFullSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Question
+        fields = '__all__'
 
 
 class UserSentenceModelSerializer(serializers.ModelSerializer):

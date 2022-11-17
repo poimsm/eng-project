@@ -392,9 +392,10 @@ def daily_activities(request):
     questions = get_questions_per_sentence(sentences)
 
     activities = create_activity_package(questions)
+    random.shuffle(activities)
 
-    # activities = add_examples(activities)
-    # activities = add_styles(activities)
+    activities = add_examples(activities)
+    activities = add_styles(activities)
 
     return Response(activities, status=status.HTTP_200_OK)
 
@@ -419,8 +420,7 @@ def get_questions_per_sentence(sentences):
 
 
 def get_sentences(id):
-    all_sentences = list(UserSentence.objects.filter(
-        user__id=id, status=Status.ACTIVE))
+    all_sentences = list(UserSentence.objects.filter(user__id=id, status=Status.ACTIVE))
     random.shuffle(all_sentences)
     range_total = 4 if len(all_sentences) > 4 else len(all_sentences)
     sentences_obj = [all_sentences[i] for i in range(range_total)]
@@ -447,28 +447,48 @@ def get_questions(sentence):
 
 
 def create_activity_package(found_questions):
+    activities = []
     found_questions = copy.deepcopy(found_questions)
 
-    result = []
-
-    if len(found_questions) == 0:
-        easy_questions, ids = get_easy_questions(2)
-        random_questions = get_random_questions(ids, 4)
-        gap_questions = random_questions + found_questions
-        random.shuffle(gap_questions)
-        result = easy_questions + gap_questions
-    elif len(found_questions) < 4:
+    if len(found_questions) < 4:
         ids = [q['question']['id'] for q in found_questions]
+        questions = Question.objects.exclude(id__in=ids)
+        questions_serializer = QuestionModelSerializer(questions, many=True)
+
         total = 6 - len(found_questions)
-        result = found_questions + get_random_questions(ids, total)
-        random.shuffle(result)
-    else:
-        found_questions = random.sample(found_questions, 4)
-        ids = [q['question']['id'] for q in found_questions]
-        result = found_questions + get_random_questions(ids, 2)
-        random.shuffle(result)
 
-    return result
+        sample_questions = random.sample(questions_serializer.data, round(total/2))
+
+        for q in sample_questions:
+            activities.append({
+                'question': q,
+                'type': 'question',
+                'word': None
+            })
+    else:
+        found_questions_activities = []
+        for q in found_questions:
+            q['type'] = 'question'
+            found_questions_activities.append(q)
+
+        sample_found_questions = random.sample(found_questions_activities, 2)
+        ids = [q['question']['id'] for q in sample_found_questions]
+
+        questions = Question.objects.exclude(id__in=ids)
+        questions_serializer = QuestionModelSerializer(questions, many=True)
+
+        sample_questions = random.sample(questions_serializer.data, 2)
+
+        for q in sample_questions:
+            activities.append({
+                'question': q,
+                'type': 'question',
+                'word': None
+            })
+
+    sample_found_questions = random.sample(found_questions, 4)
+    activities += sample_found_questions
+    return activities
 
 
 def extract_phrasal_verbs(sentence):
@@ -630,7 +650,7 @@ def combine_unique(list_to_combine):
     return unique
 
 
-def add_examples3(activities):
+def add_examples(activities):
     word_with_examples = ['smoke', 'stew', 'steep']
     senteces = UserSentence.objects.filter(sentence__in=word_with_examples)
 
@@ -639,10 +659,10 @@ def add_examples3(activities):
     if len(senteces) > 0:
         sentences_text = [s.sentence for s in senteces]
         examples = Example.objects.filter(
-            word_text__in=sentences_text)
+            word_text__in=sentences_text, type=ActivityTypes.QUESTION)
 
         if len(examples) >= 2:
-            q1 = Question.objects.get(id=examples[0].question)
+            q1 = Question.objects.get(id=examples[0].activity_id)
             w1 = Word(
                 id=-1,
                 word=senteces[0].sentence
@@ -681,15 +701,15 @@ def add_examples3(activities):
     return act_with_examples + activities
 
 
-def add_examples(activities):
+def add_examples2(activities):
     new_activities = []
     for act in activities:
         new_act = copy.deepcopy(act)
-        if act['word']:
+        if act['type'] == 'question' and act['word']:
             try:
                 example_obj = Example.objects.get(
-                    question=act['question']['id'],
-                    word_text=act['word']['sentence']
+                    question_id=act['question']['id'],
+                    word_text=act['word']['word']
                 )
 
                 serializer = ExampleModelSerializer(example_obj)
@@ -730,54 +750,13 @@ def add_styles(activities):
     return new_activities
 
 
-def get_easy_questions(total):
-    questions = Question.objects.filter(
-        status=Status.ACTIVE,
-        difficulty=Difficulty.EASY
-    )
-    questions = random.sample(list(questions), total)
-
-    result = []
-    ids = []
-
-    for q in questions:
-        ids.append(q.id)
-        ids = q.words.all().values_list('id', flat=True)
-
-        words = Word.objects.filter(
-            status=Status.ACTIVE,
-            difficulty=Difficulty.EASY,
-            id__in=ids
-        )
-
-        sentence = None
-
-        if len(words) > 0:
-            word = random.choice(words)
-            sentence = {
-                'id': -1,
-                'origin': WordOrigin.RANDOM,
-                'type': WordTypes.NORMAL,
-                'sentence': word.word,
-                'meaning': word.meaning
-            }
-
-        result.append({
-            'question': QuestionModelSerializer(q).data,
-            'word': sentence
-        })
-
-    return result, ids
-
-
 def get_random_questions(excluded_ids, total):
     questions = Question.objects.filter(
-        status=Status.ACTIVE).exclude(id__in=excluded_ids)
-    questions = random.sample(list(questions), total)
+        status=Status.ACTIVE).exclude(id__in=excluded_ids)        
+    questions = random.sample(list(questions), total)    
+    questions_data = QuestionModelSerializer(questions, many=True).data
 
-    result = []
-
-    for q in questions:
+    for i, q in enumerate(questions):
         ids = q.words.all().values_list('id', flat=True)
 
         words = Word.objects.filter(
@@ -786,21 +765,8 @@ def get_random_questions(excluded_ids, total):
             id__in=ids
         )
 
-        sentence = None
-
         if len(words) > 0:
             word = random.choice(words)
-            sentence = {
-                'id': -1,
-                'origin': WordOrigin.RANDOM,
-                'type': WordTypes.NORMAL,
-                'sentence': word.word,
-                'meaning': word.meaning
-            }
+            questions_data[i]['word'] = WordModelSerializer(word).data
 
-        result.append({
-            'question': QuestionModelSerializer(q).data,
-            'word': sentence
-        })
-
-    return result
+    return questions_data
