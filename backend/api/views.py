@@ -55,7 +55,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
 
 
-log = logging.getLogger('api_v1')
+logger = logging.getLogger('api_v1')
 test_user_id = 1
 
 
@@ -393,8 +393,8 @@ def daily_activities(request):
 
     activities = create_activity_package(questions)
 
-    # activities = add_examples(activities)
-    # activities = add_styles(activities)
+    activities = add_examples(activities)
+    activities = add_styles(activities)
 
     return Response(activities, status=status.HTTP_200_OK)
 
@@ -452,7 +452,7 @@ def create_activity_package(found_questions):
     result = []
 
     if len(found_questions) == 0:
-        easy_questions, ids = get_easy_questions(2)
+        easy_questions, ids = get_easy_questions_with_examples(2)
         random_questions = get_random_questions(ids, 4)
         gap_questions = random_questions + found_questions
         random.shuffle(gap_questions)
@@ -630,57 +630,6 @@ def combine_unique(list_to_combine):
     return unique
 
 
-def add_examples3(activities):
-    word_with_examples = ['smoke', 'stew', 'steep']
-    senteces = UserSentence.objects.filter(sentence__in=word_with_examples)
-
-    act_with_examples = []
-
-    if len(senteces) > 0:
-        sentences_text = [s.sentence for s in senteces]
-        examples = Example.objects.filter(
-            word_text__in=sentences_text)
-
-        if len(examples) >= 2:
-            q1 = Question.objects.get(id=examples[0].question)
-            w1 = Word(
-                id=-1,
-                word=senteces[0].sentence
-            )
-            act_with_examples.append({
-                'question': QuestionModelSerializer(q1).data,
-                'word': WordModelSerializer(w1).data,
-                'example': ExampleModelSerializer(examples[0]).data,
-                'type': 'question',
-            })
-
-            q2 = Question.objects.get(id=examples[1].activity_id)
-            w2 = Word(
-                id=-1,
-                word=senteces[1].sentence
-            )
-            act_with_examples.append({
-                'question': QuestionModelSerializer(q2).data,
-                'word': WordModelSerializer(w2).data,
-                'example': ExampleModelSerializer(examples[1]).data,
-                'type': 'question',
-            })
-        elif len(examples) >= 1:
-            q1 = Question.objects.get(id=examples[0].activity_id)
-            w1 = Word(
-                id=-1,
-                word=senteces[0].sentence
-            )
-            act_with_examples.append({
-                'question': QuestionModelSerializer(q1).data,
-                'word': WordModelSerializer(w1).data,
-                'example': ExampleModelSerializer(examples[0]).data,
-                'type': 'question',
-            })
-
-    return act_with_examples + activities
-
-
 def add_examples(activities):
     new_activities = []
     for act in activities:
@@ -709,13 +658,6 @@ def add_styles(activities):
     for act in activities:
         new_act = act
 
-        # if act['type'] == 'question':
-        #     act_type = ActivityTypes.QUESTION
-        #     act_id = act['question']['id']
-        # else:
-        #     act_type = ActivityTypes.DESCRIBE_IMAGE
-        #     act_id = act['image']['id']
-
         try:
             style_obj = Style.objects.get(
                 question=act['question']['id']
@@ -728,6 +670,64 @@ def add_styles(activities):
         except Style.DoesNotExist:
             new_activities.append(act)
     return new_activities
+
+
+def get_easy_questions_with_examples(total):
+    questions = list(Question.objects.filter(
+        status=Status.ACTIVE,
+        difficulty=Difficulty.EASY
+    ))
+
+    random.shuffle(questions)
+
+    result = []
+    ids = []
+
+    counter = 0
+
+    for q in questions:
+        word_ids = q.words.all().values_list('id', flat=True)
+
+        words = list(Word.objects.filter(
+            status=Status.ACTIVE,
+            difficulty=Difficulty.EASY,
+            id__in=word_ids
+        ))
+
+        if len(words) == 0:
+            continue
+
+        random.shuffle(words)
+        sentence = None
+
+        for w in words:
+            example = Example.objects.filter(
+                status=Status.ACTIVE,
+                question=q.id,
+                word_text=w.word
+            ).first()
+
+            if example:
+                counter += 1
+                sentence = {
+                    'id': -1,
+                    'origin': WordOrigin.RANDOM,
+                    'type': WordTypes.NORMAL,
+                    'sentence': w.word,
+                    'meaning': w.meaning
+                }
+                result.append({
+                    'question': QuestionModelSerializer(q).data,
+                    'word': sentence
+                })
+                ids.append(q.id)
+                if counter == total:
+                    break
+
+        if counter == total:
+            break
+
+    return result, ids
 
 
 def get_easy_questions(total):

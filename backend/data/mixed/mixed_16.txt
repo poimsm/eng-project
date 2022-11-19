@@ -1,5 +1,5 @@
 hang_out
-go_out
+go_out [easy] cool meaning
 cheer_up
 set_up
 look_after

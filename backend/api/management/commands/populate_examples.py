@@ -4,13 +4,15 @@ import traceback
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from api.models import Example, Question
+# from api.models import Example, ExampleModelSerializer
+
 from api.helpers import console
 
 
 def read_JSON_file(path):
-    example_file = open(os.path.join(settings.BASE_DIR, path))
-    data = example_file.read()
-    example_file.close()
+    file = open(os.path.join(settings.BASE_DIR, path))
+    data = file.read()
+    file.close()
     return json.loads(data)
 
 
@@ -25,31 +27,33 @@ class Command(BaseCommand):
 
         try:
             console.info('Reading index...')
-            examples = read_JSON_file('data/examples/index.json')
+            index = read_JSON_file('data/examples/index.json')
 
-            AUDIO_URL = settings.SITE_DOMAIN + '/media/audios/'
+            AUDIO_URL = settings.SITE_DOMAIN + '/media/example_audios/'
 
             console.info('Audio base URL: ' + AUDIO_URL)
 
             counter = 0
-            for ex in examples:
-                if ex['is_new']: counter += 1
+            for item in index:
+                exampleJSON = read_JSON_file(item['example_file_path'])
+                for exam in exampleJSON:
+                    if exam['is_new']:
+                        counter += 1
 
             console.info('Creating ' + str(counter) + ' examples...')
 
-            for ex in examples:
-                if not ex['is_new']: continue
-                Example.objects.update_or_create(
-                    id=ex['id'],
-                    defaults={
-                        'id': ex['id'],
-                        'voice_url': AUDIO_URL + ex['voice_file'],
-                        'example': read_JSON_file(
-                            'data/examples/' + ex['example_file']),
-                        'question': Question.objects.get(id=ex['question_id']),
-                        'word_text': ex['word_text']
-                    }
-                )
+            for item in index:
+                exampleJSON = read_JSON_file(item['example_file_path'])
+                for exam in exampleJSON:
+                    if not exam['is_new']:
+                        continue
+
+                    Example(
+                        question=Question.objects.get(id=item['question_id']),
+                        voice_url=AUDIO_URL + exam['voice_file'],
+                        example=read_JSON_file(exam['subtitles']),
+                        word_text=exam['word_text']
+                    ).save()
 
             console.info('Successfully completed!')
         except:

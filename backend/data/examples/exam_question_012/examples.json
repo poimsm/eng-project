@@ -1,0 +1,14 @@
+[
+    {
+        "is_new": true,
+        "word_text": "voladoooooorx12",
+        "subtitles": "data/examples/exam_question_012/subtitles/subtitles_001.json",
+        "voice_file": "audio_1.mp3"
+    },
+    {
+        "is_new": true,
+        "word_text": "go_upxdx12",
+        "subtitles": "data/examples/exam_question_012/subtitles/subtitles_002.json",
+        "voice_file": "audio_1.mp3"
+    }
+]

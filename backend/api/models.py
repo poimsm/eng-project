@@ -176,7 +176,7 @@ class Collocation(BaseModel):
 
 
 class Example(BaseModel):
-    id = models.IntegerField(primary_key=True, null=False, blank=False)
+    # id = models.IntegerField(primary_key=True, null=False, blank=False)
     example = models.JSONField(null=False, blank=False)
     voice_url = models.TextField(null=False, blank=False)
     word_text = models.CharField(

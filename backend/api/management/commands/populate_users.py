@@ -23,8 +23,9 @@ class Command(BaseCommand):
             email='test@fake.com',
             password='123456'
         )
-        
+
         user.save()
+        user = User.objects.get(id=1)
 
         console.info('Adding user-entered sentences...')
 
@@ -32,7 +33,7 @@ class Command(BaseCommand):
             type=0,
             origin=0,
             sentence='hang out',
-            meaning='hang out with friends',
+            meaning='USER hang out with friends',
             last_time_used=date.today(),
             user=user
         ).save()
@@ -41,7 +42,7 @@ class Command(BaseCommand):
             type=0,
             origin=0,
             sentence='hurry',
-            meaning='meaningX2',
+            meaning='USER meaningX2',
             last_time_used=date.today(),
             user=user
         ).save()
@@ -50,7 +51,7 @@ class Command(BaseCommand):
             type=0,
             origin=0,
             sentence='spooky',
-            meaning='meaningX3',
+            meaning='USER meaningX3',
             last_time_used=date.today(),
             user=user
         ).save()
@@ -59,7 +60,7 @@ class Command(BaseCommand):
             type=0,
             origin=0,
             sentence='brain',
-            meaning='meaningX4',
+            meaning='USER meaningX4',
             last_time_used=date.today(),
             user=user
         ).save()
@@ -68,7 +69,7 @@ class Command(BaseCommand):
             type=0,
             origin=0,
             sentence='smoke',
-            meaning='meaningX5',
+            meaning='USER meaningX5',
             last_time_used=date.today(),
             user=user
         ).save()
@@ -77,7 +78,7 @@ class Command(BaseCommand):
             type=0,
             origin=0,
             sentence='calm_down',
-            meaning='meaningX5',
+            meaning='USER meaningX5',
             last_time_used=date.today(),
             user=user
         ).save()
