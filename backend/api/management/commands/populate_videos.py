@@ -2,14 +2,12 @@ from django.core.management.base import BaseCommand
 from api.models import ShortVideo, ResourceSentence, SourceTypes, Collocation
 
 from django.conf import settings
-import os
-import json
 import traceback
-from api.helpers import console
+from api.helpers import console, read_JSON_file
 
 
 class Command(BaseCommand):
-    help = 'Migrate short videos'
+    help = 'Create short videos'
 
     def handle(self, *args, **kwargs):
 
@@ -20,26 +18,25 @@ class Command(BaseCommand):
         try:
 
             console.info('Reading videos JSON file...')
-            jsonFile = open(os.path.join(
-                settings.BASE_DIR, 'data/videos/videos.json'))
 
-            videos = json.load(jsonFile)
-            jsonFile.close()
+            videos = read_JSON_file('data/videos/videos.json')
 
             MEDIA_URL = settings.SITE_DOMAIN + '/media/videos/'
-            IMAGE_URL = settings.SITE_DOMAIN + '/media/card_images/'
+            IMAGE_URL = settings.SITE_DOMAIN + '/media/video_images/'
 
             console.info('Audio base URL: ' + MEDIA_URL)
 
-            counter = 0;
+            counter = 0
             for ex in videos:
-                if ex['is_new']: counter += 1
+                if ex['is_new']:
+                    counter += 1
 
             console.info('Creating ' + str(counter) + ' videos...')
 
             for video in videos:
-                if not ex['is_new']: continue
-                
+                if not ex['is_new']:
+                    continue
+
                 video_obj = ShortVideo(
                     id=video['id'],
                     cover=IMAGE_URL + video['cover'],

@@ -5,7 +5,7 @@ services:
     container_name: eng_django
     volumes:
       - static:/static
-      - media:/media
+      - media:/app/media
       - ./backend:/app
     env_file:
       - .env

@@ -1,3 +1,9 @@
+import json
+import os
+
+from django.conf import settings
+
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -34,3 +40,10 @@ def unique(sequence):
         if item not in result:
             result.append(item)
     return result
+
+
+def read_JSON_file(path):
+    file = open(os.path.join(settings.BASE_DIR, path))
+    data = file.read()
+    file.close()
+    return json.loads(data)

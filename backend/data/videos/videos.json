@@ -2,11 +2,23 @@
     {
         "id": 1,
         "is_new": true,
-        "cover": "picture_01.png",
-        "video_file": "video.mp4",
+        "cover": "image_0001.png",
+        "video_file": "video_0001.mp4",
         "sentences": [
             {
-                "sentence": "sentence_01",
+                "sentence": "dance",
+                "meaning": "video_meaning",
+                "extras": "",
+                "type": 0
+            },
+            {
+                "sentence": "scholarship",
+                "meaning": "video_meaning",
+                "extras": "",
+                "type": 0
+            },
+            {
+                "sentence": "music",
                 "meaning": "video_meaning",
                 "extras": "",
                 "type": 0
@@ -17,11 +29,11 @@
     {
         "id": 2,
         "is_new": true,
-        "cover": "picture_01.png",
-        "video_file": "video.mp4",
+        "cover": "image_0001.png",
+        "video_file": "video_0001.mp4",
         "sentences": [
             {
-                "sentence": "sentence_01",
+                "sentence": "friends",
                 "meaning": "video_meaning",
                 "extras": "",
                 "type": 0
@@ -32,8 +44,8 @@
     {
         "id": 3,
         "is_new": true,
-        "cover": "picture_01.png",
-        "video_file": "video.mp4",
+        "cover": "image_0001.png",
+        "video_file": "video_0001.mp4",
         "sentences": [
             {
                 "sentence": "sentence_01",
@@ -47,8 +59,8 @@
     {
         "id": 4,
         "is_new": true,
-        "cover": "picture_01.png",
-        "video_file": "video.mp4",
+        "cover": "image_0001.png",
+        "video_file": "video_0001.mp4",
         "sentences": [
             {
                 "sentence": "sentence_01",
@@ -62,8 +74,8 @@
     {
         "id": 5,
         "is_new": true,
-        "cover": "picture_01.png",
-        "video_file": "video.mp4",
+        "cover": "image_0001.png",
+        "video_file": "video_0001.mp4",
         "sentences": [
             {
                 "sentence": "sentence_01",

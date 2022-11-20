@@ -2,14 +2,12 @@ from django.core.management.base import BaseCommand
 from api.models import InfoCard, ResourceSentence, SourceTypes, Collocation
 
 from django.conf import settings
-import os
-import json
 import traceback
-from api.helpers import console
+from api.helpers import console, read_JSON_file
 
 
 class Command(BaseCommand):
-    help = 'Migrate info cards'
+    help = 'Create info cards'
 
     def handle(self, *args, **kwargs):
 
@@ -18,13 +16,8 @@ class Command(BaseCommand):
         console.info('--------------------------------')
 
         try:
-
             console.info('Reading cards JSON file...')
-            jsonFile = open(os.path.join(
-                settings.BASE_DIR, 'data/cards/cards.json'))
-
-            cards = json.load(jsonFile)
-            jsonFile.close()
+            cards = read_JSON_file('data/cards/cards.json')
 
             AUDIO_URL = settings.SITE_DOMAIN + '/media/card_audios/'
             IMAGE_URL = settings.SITE_DOMAIN + '/media/card_images/'
@@ -33,14 +26,15 @@ class Command(BaseCommand):
 
             counter = 0
             for ex in cards:
-                if ex['is_new']: counter += 1
+                if ex['is_new']:
+                    counter += 1
 
             console.info('Creating ' + str(counter) + ' cards...')
-            
 
             for card in cards:
-                if not ex['is_new']: continue
-                
+                if not ex['is_new']:
+                    continue
+
                 card_obj = InfoCard(
                     id=card['id'],
                     image_url=IMAGE_URL + card['image_file'],

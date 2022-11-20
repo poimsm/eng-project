@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from api.models import (
     UserSentence, ResourceSentence, ShortVideo, InfoCard,
-    WordOrigin, WordTypes, SourceTypes
+    WordOrigin, SourceTypes, FavoriteResource
 )
 from users.models import User
 from api.helpers import console
@@ -19,13 +19,13 @@ class Command(BaseCommand):
         console.info('Creating fake user...')
         user = User(
             id=1,
-            username='test',
-            email='test@fake.com',
+            username='fake user',
+            email='fake@email.com',
             password='123456'
         )
 
         user.save()
-        user = User.objects.get(id=1)
+        # user = User.objects.get(id=1)
 
         console.info('Adding user-entered sentences...')
 
@@ -77,7 +77,70 @@ class Command(BaseCommand):
         UserSentence(
             type=0,
             origin=0,
-            sentence='calm_down',
+            sentence='calm down',
+            meaning='USER meaningX5',
+            last_time_used=date.today(),
+            user=user
+        ).save()
+
+        UserSentence(
+            type=0,
+            origin=0,
+            sentence='Wachimingo I',
+            meaning='USER meaningX5',
+            last_time_used=date.today(),
+            user=user
+        ).save()
+
+        UserSentence(
+            type=0,
+            origin=0,
+            sentence='Wachimingo II',
+            meaning='USER meaningX5',
+            last_time_used=date.today(),
+            user=user
+        ).save()
+
+        UserSentence(
+            type=0,
+            origin=0,
+            sentence='Wachimingo III',
+            meaning='USER meaningX5',
+            last_time_used=date.today(),
+            user=user
+        ).save()
+
+        UserSentence(
+            type=0,
+            origin=0,
+            sentence='darkness',
+            meaning='USER meaningX5',
+            last_time_used=date.today(),
+            user=user
+        ).save()
+
+        UserSentence(
+            type=0,
+            origin=0,
+            sentence='anybody',
+            meaning='USER meaningX5',
+            last_time_used=date.today(),
+            user=user
+        ).save()
+
+        UserSentence(
+            type=0,
+            origin=0,
+            sentence='anyone',
+            meaning='USER meaningX5',
+            last_time_used=date.today(),
+            user=user
+        ).save()
+
+        UserSentence(
+            type=0,
+            origin=0,
+            sentence='cauldron',
             meaning='USER meaningX5',
             last_time_used=date.today(),
             user=user
@@ -101,6 +164,13 @@ class Command(BaseCommand):
                 short_video=video_obj,
                 user=user
             ).save()
+
+        FavoriteResource(
+            short_video=video_obj,
+            source_type=SourceTypes.SHORT_VIDEO,
+            user=user
+        ).save()
+
         # --------------------------VIDEO---------------------------------------------
 
         # --------------------------CARDS---------------------------------------------
@@ -120,6 +190,34 @@ class Command(BaseCommand):
                 info_card=card_obj,
                 user=user
             ).save()
+
+        FavoriteResource(
+            info_card=card_obj,
+            source_type=SourceTypes.INFO_CARD,
+            user=user
+        ).save()
+
+        card_obj = InfoCard.objects.get(id=2)
+        sentence_obj = ResourceSentence.objects.filter(info_card=card_obj.id)
+
+        for sen in sentence_obj:
+            UserSentence(
+                sentence=sen.sentence,
+                meaning=sen.meaning,
+                extras=sen.extras,
+                last_time_used=date.today(),
+                type=sen.type,
+                origin=WordOrigin.SAVED,
+                source_type=SourceTypes.INFO_CARD,
+                info_card=card_obj,
+                user=user
+            ).save()
+
+        FavoriteResource(
+            info_card=card_obj,
+            source_type=SourceTypes.INFO_CARD,
+            user=user
+        ).save()
         # --------------------------CARDS---------------------------------------------
 
         console.info('Successfully completed!')

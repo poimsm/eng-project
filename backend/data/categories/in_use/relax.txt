@@ -5,7 +5,7 @@ rest
 fun
 game
 play
-music
+music [easy] meanig mark01
 watch
 smoke
 drink
@@ -13,13 +13,13 @@ movie
 news
 walk
 jog
-friends
+friends [easy] meanig mark01
 friend
 pet
 bike
 biking
 cycling
-laugh
+laugh [easy] meanig mark01
 read
 book
 sing
@@ -36,7 +36,7 @@ yoga
 pilates
 cook
 recipe
-dance
+dance [easy] meanig mark01
 pub
 club
 bar

@@ -3,12 +3,12 @@
         "is_new": true,
         "word_text": "microwave",
         "subtitles": "data/examples/exam_question_001/subtitles/subtitles_001.json",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_0001.mp3"
     },
     {
         "is_new": true,
         "word_text": "oil",
         "subtitles": "data/examples/exam_question_001/subtitles/subtitles_002.json",
-        "voice_file": "audio_1.mp3"
+        "voice_file": "audio_0001.mp3"
     }
 ]

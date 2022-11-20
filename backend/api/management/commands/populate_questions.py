@@ -2,17 +2,16 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
 import os
-import json
 from os.path import exists
 import traceback
 
 # Custom
 from api.models import Difficulty, Question, Word, Style
-from api.helpers import console, unique
+from api.helpers import console, unique, read_JSON_file
 
 
 class Command(BaseCommand):
-    help = 'Migrate questions'
+    help = 'Create questions'
 
     def handle(self, *args, **kwargs):
 
@@ -30,13 +29,10 @@ class Command(BaseCommand):
             index_file.close()
 
             console.info('Reading questions JSON file...')
-            jsonFile = open(os.path.join(
-                settings.BASE_DIR, 'data/questions/questions.json'))
+            questions = read_JSON_file('data/questions/questions.json')
 
-            questions = json.load(jsonFile)
-            jsonFile.close()
-
-            AUDIO_URL = settings.SITE_DOMAIN + '/media/audios/'
+            AUDIO_URL = settings.SITE_DOMAIN + '/media/question_audios/'
+            IMAGE_URL = settings.SITE_DOMAIN + '/media/question_images/'
 
             console.info('Audio base URL: ' + AUDIO_URL)
 
@@ -133,7 +129,7 @@ class Command(BaseCommand):
                             id=q['id'],
                             question=q['question'],
                             voice_url=AUDIO_URL + q['voice_file'],
-                            image_url=q['image_file'],
+                            image_url=IMAGE_URL + q['image_file'],
                             difficulty=difficultyDic[q['difficulty']],
                             type=q['type']
                         )

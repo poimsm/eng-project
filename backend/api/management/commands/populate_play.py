@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 from api.models import (
     UserSentence, ResourceSentence, ShortVideo, InfoCard,
-    Collocation, WordTypes, SourceTypes
+    Collocation, WordTypes, SourceTypes, Question, Word,
+    QuestionTypes,
 )
 from users.models import User
 from api.helpers import console
@@ -18,11 +19,50 @@ class Command(BaseCommand):
         console.info('      PLAY INIT                 ')
         console.info('--------------------------------')
 
+
+        # aa = Question.objects.filter(
+        #     type=QuestionTypes.DESCRIBE_IMAGE,
+        #     has_example=True)
+        # print(len(aa))
+
+        # for a in aa:
+        #     print(a.question)
+
+
+
         # obj = ShortVideo.objects.get(id=1)
         # print(obj.created)
 
-        obj = InfoCard.objects.get(id=1)
-        print(obj.created)
+
+        # word = Word.objects.get(id=10)
+        # question = Question.objects.get(id=1)
+        # question.words.remove(word)
+
+        # Question.words.remove(word)
+
+
+
+
+        # question = Question.objects.get(id=49)
+        # words = question.words.all()
+        
+        # for w in words:
+        #     print(w.word)
+
+        # print(len(words))
+        # print(question.question)
+
+
+
+
+
+
+        # questions = Question.objects.all()
+        # for q in questions:
+        #     q.words.clear()
+
+        # obj = InfoCard.objects.get(id=1)
+        # print(obj.created)
 
 
 
@@ -71,4 +111,4 @@ class Command(BaseCommand):
         # ).save()
 
 
-        # console.info('Migration completed successfully')
+        console.info('Migration completed successfully')

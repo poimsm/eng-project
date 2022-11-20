@@ -2,11 +2,11 @@
     {
         "id": 1,
         "is_new": true,
-        "image_file": "picture.png",
-        "audio_file": "audio.mp3",
+        "image_file": "image_0001.jpg",
+        "audio_file": "audio_0001.mp3",
         "sentences": [
             {
-                "sentence": "Destroy",
+                "sentence": "cloudy",
                 "meaning": "",
                 "extras": "Thanks you;Destroy;Forward now;Catdog;Splendid",
                 "type": 1
@@ -30,11 +30,11 @@
     {
         "id": 2,
         "is_new": true,
-        "image_file": "picture.png",
-        "audio_file": "audio.mp3",
+        "image_file": "image_0001.jpg",
+        "audio_file": "audio_0001.mp3",
         "sentences": [
             {
-                "sentence": "sentence_01",
+                "sentence": "cold",
                 "meaning": "card_meaning",
                 "extras": "",
                 "type": 0
@@ -45,11 +45,11 @@
     {
         "id": 3,
         "is_new": true,
-        "image_file": "picture.png",
-        "audio_file": "audio.mp3",
+        "image_file": "image_0001.jpg",
+        "audio_file": "audio_0001.mp3",
         "sentences": [
             {
-                "sentence": "sentence_01",
+                "sentence": "dry",
                 "meaning": "card_meaning",
                 "extras": "",
                 "type": 0
@@ -60,8 +60,8 @@
     {
         "id": 4,
         "is_new": true,
-        "image_file": "picture.png",
-        "audio_file": "audio.mp3",
+        "image_file": "image_0001.jpg",
+        "audio_file": "audio_0001.mp3",
         "sentences": [
             {
                 "sentence": "sentence_01",
@@ -75,8 +75,8 @@
     {
         "id": 5,
         "is_new": true,
-        "image_file": "picture.png",
-        "audio_file": "audio.mp3",
+        "image_file": "image_0001.jpg",
+        "audio_file": "audio_0001.mp3",
         "sentences": [
             {
                 "sentence": "sentence_01",

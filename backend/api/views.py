@@ -24,7 +24,7 @@ from api.data.expresions import expresions
 # Models & serializers
 from users.models import User
 from api.models import (
-    ActivityTypes, Word, Question,
+    Word, Question, QuestionTypes,
     UserSentence, Example, Style, ShortVideo,
     InfoCard, FavoriteResource, SourceTypes,
     WordTypes, WordOrigin, ResourceSentence,
@@ -390,13 +390,21 @@ def daily_activities(request):
 
     sentences = get_sentences(test_user_id)
     questions = get_questions_per_sentence(sentences)
-
     activities = create_activity_package(questions)
-
     activities = add_examples(activities)
     activities = add_styles(activities)
 
     return Response(activities, status=status.HTTP_200_OK)
+
+
+def get_sentences(id):
+    all_sentences = list(UserSentence.objects.filter(
+        user__id=id, status=Status.ACTIVE))
+    random.shuffle(all_sentences)
+    range_total = 10 if len(all_sentences) > 10 else len(all_sentences)
+    sentences_obj = [all_sentences[i] for i in range(range_total)]
+
+    return sentences_obj
 
 
 def get_questions_per_sentence(sentences):
@@ -407,26 +415,23 @@ def get_questions_per_sentence(sentences):
             'word': UserSentenceModelSerializer(sen).data
         })
 
+    memory = []
     result = []
     for q_s in questions_sentence:
         for q in q_s['questions']:
+            if q_s['word'] in memory:
+                continue
+
+            if len(result) > 6:
+                break
+
             result.append({
                 'question': q['question'],
                 'word': q_s['word']
             })
+            memory.append(q_s['word'])
 
     return result
-
-
-def get_sentences(id):
-    all_sentences = list(UserSentence.objects.filter(
-        user__id=id, status=Status.ACTIVE))
-    random.shuffle(all_sentences)
-    range_total = 4 if len(all_sentences) > 4 else len(all_sentences)
-    sentences_obj = [all_sentences[i] for i in range(range_total)]
-    # sentences = [sen.sentence for sen in sentences_obj]
-
-    return sentences_obj
 
 
 def get_questions(sentence):
@@ -443,6 +448,15 @@ def get_questions(sentence):
 
     found_questions = combine_unique2(
         [literal_questions, refined_questions, phrasal_verbs_questions])
+
+    if len(found_questions) == 0:
+        questions = Question.objects.filter(type=QuestionTypes.NORMAL)
+        q = random.choice(questions)
+
+        found_questions.append({
+            'question': QuestionModelSerializer(q).data,
+            'word': None
+        })
     return found_questions
 
 
@@ -457,16 +471,32 @@ def create_activity_package(found_questions):
         gap_questions = random_questions + found_questions
         random.shuffle(gap_questions)
         result = easy_questions + gap_questions
-    elif len(found_questions) < 4:
+    elif len(found_questions) < 6:
         ids = [q['question']['id'] for q in found_questions]
         total = 6 - len(found_questions)
         result = found_questions + get_random_questions(ids, total)
         random.shuffle(result)
     else:
-        found_questions = random.sample(found_questions, 4)
-        ids = [q['question']['id'] for q in found_questions]
-        result = found_questions + get_random_questions(ids, 2)
+        found_questions = random.sample(found_questions, 6)
+        # ids = [q['question']['id'] for q in found_questions]
+        # result = found_questions + get_random_questions(ids, 2)
+        result = found_questions
         random.shuffle(result)
+
+    hasDescribeImg = False
+    for r in result:
+        if r['question']['type'] == QuestionTypes.DESCRIBE_IMAGE:
+            hasDescribeImg = True
+            break
+
+    if not hasDescribeImg:
+        questions = Question.objects.filter(type=QuestionTypes.DESCRIBE_IMAGE)
+        q = random.choice(questions)
+
+        result[4] = {
+            'question': QuestionModelSerializer(q).data,
+            'word': None
+        }
 
     return result
 
@@ -522,7 +552,6 @@ def literal_search(words):
             for q in questions_list:
                 questions.append({
                     'question': QuestionModelSerializer(q).data,
-                    'type': 'question',
                     'word': WordModelSerializer(word_obj).data
                 })
 
@@ -547,7 +576,6 @@ def refined_search(words):
             for q in questions_list:
                 questions.append({
                     'question': QuestionModelSerializer(q).data,
-                    'type': 'question',
                     'word': WordModelSerializer(word_obj).data
                 })
 
@@ -657,7 +685,6 @@ def add_styles(activities):
     new_activities = []
     for act in activities:
         new_act = act
-
         try:
             style_obj = Style.objects.get(
                 question=act['question']['id']
@@ -682,7 +709,6 @@ def get_easy_questions_with_examples(total):
 
     result = []
     ids = []
-
     counter = 0
 
     for q in questions:

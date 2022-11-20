@@ -1,23 +1,12 @@
-import json
-import os
 import traceback
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from api.models import Example, Question
-# from api.models import Example, ExampleModelSerializer
-
-from api.helpers import console
-
-
-def read_JSON_file(path):
-    file = open(os.path.join(settings.BASE_DIR, path))
-    data = file.read()
-    file.close()
-    return json.loads(data)
+from api.helpers import console, read_JSON_file
 
 
 class Command(BaseCommand):
-    help = 'Migrate words'
+    help = 'Create examples'
 
     def handle(self, *args, **kwargs):
 

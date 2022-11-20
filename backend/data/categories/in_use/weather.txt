@@ -15,8 +15,8 @@ cell
 cirrus
 climate
 cloud
-cloudy
-cold
+cloudy [easy] meaning weather
+cold [easy] meaning weather
 compass
 condensation
 convergence
@@ -30,7 +30,7 @@ disturbance
 downwind
 drift
 drought
-dry
+dry [easy] meaning weather
 eddy
 evaporation
 eye
