@@ -36,7 +36,7 @@ class WordTypes(models.IntegerChoices):
 
 class WordOrigin(models.IntegerChoices):
     RANDOM = 0, 'Random generated'
-    SAVED = 1, 'Saved from library'
+    RESOURCE = 1, 'Saved from library'
     USER = 2, 'Created by user'
 
 
@@ -229,6 +229,12 @@ class ResourceSentence(BaseModel):
         blank=False,
         choices=WordTypes.choices
     )
+    origin = models.PositiveSmallIntegerField(
+        null=False,
+        blank=False,
+        choices=WordOrigin.choices,
+        default=WordOrigin.RESOURCE
+    )
     source_type = models.PositiveSmallIntegerField(
         null=True,
         blank=True,
@@ -268,7 +274,8 @@ class UserSentence(BaseModel):
     origin = models.PositiveSmallIntegerField(
         null=False,
         blank=False,
-        choices=WordOrigin.choices
+        choices=WordOrigin.choices,
+        default=WordOrigin.USER
     )
     source_type = models.PositiveSmallIntegerField(
         null=True,

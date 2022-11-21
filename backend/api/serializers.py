@@ -5,6 +5,7 @@ from api.models import (
     UserSentence, Word, Question,
     Example, Style, ShortVideo,
     InfoCard, FavoriteResource,
+    Collocation, ResourceSentence
 )
 
 
@@ -27,8 +28,9 @@ class QuestionModelSerializer(serializers.ModelSerializer):
         model = Question
         fields = ['id', 'question', 'image_url', 'voice_url', 'type']
 
+
 class QuestionFullSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Question
         fields = '__all__'
@@ -73,3 +75,24 @@ class FavoriteResourceModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavoriteResource
         fields = '__all__'
+
+
+class CollocationModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Collocation
+        fields = '__all__'
+
+
+class ResourceSentenceModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ResourceSentence
+        fields = '__all__'
+
+
+class ResourceSentenceSmallModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ResourceSentence
+        fields = ['id', 'sentence', 'meaning', 'extras', 'type', 'origin']

@@ -3,6 +3,7 @@ import math
 import re
 import copy
 import random
+import traceback
 
 # Framework
 from rest_framework.response import Response
@@ -28,7 +29,7 @@ from api.models import (
     UserSentence, Example, Style, ShortVideo,
     InfoCard, FavoriteResource, SourceTypes,
     WordTypes, WordOrigin, ResourceSentence,
-    Status, Difficulty
+    Status, Difficulty, Collocation
 )
 from api.serializers import (
     QuestionModelSerializer,
@@ -40,7 +41,10 @@ from api.serializers import (
     ShortVideoModelSerializer,
     InfoCardModelSerializer,
     FavoriteResourceModelSerializer,
-    QuestionFullSerializer
+    QuestionFullSerializer,
+    CollocationModelSerializer,
+    ResourceSentenceModelSerializer,
+    ResourceSentenceSmallModelSerializer,
 )
 from users.serializers import CustomTokenObtainPairSerializer
 
@@ -206,7 +210,7 @@ def short_video(request):
                     'meaning': sen.meaning,
                     'extras': sen.extras,
                     'type': sen.type,
-                    'origin': WordOrigin.SAVED,
+                    'origin': WordOrigin.RESOURCE,
                     'short_video': data['video_id'],
                     'source_type': SourceTypes.SHORT_VIDEO,
                     'user': 1,
@@ -286,7 +290,7 @@ def info_card(request):
                     'meaning': sen.meaning,
                     'extras': sen.extras,
                     'type': sen.type,
-                    'origin': WordOrigin.SAVED,
+                    'origin': WordOrigin.RESOURCE,
                     'info_card': data['card_id'],
                     'source_type': SourceTypes.INFO_CARD,
                     'user': 1,
@@ -382,6 +386,9 @@ def user_sentences(request):
             return Response({}, status=status.HTTP_200_OK)
         except UserSentence.DoesNotExist:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.exception(e)
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -393,6 +400,7 @@ def daily_activities(request):
     activities = create_activity_package(questions)
     activities = add_examples(activities)
     activities = add_styles(activities)
+    activities = add_videos_and_cards(activities)
 
     return Response(activities, status=status.HTTP_200_OK)
 
@@ -557,6 +565,8 @@ def literal_search(words):
 
         except Word.DoesNotExist:
             pass
+        except Exception as e:
+            logger.exception(e)
 
     return questions
 
@@ -581,6 +591,8 @@ def refined_search(words):
 
         except Word.DoesNotExist:
             pass
+        except Exception as e:
+            logger.exception(e)
 
     return questions
 
@@ -675,6 +687,9 @@ def add_examples(activities):
 
             except Example.DoesNotExist:
                 new_activities.append(new_act)
+            except Exception as e:
+                logger.exception(e)
+                new_activities.append(new_act)
         else:
             new_activities.append(new_act)
 
@@ -695,6 +710,50 @@ def add_styles(activities):
             new_activities.append(new_act)
 
         except Style.DoesNotExist:
+            new_activities.append(act)
+        except Exception as e:
+            logger.exception(e)
+            new_activities.append(act)
+    return new_activities
+
+
+def add_videos_and_cards(activities):
+    new_activities = []
+    for act in activities:
+        new_act = act
+        try:
+            if act['word'] and act['word']['info_card']:
+                card = InfoCard.objects.get(id=act['word']['info_card'])
+                words = ResourceSentence.objects.filter(
+                    info_card=card.id,
+                    status=Status.ACTIVE
+                )
+                collocations = Collocation.objects.filter(
+                    info_card=card.id,
+                    status=Status.ACTIVE
+                )
+                new_act['word']['info_card'] = InfoCardModelSerializer(
+                    card).data
+                new_act['word']['info_card']['words'] = ResourceSentenceSmallModelSerializer(
+                    words, many=True).data
+                new_act['word']['info_card']['collocations'] = CollocationModelSerializer(
+                    collocations, many=True).data
+
+            if act['word'] and act['word']['short_video']:
+                video = ShortVideo.objects.get(id=act['word']['short_video'])
+                words = ResourceSentence.objects.filter(
+                    short_video=video.id,
+                    status=Status.ACTIVE
+                )
+                new_act['word']['short_video'] = ShortVideoModelSerializer(
+                    video).data
+                new_act['word']['short_video']['words'] = ResourceSentenceSmallModelSerializer(
+                    words, many=True).data
+
+            new_activities.append(new_act)
+
+        except Exception as e:
+            logger.exception(e)
             new_activities.append(act)
     return new_activities
 

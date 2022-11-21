@@ -159,7 +159,7 @@ class Command(BaseCommand):
                 extras=sen.extras,
                 last_time_used=date.today(),
                 type=sen.type,
-                origin=WordOrigin.SAVED,
+                origin=WordOrigin.RESOURCE,
                 source_type=SourceTypes.SHORT_VIDEO,
                 short_video=video_obj,
                 user=user
@@ -185,7 +185,7 @@ class Command(BaseCommand):
                 extras=sen.extras,
                 last_time_used=date.today(),
                 type=sen.type,
-                origin=WordOrigin.SAVED,
+                origin=WordOrigin.RESOURCE,
                 source_type=SourceTypes.INFO_CARD,
                 info_card=card_obj,
                 user=user
@@ -207,7 +207,7 @@ class Command(BaseCommand):
                 extras=sen.extras,
                 last_time_used=date.today(),
                 type=sen.type,
-                origin=WordOrigin.SAVED,
+                origin=WordOrigin.RESOURCE,
                 source_type=SourceTypes.INFO_CARD,
                 info_card=card_obj,
                 user=user

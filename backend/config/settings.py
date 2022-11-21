@@ -58,6 +58,7 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
@@ -151,12 +152,12 @@ MEDIA_ROOT = '/media/'
 MEDIA_URL = 'media/'
 
 if(DEBUG):
-    SITE_DOMAIN = 'http://localhost'
-    API_VERSION = 'v4'
+    SITE_DOMAIN = 'https://3e8e-190-208-155-6.sa.ngrok.io'
+    API_VERSION = 'v1'
     BASE_URL = SITE_DOMAIN + '/api/' + API_VERSION
 else:
     SITE_DOMAIN = 'http://localhost'
-    API_VERSION = 'v4'
+    API_VERSION = 'v1'
     BASE_URL = SITE_DOMAIN + '/api/' + API_VERSION
 
 
