@@ -58,8 +58,8 @@ class Command(BaseCommand):
                 for coll in video['collocations']:
                     Collocation(
                         text=coll,
-                        source_type=SourceTypes.INFO_CARD,
-                        info_card=video_obj
+                        source_type=SourceTypes.SHORT_VIDEO,
+                        short_video=video_obj
                     ).save()
 
             console.info('Successfully completed!')

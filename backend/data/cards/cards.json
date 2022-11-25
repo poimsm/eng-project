@@ -1,8 +1,9 @@
 [
     {
         "id": 1,
+        "group": 1,
         "is_new": true,
-        "image_file": "image_0001.jpg",
+        "image_file": "g001_1.png",
         "audio_file": "audio_0001.mp3",
         "sentences": [
             {
@@ -29,8 +30,9 @@
     },
     {
         "id": 2,
+        "group": 1,
         "is_new": true,
-        "image_file": "image_0001.jpg",
+        "image_file": "g001_2.png",
         "audio_file": "audio_0001.mp3",
         "sentences": [
             {
@@ -40,12 +42,26 @@
                 "type": 0
             }
         ],
-        "collocations": []
+        "collocations": [
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]",
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]"
+        ]
     },
     {
         "id": 3,
+        "group": 1,
         "is_new": true,
-        "image_file": "image_0001.jpg",
+        "image_file": "g001_3.png",
         "audio_file": "audio_0001.mp3",
         "sentences": [
             {
@@ -53,38 +69,184 @@
                 "meaning": "card_meaning",
                 "extras": "",
                 "type": 0
+            },
+            {
+                "sentence": "cyclone",
+                "meaning": "card_meaning",
+                "extras": "",
+                "type": 0
+            },
+            {
+                "sentence": "dew",
+                "meaning": "card_meaning",
+                "extras": "",
+                "type": 0
             }
         ],
-        "collocations": []
+        "collocations": [
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]",
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]"
+        ]
     },
     {
         "id": 4,
+        "group": 1,
         "is_new": true,
-        "image_file": "image_0001.jpg",
+        "image_file": "g001_4.png",
         "audio_file": "audio_0001.mp3",
         "sentences": [
             {
-                "sentence": "sentence_01",
+                "sentence": "4X sentence_01",
+                "meaning": "card_meaning",
+                "extras": "",
+                "type": 0
+            },
+            {
+                "sentence": "4X sentence_02",
                 "meaning": "card_meaning",
                 "extras": "",
                 "type": 0
             }
         ],
-        "collocations": []
+        "collocations": [
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]",
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]"
+        ]
     },
     {
         "id": 5,
+        "group": 2,
         "is_new": true,
-        "image_file": "image_0001.jpg",
+        "image_file": "g002_1.png",
         "audio_file": "audio_0001.mp3",
         "sentences": [
             {
-                "sentence": "sentence_01",
+                "sentence": "5X sentence_01",
                 "meaning": "card_meaning",
                 "extras": "",
                 "type": 0
             }
         ],
-        "collocations": []
+        "collocations": [
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]",
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]"
+        ]
+    },
+    {
+        "id": 6,
+        "group": 2,
+        "is_new": true,
+        "image_file": "g002_2.png",
+        "audio_file": "audio_0001.mp3",
+        "sentences": [
+            {
+                "sentence": "6X sentence_01",
+                "meaning": "card_meaning",
+                "extras": "",
+                "type": 0
+            }
+        ],
+        "collocations": [
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]",
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]"
+        ]
+    },
+    {
+        "id": 7,
+        "group": 2,
+        "is_new": true,
+        "image_file": "g002_3.png",
+        "audio_file": "audio_0001.mp3",
+        "sentences": [
+            {
+                "sentence": "6X sentence_01",
+                "meaning": "card_meaning",
+                "extras": "",
+                "type": 0
+            }
+        ],
+        "collocations": [
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]",
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]"
+        ]
+    },
+    {
+        "id": 8,
+        "group": 2,
+        "is_new": true,
+        "image_file": "g002_4.png",
+        "audio_file": "audio_0001.mp3",
+        "sentences": [
+            {
+                "sentence": "6X sentence_01",
+                "meaning": "card_meaning",
+                "extras": "",
+                "type": 0
+            }
+        ],
+        "collocations": [
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]",
+            "destroy the [environment, Earth, world]",
+            "being destroyed by [us, contamination, industry, global warming]",
+            "destroyed their [homes, houses, town]",
+            "their [homes] were destroyed",
+            "estroyed by the [storm, war, robbers]",
+            "destroy [the enemy, the opposition, her opponent, evidence]"
+        ]
     }
 ]

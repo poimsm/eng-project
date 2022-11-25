@@ -37,6 +37,7 @@ class Command(BaseCommand):
 
                 card_obj = InfoCard(
                     id=card['id'],
+                    group=card['group'],
                     image_url=IMAGE_URL + card['image_file'],
                     voice_url=AUDIO_URL + card['audio_file']
                 )

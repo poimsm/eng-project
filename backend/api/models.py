@@ -114,6 +114,7 @@ class ShortVideo(BaseModel):
 
 class InfoCard(BaseModel):
     id = models.IntegerField(primary_key=True)
+    group = models.IntegerField(null=False, blank=False)
     image_url = models.TextField(null=False, blank=False)
     voice_url = models.TextField(null=False, blank=False)
     objects = models.Manager()
