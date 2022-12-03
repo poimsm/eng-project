@@ -5,7 +5,8 @@ from api.models import (
     UserSentence, Word, Question,
     Example, Style, ShortVideo,
     InfoCard, FavoriteResource,
-    Collocation, ResourceSentence
+    Collocation, ResourceSentence,
+    UserScreenFlow, UserProfile,
 )
 
 
@@ -13,6 +14,16 @@ class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class UserProfileModelSerializer(serializers.ModelSerializer):
+    # chao = serializers.SerializerMethodField('id')
+    id = serializers.PrimaryKeyRelatedField(source='user', read_only=True)
+    class Meta:
+        model = UserProfile
+        # fields = '__all__'
+
+        fields = ['total_words', 'verified', 'enable_screen_flow', 'email', 'id']
 
 
 class WordModelSerializer(serializers.ModelSerializer):
@@ -96,3 +107,10 @@ class ResourceSentenceSmallModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourceSentence
         fields = ['id', 'sentence', 'meaning', 'extras', 'type', 'origin']
+
+
+class UserScreenFlowModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserScreenFlow
+        fields = '__all__'

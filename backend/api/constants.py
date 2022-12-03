@@ -3,3 +3,4 @@ class AppMsg:
     UNKNOWN_ERROR = {'message': 'Unknown error'}
     INVALID_DATA = {'message': 'Invalid data'}
     OFENSIVE_STATEMENT = {'message': 'Offensive statement'}
+    MISSING_FIELDS = {'message': 'There are fields missing'}

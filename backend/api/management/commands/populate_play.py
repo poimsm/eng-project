@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from api.models import (
     UserSentence, ResourceSentence, ShortVideo, InfoCard,
-    Collocation, WordTypes, SourceTypes, Question, Word,
+    Collocation, SentenceTypes, SourceTypes, Question, Word,
     QuestionTypes,
 )
 from users.models import User

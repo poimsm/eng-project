@@ -29,12 +29,12 @@ class QuestionTypes(models.IntegerChoices):
     TEACHER = 2, 'You are a teacher'
 
 
-class WordTypes(models.IntegerChoices):
+class SentenceTypes(models.IntegerChoices):
     NORMAL = 0, 'Normal'
     GROUP = 1, 'Group'
 
 
-class WordOrigin(models.IntegerChoices):
+class SentenceOrigin(models.IntegerChoices):
     RANDOM = 0, 'Random generated'
     RESOURCE = 1, 'Saved from library'
     USER = 2, 'Created by user'
@@ -180,7 +180,7 @@ class Example(BaseModel):
     # id = models.IntegerField(primary_key=True, null=False, blank=False)
     example = models.JSONField(null=False, blank=False)
     voice_url = models.TextField(null=False, blank=False)
-    word_text = models.CharField(
+    sentence_text = models.CharField(
         max_length=MAX_SENTENCE_LENGTH, null=True, blank=True)
     objects = models.Manager()
     question = models.ForeignKey(
@@ -228,13 +228,13 @@ class ResourceSentence(BaseModel):
     type = models.PositiveSmallIntegerField(
         null=False,
         blank=False,
-        choices=WordTypes.choices
+        choices=SentenceTypes.choices
     )
     origin = models.PositiveSmallIntegerField(
         null=False,
         blank=False,
-        choices=WordOrigin.choices,
-        default=WordOrigin.RESOURCE
+        choices=SentenceOrigin.choices,
+        default=SentenceOrigin.RESOURCE
     )
     source_type = models.PositiveSmallIntegerField(
         null=True,
@@ -270,13 +270,13 @@ class UserSentence(BaseModel):
     type = models.PositiveSmallIntegerField(
         null=False,
         blank=False,
-        choices=WordTypes.choices
+        choices=SentenceTypes.choices
     )
     origin = models.PositiveSmallIntegerField(
         null=False,
         blank=False,
-        choices=WordOrigin.choices,
-        default=WordOrigin.USER
+        choices=SentenceOrigin.choices,
+        default=SentenceOrigin.USER
     )
     source_type = models.PositiveSmallIntegerField(
         null=True,
@@ -325,7 +325,7 @@ class UserHistory(BaseModel):
 
 
 class UserScreenFlow(BaseModel):
-    type = models.CharField(max_length=150, blank=False, null=False)
+    type = models.CharField(max_length=150, blank=True, null=True)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE
@@ -337,8 +337,10 @@ class UserScreenFlow(BaseModel):
 
 
 class UserProfile(BaseModel):
-    total_words = models.PositiveSmallIntegerField(default=0)
+    total_sentences = models.PositiveSmallIntegerField(default=0)
     verified = models.BooleanField(default=False)
+    screen_flow = models.BooleanField(default=False)
+    email = models.CharField(max_length=150, blank=False, null=False)
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE

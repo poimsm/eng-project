@@ -48,6 +48,7 @@ DJANGO_APPS = [
 PROJECT_APPS = [
     'api',
     'users',
+    'global',
 ]
 
 THIRD_PARTY_APPS = [

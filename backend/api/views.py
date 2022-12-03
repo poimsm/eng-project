@@ -13,6 +13,8 @@ from rest_framework.decorators import (
 from django.contrib.auth.hashers import make_password
 from rest_framework.renderers import JSONRenderer
 from rest_framework.serializers import ValidationError
+from django.db import transaction, IntegrityError
+
 
 # Data
 from api.data.common_words import common_words_list
@@ -27,8 +29,8 @@ from api.models import (
     Word, Question, QuestionTypes,
     UserSentence, Example, Style, ShortVideo,
     InfoCard, FavoriteResource, SourceTypes,
-    WordTypes, WordOrigin, ResourceSentence,
-    Status, Difficulty, Collocation
+    SentenceTypes, SentenceOrigin, ResourceSentence,
+    Status, Difficulty, Collocation, UserProfile
 )
 from api.serializers import (
     QuestionModelSerializer,
@@ -44,6 +46,8 @@ from api.serializers import (
     CollocationModelSerializer,
     ResourceSentenceModelSerializer,
     ResourceSentenceSmallModelSerializer,
+    UserScreenFlowModelSerializer,
+    UserProfileModelSerializer,
 )
 from users.serializers import CustomTokenObtainPairSerializer
 
@@ -63,86 +67,104 @@ test_user_id = 1
 appMsg = AppMsg()
 
 
-@api_view(['POST'])
-@renderer_classes([JSONRenderer])
-def create_fake_user(request):
-    uid = uuid.uuid4()
-    random_user = uid.hex
-    data = {
-        'username': 'random_user',
-        'email':  random_user + '@fake.com',
-        'password': random_user
-    }
-
-    serializer = UserModelSerializer(data=data)
-
-    if serializer.is_valid():
-        serializer.save()
-
-        class UserPayload:
-            id = serializer.data['id']
-
-        refresh = CustomTokenObtainPairSerializer().get_token(UserPayload)
-
-        return Response({
-            'user': serializer.data,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_201_CREATED)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
 @permission_classes([permissions.IsAuthenticated])
 def user_data(request):
-    user_id = request.GET.get('id', False)
-    if user_id:
-        try:
-            user = User.objects.get(id=user_id)
-            serializer = UserModelSerializer(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except User.DoesNotExist:
-            Response({}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        user = UserProfile.objects.get(user=request.user.id)
+        serializer = UserProfileModelSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    return Response({}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as err:
+        logger.error(err)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-@permission_classes([permissions.IsAuthenticated])
 def user_register(request):
     try:
         data = request.data.copy()
-        user = User.objects.get(id=request.user.id)
-        user.verified = True
-        user.password = make_password(
-            data['password'], salt=None, hasher='default')
-        user.email = data['email']
-        user.save()
+        with transaction.atomic():
+            user_serializer = UserModelSerializer(data={
+                'email': data['email'],
+                'password': make_password(
+                    data['password'], salt=None, hasher='default'),
+                'verified': False,
+                'email': data['email'],
+            })
+            user_serializer.is_valid(raise_exception=True)
+            user_serializer.save()
 
-        user_data = UserModelSerializer(user).data
-        del user_data['password']
+            profile_serializer = UserProfileModelSerializer(data={
+                'email': data['email'],
+                'user': user_serializer.data['id']
+            })
+            profile_serializer.is_valid(raise_exception=True)
+            profile_serializer.save()
 
-        return Response(user_data, status=status.HTTP_201_CREATED)
-    except:
-        Response({}, status=status.HTTP_400_BAD_REQUEST)
+        class UserPayload:
+            id = user_serializer.data['id']
 
+        refresh = CustomTokenObtainPairSerializer().get_token(UserPayload)
 
-@api_view(['GET'])
-@renderer_classes([JSONRenderer])
-# @permission_classes([permissions.IsAuthenticated])
-def get_post(request):
-    return Response({'msg': 'todo funcionando x3'}, status=status.HTTP_200_OK)
+        return Response({
+            'user': profile_serializer.data,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_201_CREATED)
+
+    except Exception as err:
+        logger.error(err)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
 def hola(request):
-    data = get_random_questions([12], 3)
-    return Response(data, status=status.HTTP_200_OK)
+    # data = get_random_questions([12], 3)
+
+    # sentence = UserSentence(
+    #     id=1,
+    #     sentence='asdasd',
+    #     meaning='asdad',
+    #     origin=1,
+    #     type=1,
+    #     sourceType=1,
+    #     info_card=1,
+    #     short_video=1,
+    # )
+
+    sentence = UserSentence(
+        id=1,
+        sentence='asdasd',
+        meaning='asdad',
+        origin=1,
+        type=1,
+        source_type=1,
+        # info_card=1,
+    )
+
+    sentence.info_card = 1
+
+    ser = UserSentenceModelSerializer(sentence)
+
+    return Response(ser.data, status=status.HTTP_200_OK)
+
+    # username = uuid.uuid4().hex[:10]
+    # email = username + '@fake.com'
+    # password = username
+
+    # data = {
+    #     'username': username,
+    #     'email': email,
+    #     'password': password,
+    # }
+
+    # return Response(data, status=status.HTTP_200_OK)
+
     # sentence='go up';
     # sentence='went out';
     # sentence='I hang you out';
@@ -178,7 +200,7 @@ def short_video(request):
                 if video.id == user_vid.short_video.id:
                     is_favorite = True
 
-            words = ResourceSentence.objects.filter(
+            sentences = ResourceSentence.objects.filter(
                 short_video=video.id,
                 status=Status.ACTIVE
             )
@@ -195,8 +217,8 @@ def short_video(request):
                 'cover': video.cover,
                 'url': video.url,
                 'is_favorite': is_favorite,
-                'words': ResourceSentenceSmallModelSerializer(
-                    words, many=True).data,
+                'sentences': ResourceSentenceSmallModelSerializer(
+                    sentences, many=True).data,
                 'collocations': collocationStringList
             })
 
@@ -228,7 +250,7 @@ def short_video(request):
                     'meaning': sen.meaning,
                     'extras': sen.extras,
                     'type': sen.type,
-                    'origin': WordOrigin.RESOURCE,
+                    'origin': SentenceOrigin.RESOURCE,
                     'short_video': data['id'],
                     'source_type': SourceTypes.SHORT_VIDEO,
                     'user': 1,
@@ -257,8 +279,8 @@ def short_video(request):
 @renderer_classes([JSONRenderer])
 def info_card(request):
     if request.method == 'GET':
-        
-        existing_groups = [1,2];
+
+        existing_groups = [1, 2]
         group = random.choice(existing_groups)
 
         cards = InfoCard.objects.filter(
@@ -280,7 +302,7 @@ def info_card(request):
                     is_favorite = True
                     break
 
-            words = ResourceSentence.objects.filter(
+            sentences = ResourceSentence.objects.filter(
                 info_card=card.id,
                 status=Status.ACTIVE
             )
@@ -297,8 +319,8 @@ def info_card(request):
                 'image_url': card.image_url,
                 'voice_url': card.voice_url,
                 'is_favorite': is_favorite,
-                'words': ResourceSentenceSmallModelSerializer(
-                    words, many=True).data,
+                'sentences': ResourceSentenceSmallModelSerializer(
+                    sentences, many=True).data,
                 'collocations': collocationStringList
             })
 
@@ -333,7 +355,7 @@ def info_card(request):
                     'meaning': sen.meaning,
                     'extras': sen.extras,
                     'type': sen.type,
-                    'origin': WordOrigin.RESOURCE,
+                    'origin': SentenceOrigin.RESOURCE,
                     'info_card': data['id'],
                     'source_type': SourceTypes.INFO_CARD,
                     'user': 1,
@@ -357,6 +379,72 @@ def info_card(request):
                 info_card=data['id']
             ).update(status=Status.DELETED)
             return Response({'is_favorite': False}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def screen_flow(request):
+    data = request.data.copy()
+
+    serializer = UserScreenFlowModelSerializer(data={
+        'type': data.get('type', None),
+        'user': 1
+    })
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response({}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def convert_local_sentences(request):
+    data = request.data.copy()
+    local_sentences = data['local_sentences']
+
+    result = []
+    for local in local_sentences:
+        sentence = local
+        if local.get('info_card', False):
+            card = InfoCard.objects.get(id=local['info_card'])
+            sentences = ResourceSentence.objects.filter(
+                info_card=card.id,
+                status=Status.ACTIVE
+            )
+
+            sentence['info_card'] = InfoCardModelSerializer(
+                card).data
+            sentence['info_card']['sentences'] = ResourceSentenceSmallModelSerializer(
+                sentences, many=True).data
+
+            collocations = Collocation.objects.filter(
+                info_card=card.id,
+                status=Status.ACTIVE
+            )
+
+            collocationList = [col.text for col in collocations]
+            sentence['info_card']['collocations'] = collocationList
+
+        if local.get('short_video', False):
+            video = ShortVideo.objects.get(id=local['short_video'])
+            sentences = ResourceSentence.objects.filter(
+                short_video=video.id,
+                status=Status.ACTIVE
+            )
+            sentence['short_video'] = ShortVideoModelSerializer(
+                video).data
+            sentence['short_video']['sentences'] = ResourceSentenceSmallModelSerializer(
+                sentences, many=True).data
+
+            collocations = Collocation.objects.filter(
+                short_video=video.id,
+                status=Status.ACTIVE
+            )
+
+            collocationList = [col.text for col in collocations]
+            sentence['short_video']['collocations'] = collocationList
+
+        result.append(sentence)
+    return Response(result, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
@@ -398,8 +486,8 @@ def user_sentences(request):
             'user': 1,
             'sentence': data['sentence'],
             'meaning': data['meaning'] if data['meaning'] else '',
-            'type': WordTypes.NORMAL,
-            'origin': WordOrigin.USER
+            'type': SentenceTypes.NORMAL,
+            'origin': SentenceOrigin.USER
         }
 
         serializer = UserSentenceModelSerializer(data=sentence)
@@ -445,6 +533,59 @@ def user_sentences(request):
             return Response(appMsg.UNKNOWN_ERROR, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def daily_activities_limited(request):
+
+    data = request.data.copy()
+    local_sentences = data.get('local_sentences', [])
+    logger.debug('aaaaaaaaaaa1')
+
+    logger.debug(local_sentences)
+
+    sentences = convert_local_sentences_to_sentences(local_sentences)
+    logger.debug('aaaaaaaaaaa2')
+    logger.debug(sentences)
+
+    # all_sentences_are_strings = True;
+    # for w in sentences:
+    #     if not (isinstance(w, str) and len(w) <= 20) :
+    #         all_sentences_are_strings = False
+    #         break
+
+    # if not all_sentences_are_strings:
+    #     return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+    # sentences = get_sentences(test_user_id)
+
+    questions = get_questions_per_sentence(sentences)
+    logger.debug('aaaaaaaaaaa3')
+    logger.debug(questions)
+    activities = create_activity_package(questions)
+    logger.debug('aaaaaaaaaaa4')
+    logger.debug(activities)
+    activities = add_examples(activities)
+    logger.debug('aaaaaaaaaaa5')
+    logger.debug(activities)
+    activities = add_styles(activities)
+    logger.debug('aaaaaaaaaaa6')
+    logger.debug(activities)
+    activities = add_videos_and_cards(activities)
+    logger.debug('aaaaaaaaaaa7')
+
+    return Response(activities, status=status.HTTP_200_OK)
+
+
+def get_sentences(id):
+    all_sentences = list(UserSentence.objects.filter(
+        user__id=id, status=Status.ACTIVE))
+    random.shuffle(all_sentences)
+    range_total = 10 if len(all_sentences) > 10 else len(all_sentences)
+    sentences_obj = [all_sentences[i] for i in range(range_total)]
+
+    return sentences_obj
+
+
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
 def daily_activities(request):
@@ -474,14 +615,14 @@ def get_questions_per_sentence(sentences):
     for sen in sentences:
         questions_sentence.append({
             'questions': get_questions(sen.sentence),
-            'word': UserSentenceModelSerializer(sen).data
+            'sentence': UserSentenceModelSerializer(sen).data
         })
 
     memory = []
     result = []
     for q_s in questions_sentence:
         for q in q_s['questions']:
-            if q_s['word'] in memory:
+            if q_s['sentence'] in memory:
                 continue
 
             if len(result) > 6:
@@ -489,21 +630,21 @@ def get_questions_per_sentence(sentences):
 
             result.append({
                 'question': q['question'],
-                'word': q_s['word']
+                'sentence': q_s['sentence']
             })
-            memory.append(q_s['word'])
+            memory.append(q_s['sentence'])
 
     return result
 
 
 def get_questions(sentence):
-    words = tokenize_words(str(sentence))
-    literal_questions = literal_search(words)
+    sentences = tokenize_sentences(str(sentence))
+    literal_questions = literal_search(sentences)
 
     sentence_blob = TextBlob(sentence)
     sentence_blob = sentence_blob.correct()
-    words = tokenize_words(str(sentence_blob))
-    refined_questions = refined_search(words)
+    sentences = tokenize_sentences(str(sentence_blob))
+    refined_questions = refined_search(sentences)
 
     phrasal_verbs = extract_phrasal_verbs(sentence)
     phrasal_verbs_questions = literal_search(phrasal_verbs)
@@ -517,7 +658,7 @@ def get_questions(sentence):
 
         found_questions.append({
             'question': QuestionModelSerializer(q).data,
-            'word': None
+            'sentence': None
         })
     return found_questions
 
@@ -557,34 +698,34 @@ def create_activity_package(found_questions):
 
         result[4] = {
             'question': QuestionModelSerializer(q).data,
-            'word': None
+            'sentence': None
         }
 
     return result
 
 
 def extract_phrasal_verbs(sentence):
-    words_raw = re.findall(r"\w+", sentence.strip())
+    sentences_raw = re.findall(r"\w+", sentence.strip())
 
-    words = []
-    for w in words_raw:
-        words.append(WordNetLemmatizer().lemmatize(w, 'v'))
+    sentences = []
+    for w in sentences_raw:
+        sentences.append(WordNetLemmatizer().lemmatize(w, 'v'))
 
     possible_match = []
     for v in phrasal_verbs:
         verb = v.split('_')[0]
-        for word in words:
-            if word == verb:
-                if word not in possible_match:
+        for sentence in sentences:
+            if sentence == verb:
+                if sentence not in possible_match:
                     possible_match.append({
-                        'word': word,
+                        'sentence': sentence,
                         'phrasal_verb': v,
                         'end': v.split('_')[1]
                     })
 
     matches = []
     for m in possible_match:
-        for w in words:
+        for w in sentences:
             if w == m['end']:
                 if m['phrasal_verb'] not in matches:
                     matches.append(m['phrasal_verb'])
@@ -592,29 +733,29 @@ def extract_phrasal_verbs(sentence):
 
 
 def check_for_slangs(sentence):
-    words = re.findall(r"\w+", sentence.strip())
-    words = filter(lambda w: w.lower() in slangs, words)
-    return len(list(words)) != 0
+    sentences = re.findall(r"\w+", sentence.strip())
+    sentences = filter(lambda w: w.lower() in slangs, sentences)
+    return len(list(sentences)) != 0
 
 
-def tokenize_words(sentence):
-    words = re.findall(r"\w+", sentence.strip())
-    words = filter(lambda w: len(w) > 2, words)
-    words = filter(lambda w: not w.lower() in common_words_list, words)
-    return list(words)
+def tokenize_sentences(sentence):
+    sentences = re.findall(r"\w+", sentence.strip())
+    sentences = filter(lambda w: len(w) > 2, sentences)
+    sentences = filter(lambda w: not w.lower() in common_words_list, sentences)
+    return list(sentences)
 
 
-def literal_search(words):
+def literal_search(sentences):
     questions = []
-    for word in words:
+    for sentence in sentences:
         try:
-            word_obj = Word.objects.get(word=word)
+            word_obj = Word.objects.get(word=sentence)
             questions_list = Question.objects.filter(
                 words__id=word_obj.id)
             for q in questions_list:
                 questions.append({
                     'question': QuestionModelSerializer(q).data,
-                    'word': WordModelSerializer(word_obj).data
+                    'sentence': WordModelSerializer(word_obj).data
                 })
 
         except Word.DoesNotExist:
@@ -625,25 +766,25 @@ def literal_search(words):
     return questions
 
 
-def refined_search(words):
+def refined_search(sentences):
     all_forms = set()
-    for word in words:
-        forms = get_word_forms(word)
+    for sentence in sentences:
+        forms = get_word_forms(sentence)
         all_forms = all_forms | forms['n'] | forms['a'] | forms['v'] | forms['r']
 
     questions = []
-    for word in all_forms:
+    for sentence in all_forms:
         try:
-            word_obj = Word.objects.get(word=word)
+            sentence_obj = sentence.objects.get(sentence=sentence)
             questions_list = Question.objects.filter(
-                words__id=word_obj.id)
+                sentences__id=sentence_obj.id)
             for q in questions_list:
                 questions.append({
                     'question': QuestionModelSerializer(q).data,
-                    'word': WordModelSerializer(word_obj).data
+                    'sentence': WordModelSerializer(sentence_obj).data
                 })
 
-        except Word.DoesNotExist:
+        except sentence.DoesNotExist:
             pass
         except Exception as e:
             logger.exception(e)
@@ -671,21 +812,21 @@ def combine_unique2(list_to_combine):
     for q_unique in unique:
         all_questions = list(
             filter(lambda q: q['question']['id'] == q_unique['question']['id'], questions))
-        words = []
+        sentences = []
         for q in all_questions:
-            words.append(q['word'])
+            sentences.append(q['sentence'])
 
-        words = combine_unique_words([words])
-        random.shuffle(words)
+        sentences = combine_unique_sentences([sentences])
+        random.shuffle(sentences)
         new_questions.append({
             'question': q_unique['question'],
-            'word': words[0]
+            'sentence': sentences[0]
         })
 
     return new_questions
 
 
-def combine_unique_words(list_to_combine):
+def combine_unique_sentences(list_to_combine):
     list = []
 
     for l in list_to_combine:
@@ -728,11 +869,11 @@ def add_examples(activities):
     new_activities = []
     for act in activities:
         new_act = copy.deepcopy(act)
-        if act['word']:
+        if act['sentence']:
             try:
                 example_obj = Example.objects.get(
                     question=act['question']['id'],
-                    word_text=act['word']['sentence']
+                    sentence_text=act['sentence']['sentence']
                 )
 
                 serializer = ExampleModelSerializer(example_obj)
@@ -776,17 +917,17 @@ def add_videos_and_cards(activities):
     for act in activities:
         new_act = act
         try:
-            if act['word'] and act['word']['info_card']:
-                card = InfoCard.objects.get(id=act['word']['info_card'])
-                words = ResourceSentence.objects.filter(
+            if act['sentence'] and act['sentence']['info_card']:
+                card = InfoCard.objects.get(id=act['sentence']['info_card'])
+                sentences = ResourceSentence.objects.filter(
                     info_card=card.id,
                     status=Status.ACTIVE
                 )
 
-                new_act['word']['info_card'] = InfoCardModelSerializer(
+                new_act['sentence']['info_card'] = InfoCardModelSerializer(
                     card).data
-                new_act['word']['info_card']['words'] = ResourceSentenceSmallModelSerializer(
-                    words, many=True).data
+                new_act['sentence']['info_card']['sentences'] = ResourceSentenceSmallModelSerializer(
+                    sentences, many=True).data
 
                 collocations = Collocation.objects.filter(
                     info_card=card.id,
@@ -794,18 +935,19 @@ def add_videos_and_cards(activities):
                 )
 
                 collocationList = [col.text for col in collocations]
-                new_act['word']['info_card']['collocations'] = collocationList
+                new_act['sentence']['info_card']['collocations'] = collocationList
 
-            if act['word'] and act['word']['short_video']:
-                video = ShortVideo.objects.get(id=act['word']['short_video'])
-                words = ResourceSentence.objects.filter(
+            if act['sentence'] and act['sentence']['short_video']:
+                video = ShortVideo.objects.get(
+                    id=act['sentence']['short_video'])
+                sentences = ResourceSentence.objects.filter(
                     short_video=video.id,
                     status=Status.ACTIVE
                 )
-                new_act['word']['short_video'] = ShortVideoModelSerializer(
+                new_act['sentence']['short_video'] = ShortVideoModelSerializer(
                     video).data
-                new_act['word']['short_video']['words'] = ResourceSentenceSmallModelSerializer(
-                    words, many=True).data
+                new_act['sentence']['short_video']['sentences'] = ResourceSentenceSmallModelSerializer(
+                    sentences, many=True).data
 
                 collocations = Collocation.objects.filter(
                     short_video=video.id,
@@ -813,7 +955,7 @@ def add_videos_and_cards(activities):
                 )
 
                 collocationList = [col.text for col in collocations]
-                new_act['word']['short_video']['collocations'] = collocationList
+                new_act['sentence']['short_video']['collocations'] = collocationList
 
             new_activities.append(new_act)
 
@@ -830,15 +972,15 @@ def add_videos_and_cards_into_sentences(sentences):
         try:
             if sen['info_card']:
                 card = InfoCard.objects.get(id=sen['info_card'])
-                words = ResourceSentence.objects.filter(
+                sentences = ResourceSentence.objects.filter(
                     info_card=card.id,
                     status=Status.ACTIVE
                 )
 
                 new_sen['info_card'] = InfoCardModelSerializer(
                     card).data
-                new_sen['info_card']['words'] = ResourceSentenceSmallModelSerializer(
-                    words, many=True).data
+                new_sen['info_card']['sentences'] = ResourceSentenceSmallModelSerializer(
+                    sentences, many=True).data
 
                 collocations = Collocation.objects.filter(
                     info_card=card.id,
@@ -850,14 +992,14 @@ def add_videos_and_cards_into_sentences(sentences):
 
             if sen['short_video']:
                 video = ShortVideo.objects.get(id=sen['short_video'])
-                words = ResourceSentence.objects.filter(
+                sentences = ResourceSentence.objects.filter(
                     short_video=video.id,
                     status=Status.ACTIVE
                 )
                 new_sen['short_video'] = ShortVideoModelSerializer(
                     video).data
-                new_sen['short_video']['words'] = ResourceSentenceSmallModelSerializer(
-                    words, many=True).data
+                new_sen['short_video']['sentences'] = ResourceSentenceSmallModelSerializer(
+                    sentences, many=True).data
 
                 collocations = Collocation.objects.filter(
                     short_video=video.id,
@@ -906,21 +1048,21 @@ def get_easy_questions_with_examples(total):
             example = Example.objects.filter(
                 status=Status.ACTIVE,
                 question=q.id,
-                word_text=w.word
+                sentence_text=w.word
             ).first()
 
             if example:
                 counter += 1
                 sentence = {
                     'id': -1,
-                    'origin': WordOrigin.RANDOM,
-                    'type': WordTypes.NORMAL,
+                    'origin': SentenceOrigin.RANDOM,
+                    'type': SentenceTypes.NORMAL,
                     'sentence': w.word,
                     'meaning': w.meaning
                 }
                 result.append({
                     'question': QuestionModelSerializer(q).data,
-                    'word': sentence
+                    'sentence': sentence
                 })
                 ids.append(q.id)
                 if counter == total:
@@ -946,7 +1088,7 @@ def get_easy_questions(total):
         ids.append(q.id)
         ids = q.words.all().values_list('id', flat=True)
 
-        words = Word.objects.filter(
+        sentences = Word.objects.filter(
             status=Status.ACTIVE,
             difficulty=Difficulty.EASY,
             id__in=ids
@@ -954,19 +1096,19 @@ def get_easy_questions(total):
 
         sentence = None
 
-        if len(words) > 0:
-            word = random.choice(words)
+        if len(sentences) > 0:
+            sentence = random.choice(sentences)
             sentence = {
                 'id': -1,
-                'origin': WordOrigin.RANDOM,
-                'type': WordTypes.NORMAL,
-                'sentence': word.word,
-                'meaning': word.meaning
+                'origin': SentenceOrigin.RANDOM,
+                'type': SentenceTypes.NORMAL,
+                'sentence': sentence.sentence,
+                'meaning': sentence.meaning
             }
 
         result.append({
             'question': QuestionModelSerializer(q).data,
-            'word': sentence
+            'sentence': sentence
         })
 
     return result, ids
@@ -994,15 +1136,65 @@ def get_random_questions(excluded_ids, total):
             word = random.choice(words)
             sentence = {
                 'id': -1,
-                'origin': WordOrigin.RANDOM,
-                'type': WordTypes.NORMAL,
+                'origin': SentenceOrigin.RANDOM,
+                'type': SentenceTypes.NORMAL,
                 'sentence': word.word,
                 'meaning': word.meaning
             }
 
         result.append({
             'question': QuestionModelSerializer(q).data,
-            'word': sentence
+            'sentence': sentence
         })
 
+    return result
+
+
+def convert_local_sentences_to_sentences(local_sentences):
+    # id: 4, sentence: Smoke, origin: 2, type: 0,
+    # meaning: , saved: true,
+    # extras: null, sourceType: null, infoCard: null, shortVideo: null
+
+    result = []
+    for local in local_sentences:
+        sentence = None
+
+        if local.get('info_card', False):
+            card = InfoCard.objects.get(id=local['info_card'])
+
+            sentence = UserSentence(
+                id=local['id'],
+                sentence=local['sentence'],
+                meaning=local['meaning'],
+                origin=local['origin'],
+                type=local['type'],
+                source_type=local['source_type'],
+                info_card=card
+            )
+
+        elif local.get('short_video', False):
+            video = ShortVideo.objects.get(id=local['short_video'])
+
+            sentence = UserSentence(
+                id=local['id'],
+                sentence=local['sentence'],
+                meaning=local['meaning'],
+                origin=local['origin'],
+                type=local['type'],
+                source_type=local['source_type'],
+                short_video=video
+            )
+
+        else:
+            sentence = UserSentence(
+                id=local['id'],
+                sentence=local['sentence'],
+                meaning=local['meaning'],
+                origin=local['origin'],
+                type=local['type'],
+                source_type=local['source_type']
+            )
+
+        if sentence:
+            result.append(sentence)
     return result

@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from api.models import (
     UserSentence, ResourceSentence, ShortVideo, InfoCard,
-    WordOrigin, SourceTypes, FavoriteResource
+    SentenceOrigin, SourceTypes, FavoriteResource
 )
 from users.models import User
 from api.helpers import console
@@ -159,7 +159,7 @@ class Command(BaseCommand):
                 extras=sen.extras,
                 last_time_used=date.today(),
                 type=sen.type,
-                origin=WordOrigin.RESOURCE,
+                origin=SentenceOrigin.RESOURCE,
                 source_type=SourceTypes.SHORT_VIDEO,
                 short_video=video_obj,
                 user=user
@@ -185,7 +185,7 @@ class Command(BaseCommand):
                 extras=sen.extras,
                 last_time_used=date.today(),
                 type=sen.type,
-                origin=WordOrigin.RESOURCE,
+                origin=SentenceOrigin.RESOURCE,
                 source_type=SourceTypes.INFO_CARD,
                 info_card=card_obj,
                 user=user
@@ -207,7 +207,7 @@ class Command(BaseCommand):
                 extras=sen.extras,
                 last_time_used=date.today(),
                 type=sen.type,
-                origin=WordOrigin.RESOURCE,
+                origin=SentenceOrigin.RESOURCE,
                 source_type=SourceTypes.INFO_CARD,
                 info_card=card_obj,
                 user=user
