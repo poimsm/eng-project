@@ -539,39 +539,25 @@ def daily_activities_limited(request):
 
     data = request.data.copy()
     local_sentences = data.get('local_sentences', [])
-    logger.debug('aaaaaaaaaaa1')
 
-    logger.debug(local_sentences)
+    all_sentences_ok = True
+    for sen in local_sentences:
+        if not (isinstance(sen['sentence'], str) and len(sen['sentence']) <= 20):
+            all_sentences_ok = False
+            break
+
+    if len(local_sentences) > 12:
+        all_sentences_ok = False
+
+    if not all_sentences_ok:
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
     sentences = convert_local_sentences_to_sentences(local_sentences)
-    logger.debug('aaaaaaaaaaa2')
-    logger.debug(sentences)
-
-    # all_sentences_are_strings = True;
-    # for w in sentences:
-    #     if not (isinstance(w, str) and len(w) <= 20) :
-    #         all_sentences_are_strings = False
-    #         break
-
-    # if not all_sentences_are_strings:
-    #     return Response({}, status=status.HTTP_400_BAD_REQUEST)
-
-    # sentences = get_sentences(test_user_id)
-
     questions = get_questions_per_sentence(sentences)
-    logger.debug('aaaaaaaaaaa3')
-    logger.debug(questions)
     activities = create_activity_package(questions)
-    logger.debug('aaaaaaaaaaa4')
-    logger.debug(activities)
     activities = add_examples(activities)
-    logger.debug('aaaaaaaaaaa5')
-    logger.debug(activities)
     activities = add_styles(activities)
-    logger.debug('aaaaaaaaaaa6')
-    logger.debug(activities)
     activities = add_videos_and_cards(activities)
-    logger.debug('aaaaaaaaaaa7')
 
     return Response(activities, status=status.HTTP_200_OK)
 
@@ -775,16 +761,16 @@ def refined_search(sentences):
     questions = []
     for sentence in all_forms:
         try:
-            sentence_obj = sentence.objects.get(sentence=sentence)
+            word_obj = Word.objects.get(word=sentence)
             questions_list = Question.objects.filter(
-                sentences__id=sentence_obj.id)
+                words__id=word_obj.id)
             for q in questions_list:
                 questions.append({
                     'question': QuestionModelSerializer(q).data,
-                    'sentence': WordModelSerializer(sentence_obj).data
+                    'sentence': WordModelSerializer(word_obj).data
                 })
 
-        except sentence.DoesNotExist:
+        except Word.DoesNotExist:
             pass
         except Exception as e:
             logger.exception(e)
