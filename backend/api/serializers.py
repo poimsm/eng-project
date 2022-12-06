@@ -21,9 +21,9 @@ class UserProfileModelSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(source='user', read_only=True)
     class Meta:
         model = UserProfile
-        # fields = '__all__'
+        fields = '__all__'
 
-        fields = ['total_words', 'verified', 'enable_screen_flow', 'email', 'id']
+        # fields = ['total_sentences', 'user', 'verified', 'screen_flow', 'email', 'id']
 
 
 class WordModelSerializer(serializers.ModelSerializer):

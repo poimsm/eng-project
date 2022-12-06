@@ -3,10 +3,14 @@ import math
 import re
 import copy
 import random
+import traceback
+from datetime import date
+
 
 # Framework
 from rest_framework.response import Response
-from rest_framework import permissions, status
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import (
     api_view, renderer_classes, permission_classes
 )
@@ -14,6 +18,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.renderers import JSONRenderer
 from rest_framework.serializers import ValidationError
 from django.db import transaction, IntegrityError
+from rest_framework.exceptions import AuthenticationFailed
 
 
 # Data
@@ -69,9 +74,8 @@ appMsg = AppMsg()
 
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def user_data(request):
-
     try:
         user = UserProfile.objects.get(user=request.user.id)
         serializer = UserProfileModelSerializer(user)
@@ -84,23 +88,54 @@ def user_data(request):
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def user_register(request):
+def user_sign_in(request):
+    try:
+        tokens = CustomTokenObtainPairSerializer(request.data).validate(
+            request.data,
+        )
+
+        profile = UserProfile.objects.filter(
+            email=request.data['email']).first()
+        serializer = UserProfileModelSerializer(profile)
+
+        return Response({
+            'user': serializer.data,
+            'refresh': str(tokens['refresh']),
+            'access': str(tokens['access']),
+        }, status=status.HTTP_200_OK)
+
+    except AuthenticationFailed:
+        return Response(appMsg.EMAIL_OR_PASS_INCORRECT, status=status.HTTP_401_UNAUTHORIZED)
+
+    except:
+        logger.error(traceback.format_exc())
+        return Response(appMsg.UNKNOWN_ERROR, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+def user_sign_up(request):
     try:
         data = request.data.copy()
+
+        found_user = User.objects.filter(email=data['email']).first()
+        if found_user:
+            return Response(appMsg.EMAIL_EXISTS, status=status.HTTP_409_CONFLICT)
         with transaction.atomic():
             user_serializer = UserModelSerializer(data={
                 'email': data['email'],
                 'password': make_password(
                     data['password'], salt=None, hasher='default'),
-                'verified': False,
-                'email': data['email'],
             })
             user_serializer.is_valid(raise_exception=True)
             user_serializer.save()
 
             profile_serializer = UserProfileModelSerializer(data={
                 'email': data['email'],
-                'user': user_serializer.data['id']
+                'user': user_serializer.data['id'],
+                'verified': False,
+                'screen_flow': True,
+                'total_sentences': 0,
             })
             profile_serializer.is_valid(raise_exception=True)
             profile_serializer.save()
@@ -118,7 +153,7 @@ def user_register(request):
 
     except Exception as err:
         logger.error(err)
-        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(appMsg.UNKNOWN_ERROR, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -349,6 +384,7 @@ def info_card(request):
                 status=Status.ACTIVE
             )
 
+            ids = []
             for sen in sentences:
                 sen_data = {
                     'sentence': sen.sentence,
@@ -365,29 +401,132 @@ def info_card(request):
                     data=sen_data)
                 user_sen_serializer.is_valid(raise_exception=True)
                 user_sen_serializer.save()
+                ids.append(user_sen_serializer.data['id'])
 
-            return Response({'is_favorite': True}, status=status.HTTP_200_OK)
+            return Response({'is_favorite': True, 'ids': ids}, status=status.HTTP_200_OK)
 
         else:
             FavoriteResource.objects.filter(
-                user=1,
+                user=request.user.id,
                 info_card=data['id']
             ).update(status=Status.DELETED)
 
             UserSentence.objects.filter(
-                user=1,
+                user=request.user.id,
                 info_card=data['id']
             ).update(status=Status.DELETED)
-            return Response({'is_favorite': False}, status=status.HTTP_200_OK)
+
+            return Response({
+                'is_favorite': False,
+                'ids': [data['id']]
+            }, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
-def screen_flow(request):
-    data = request.data.copy()
+@renderer_classes([JSONRenderer])
+@permission_classes([IsAuthenticated])
+def save_local_sentences(request):
+    try:
+        local_sentences = request.data['local_sentences']
 
+        if isinstance(local_sentences, dict) and len(local_sentences) > 12:
+            return Response(appMsg.TOO_MANY_ITEMS, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(id=request.user.id).first()
+
+        local_sentences_reduced = []
+        card_memory = []
+        video_memory = []
+        for local in local_sentences:
+            if local['info_card']:
+                if local['info_card'] in card_memory:
+                    continue
+                else:
+                    local_sentences_reduced.append(local)
+                    card_memory.append(local['info_card'])
+            elif local['short_video']:
+                if local['short_video'] in video_memory:
+                    continue
+                else:
+                    local_sentences_reduced.append(local)
+                    video_memory.append(local['short_video'])
+            else:
+                local_sentences_reduced.append(local)
+
+        for local in local_sentences_reduced:
+            if local['info_card']:
+                with transaction.atomic():
+                    card_obj = InfoCard.objects.get(id=local['info_card'])
+                    sentence_obj = ResourceSentence.objects.filter(
+                        info_card=card_obj.id)
+
+                    for sen in sentence_obj:
+                        UserSentence(
+                            sentence=sen.sentence,
+                            meaning=sen.meaning,
+                            extras=sen.extras,
+                            last_time_used=date.today(),
+                            type=sen.type,
+                            origin=SentenceOrigin.RESOURCE,
+                            source_type=SourceTypes.INFO_CARD,
+                            info_card=card_obj,
+                            user=user
+                        ).save()
+
+                    FavoriteResource(
+                        info_card=card_obj,
+                        source_type=SourceTypes.INFO_CARD,
+                        user=user
+                    ).save()
+
+            elif local['short_video']:
+                with transaction.atomic():
+                    video_obj = ShortVideo.objects.get(id=local['short_video'])
+                    sentence_obj = ResourceSentence.objects.filter(
+                        short_video=video_obj.id)
+
+                    for sen in sentence_obj:
+                        UserSentence(
+                            sentence=sen.sentence,
+                            meaning=sen.meaning,
+                            extras=sen.extras,
+                            last_time_used=date.today(),
+                            type=sen.type,
+                            origin=SentenceOrigin.RESOURCE,
+                            source_type=SourceTypes.SHORT_VIDEO,
+                            short_video=video_obj,
+                            user=user
+                        ).save()
+
+                    FavoriteResource(
+                        short_video=video_obj,
+                        source_type=SourceTypes.SHORT_VIDEO,
+                        user=user
+                    ).save()
+            else:
+                UserSentence(
+                    type=SentenceTypes.NORMAL,
+                    origin=SentenceOrigin.USER,
+                    sentence=local['sentence'],
+                    meaning=local['meaning'],
+                    last_time_used=date.today(),
+                    user=user
+                ).save()
+
+        return Response({}, status=status.HTTP_201_CREATED)
+
+    except Exception as err:
+        logger.error(err)
+        return Response(appMsg.UNKNOWN_ERROR, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
+@permission_classes([IsAuthenticated])
+def screen_flow(request):
     serializer = UserScreenFlowModelSerializer(data={
-        'type': data.get('type', None),
-        'user': 1
+        'type': request.data['type'],
+        'user': request.user.id
     })
 
     if serializer.is_valid():
@@ -397,6 +536,7 @@ def screen_flow(request):
 
 
 @api_view(['POST'])
+@renderer_classes([JSONRenderer])
 def convert_local_sentences(request):
     data = request.data.copy()
     local_sentences = data['local_sentences']
@@ -449,13 +589,14 @@ def convert_local_sentences(request):
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @renderer_classes([JSONRenderer])
+@permission_classes([IsAuthenticated])
 def user_sentences(request):
     if request.method == 'GET':
         page = int(request.GET.get('page', 1))
         per_page = 200
 
         sentences = UserSentence.objects.filter(
-            user__id=test_user_id,
+            user__id=request.user.id,
             status=Status.ACTIVE
         ).order_by('-created')
 
@@ -483,7 +624,7 @@ def user_sentences(request):
             return Response(appMsg.OFENSIVE_STATEMENT, status=status.HTTP_400_BAD_REQUEST)
 
         sentence = {
-            'user': 1,
+            'user': request.user.id,
             'sentence': data['sentence'],
             'meaning': data['meaning'] if data['meaning'] else '',
             'type': SentenceTypes.NORMAL,
@@ -504,7 +645,8 @@ def user_sentences(request):
             if check_for_slangs(data['sentence']):
                 return Response(appMsg.OFENSIVE_STATEMENT, status=status.HTTP_400_BAD_REQUEST)
 
-            sentence = UserSentence.objects.get(id=data.get('id', None))
+            sentence = UserSentence.objects.get(
+                id=data.get('id', None), user__id=request.user.id)
             serializer = UserSentenceModelSerializer(
                 sentence, data=data, partial=True)
 
@@ -562,21 +704,12 @@ def daily_activities_limited(request):
     return Response(activities, status=status.HTTP_200_OK)
 
 
-def get_sentences(id):
-    all_sentences = list(UserSentence.objects.filter(
-        user__id=id, status=Status.ACTIVE))
-    random.shuffle(all_sentences)
-    range_total = 10 if len(all_sentences) > 10 else len(all_sentences)
-    sentences_obj = [all_sentences[i] for i in range(range_total)]
-
-    return sentences_obj
-
-
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
+@permission_classes([IsAuthenticated])
 def daily_activities(request):
 
-    sentences = get_sentences(test_user_id)
+    sentences = get_sentences(request.user.id)
     questions = get_questions_per_sentence(sentences)
     activities = create_activity_package(questions)
     activities = add_examples(activities)
@@ -1137,10 +1270,6 @@ def get_random_questions(excluded_ids, total):
 
 
 def convert_local_sentences_to_sentences(local_sentences):
-    # id: 4, sentence: Smoke, origin: 2, type: 0,
-    # meaning: , saved: true,
-    # extras: null, sourceType: null, infoCard: null, shortVideo: null
-
     result = []
     for local in local_sentences:
         sentence = None
