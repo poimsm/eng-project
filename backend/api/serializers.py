@@ -6,7 +6,7 @@ from api.models import (
     Example, Style, ShortVideo,
     InfoCard, FavoriteResource,
     Collocation, ResourceSentence,
-    UserScreenFlow, UserProfile,
+    ScreenFlow, UserProfile, Device,
 )
 
 
@@ -19,6 +19,7 @@ class UserModelSerializer(serializers.ModelSerializer):
 class UserProfileModelSerializer(serializers.ModelSerializer):
     # chao = serializers.SerializerMethodField('id')
     id = serializers.PrimaryKeyRelatedField(source='user', read_only=True)
+
     class Meta:
         model = UserProfile
         fields = '__all__'
@@ -102,15 +103,22 @@ class ResourceSentenceModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ResourceSentenceSmallModelSerializer(serializers.ModelSerializer):
+class ResourceSentenceDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResourceSentence
         fields = ['id', 'sentence', 'meaning', 'extras', 'type', 'origin']
 
 
-class UserScreenFlowModelSerializer(serializers.ModelSerializer):
+class ScreenFlowModelSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = UserScreenFlow
+        model = ScreenFlow
+        fields = '__all__'
+
+
+class DeviceModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Device
         fields = '__all__'

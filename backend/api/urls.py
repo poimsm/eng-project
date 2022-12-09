@@ -14,13 +14,20 @@ urlpatterns = [
     re_path(r'short-video\/?$', short_video),
     re_path(r'info-card\/?$', info_card),
     re_path(r'daily-activities-limited\/?$', daily_activities_limited),
+    re_path(r'local-sentences-to-favorites\/?$',
+            local_sentences_to_favorites),
+    re_path(r'local-sentences-to-sentences\/?$',
+            local_sentences_to_sentences),
 
-    # @app protected    
+
+    # @app protected
     re_path(r'sentence\/?$', user_sentences),
-    re_path(r'convert-local-sentences\/?$', convert_local_sentences),
     re_path(r'save-local-sentences\/?$', save_local_sentences),
     re_path(r'daily-activities\/?$', daily_activities),
     re_path(r'screen-flow\/?$', screen_flow),
+    # re_path(r'user/profile\/?$', user_profile_data),
+    re_path(r'user/stats\/?$', user_stats),
+    re_path(r'user/favorites\/?$', user_favorites),
 
     # @authentication
     re_path(r'user/sign-up\/?$', user_sign_up),

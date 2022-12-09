@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from api.models import (
     UserSentence, ResourceSentence, ShortVideo, InfoCard,
-    SentenceOrigin, SourceTypes, FavoriteResource
+    SentenceOrigin, SourceTypes, FavoriteResource, Device,
 )
 from users.models import User
 from api.helpers import console
@@ -20,11 +20,16 @@ class Command(BaseCommand):
         user = User(
             id=1,
             username='fake user',
-            email='fake@email.com',
+            email='fake@fake.com',
             password='123456'
         )
-
         user.save()
+
+        Device(
+            uuid='0d14fbaa-8cd6-11e7-b2ed-28d244cd6e76',
+            user=user
+        ).save()
+
         # user = User.objects.get(id=1)
 
         console.info('Adding user-entered sentences...')

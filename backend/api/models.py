@@ -259,6 +259,31 @@ class ResourceSentence(BaseModel):
         db_table = 'resource_sentences'
 
 
+class Device(BaseModel):
+    uuid = models.CharField(max_length=50, blank=False, null=False)
+    user = models.ForeignKey(
+        User,
+        null=True,
+        on_delete=models.CASCADE
+    )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'devices'
+
+
+class ScreenFlow(BaseModel):
+    type = models.CharField(max_length=50, blank=True, null=True)
+    device = models.ForeignKey(
+        Device,
+        on_delete=models.CASCADE
+    )
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'screenflow'
+
+
 class UserSentence(BaseModel):
     sentence = models.CharField(
         max_length=MAX_SENTENCE_LENGTH, blank=False, null=False)
@@ -324,20 +349,10 @@ class UserHistory(BaseModel):
         db_table = 'user_history'
 
 
-class UserScreenFlow(BaseModel):
-    type = models.CharField(max_length=150, blank=True, null=True)
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-    objects = models.Manager()
-
-    class Meta:
-        db_table = 'user_screenflow'
-
-
 class UserProfile(BaseModel):
     total_sentences = models.PositiveSmallIntegerField(default=0)
+    total_videos = models.PositiveSmallIntegerField(default=0)
+    total_cards = models.PositiveSmallIntegerField(default=0)
     verified = models.BooleanField(default=False)
     screen_flow = models.BooleanField(default=False)
     email = models.CharField(max_length=150, blank=False, null=False)
