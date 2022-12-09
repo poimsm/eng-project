@@ -350,9 +350,6 @@ class UserHistory(BaseModel):
 
 
 class UserProfile(BaseModel):
-    total_sentences = models.PositiveSmallIntegerField(default=0)
-    total_videos = models.PositiveSmallIntegerField(default=0)
-    total_cards = models.PositiveSmallIntegerField(default=0)
     verified = models.BooleanField(default=False)
     screen_flow = models.BooleanField(default=False)
     email = models.CharField(max_length=150, blank=False, null=False)

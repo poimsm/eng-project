@@ -139,7 +139,6 @@ def user_sign_up(request):
                 'user': user_serializer.data['id'],
                 'verified': False,
                 'screen_flow': True,
-                'total_sentences': 0,
             })
             profile_serializer.is_valid(raise_exception=True)
             profile_serializer.save()
@@ -334,11 +333,6 @@ def short_video(request):
                 user_sen_serializer.save()
                 ids.append(user_sen_serializer.data['id'])
 
-            profile = UserProfile.objects.get(user__id=request.user.id)
-            profile.total_words += len(ids)
-            profile.total_videos += 1
-            profile.save()
-
             uuid = request.META.get('HTTP_UUID', None)
             add_screen_flow(uuid, None, 'short_video->PUT->add')
 
@@ -355,11 +349,6 @@ def short_video(request):
             ).update(status=Status.DELETED)
 
             short_videos = ShortVideo.objects.filter(id=data['id'])
-
-            profile = UserProfile.objects.get(user__id=request.user.id)
-            profile.total_words -= len(short_videos)
-            profile.total_videos -= 1
-            profile.save()
 
             uuid = request.META.get('HTTP_UUID', None)
             add_screen_flow(uuid, None, 'short_video->PUT->remove')
@@ -466,11 +455,6 @@ def info_card(request):
                 user_sen_serializer.save()
                 ids.append(user_sen_serializer.data['id'])
 
-            profile = UserProfile.objects.get(user__id=request.user.id)
-            profile.total_words += len(ids)
-            profile.total_cards += 1
-            profile.save()
-
             uuid = request.META.get('HTTP_UUID', None)
             add_screen_flow(uuid, None, 'info_card->PUT->add')
 
@@ -491,11 +475,6 @@ def info_card(request):
             ).update(status=Status.DELETED)
 
             info_cards = InfoCard.objects.filter(id=data['id'])
-
-            profile = UserProfile.objects.get(user__id=request.user.id)
-            profile.total_words -= len(info_cards)
-            profile.total_cards -= 1
-            profile.save()
 
             uuid = request.META.get('HTTP_UUID', None)
             add_screen_flow(uuid, None, 'info_card->PUT->remove')
