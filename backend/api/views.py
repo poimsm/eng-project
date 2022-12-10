@@ -171,24 +171,25 @@ def user_sign_up(request):
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
 def hola(request):
+    return Response({'hola': 'hooola'}, status=status.HTTP_200_OK)
 
-    favorites = FavoriteResource.objects.filter(
-        Q(info_card__isnull=False) | Q(short_video__isnull=False))
+    # favorites = FavoriteResource.objects.filter(
+    #     Q(info_card__isnull=False) | Q(short_video__isnull=False))
 
-    # designation_key_func = lambda member: member.designation
-    # queryset = Members.objects.all().select_related("designation")
+    # # designation_key_func = lambda member: member.designation
+    # # queryset = Members.objects.all().select_related("designation")
 
-    def designation_key_func(
-        member): return member.info_card or member.short_video
-    queryset = favorites
-    maap = []
-    for designation, member_group in groupby(queryset, designation_key_func):
-        maap.append({
-            'designation': None if not designation else InfoCardModelSerializer(designation).data if designation.info_card else ShortVideoModelSerializer(designation).data,
-            'member_group': [] if not member_group else FavoriteResourceModelSerializer(list(member_group), many=True).data
-        })
-    logger.debug(maap)
-    return Response(maap, status=status.HTTP_200_OK)
+    # def designation_key_func(
+    #     member): return member.info_card or member.short_video
+    # queryset = favorites
+    # maap = []
+    # for designation, member_group in groupby(queryset, designation_key_func):
+    #     maap.append({
+    #         'designation': None if not designation else InfoCardModelSerializer(designation).data if designation.info_card else ShortVideoModelSerializer(designation).data,
+    #         'member_group': [] if not member_group else FavoriteResourceModelSerializer(list(member_group), many=True).data
+    #     })
+    # logger.debug(maap)
+    # return Response(maap, status=status.HTTP_200_OK)
 
     # favorite = FavoriteResource.objects.get(
     #     id=1,
@@ -270,24 +271,14 @@ def hola(request):
     # return Response({'len': hasSlang}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET'])
 @renderer_classes([JSONRenderer])
-def short_video(request):
+def library_short_video(request):
     if request.method == 'GET':
         videos = ShortVideo.objects.all().order_by('-created')
-        user_videos = FavoriteResource.objects.filter(
-            source_type=SourceTypes.SHORT_VIDEO,
-            user=1,
-            status=Status.ACTIVE,
-        )
 
         result = []
         for video in videos:
-            is_favorite = False
-            for user_vid in user_videos:
-                if video.id == user_vid.short_video.id:
-                    is_favorite = True
-
             sentences = ResourceSentence.objects.filter(
                 short_video=video.id,
                 status=Status.ACTIVE
@@ -304,85 +295,21 @@ def short_video(request):
                 'id': video.id,
                 'cover': video.cover,
                 'url': video.url,
-                'is_favorite': is_favorite,
+                'is_favorite': False,
                 'sentences': ResourceSentenceDetailSerializer(
                     sentences, many=True).data,
                 'collocations': collocationStringList
             })
 
         uuid = request.META.get('HTTP_UUID', None)
-        add_screen_flow(uuid, None, 'short_video->GET')
+        add_screen_flow(uuid, None, 'library_short_video->GET')
 
         return Response(result, status=status.HTTP_200_OK)
 
-    if request.method == 'PUT':
-        data = request.data.copy()
 
-        if data['is_favorite']:
-            resource_data = {
-                'user': 1,
-                'short_video': data['id'],
-                'source_type': SourceTypes.SHORT_VIDEO,
-            }
-
-            resource_serializer = FavoriteResourceModelSerializer(
-                data=resource_data)
-            resource_serializer.is_valid(raise_exception=True)
-            resource_serializer.save()
-
-            sentences = ResourceSentence.objects.filter(
-                short_video=data['id'],
-                status=Status.ACTIVE
-            )
-
-            ids = []
-            for sen in sentences:
-                sen_data = {
-                    'sentence': sen.sentence,
-                    'meaning': sen.meaning,
-                    'extras': sen.extras,
-                    'type': sen.type,
-                    'origin': SentenceOrigin.RESOURCE,
-                    'short_video': data['id'],
-                    'source_type': SourceTypes.SHORT_VIDEO,
-                    'user': 1,
-                }
-
-                user_sen_serializer = UserSentenceModelSerializer(
-                    data=sen_data)
-                user_sen_serializer.is_valid(raise_exception=True)
-                user_sen_serializer.save()
-                ids.append(user_sen_serializer.data['id'])
-
-            uuid = request.META.get('HTTP_UUID', None)
-            add_screen_flow(uuid, None, 'short_video->PUT->add')
-
-            return Response({'is_favorite': True}, status=status.HTTP_200_OK)
-        else:
-            FavoriteResource.objects.filter(
-                user=request.user.id,
-                short_video=data['id']
-            ).update(status=Status.DELETED)
-
-            UserSentence.objects.filter(
-                user=request.user.id,
-                short_video=data['id'],
-            ).update(status=Status.DELETED)
-
-            short_videos = ShortVideo.objects.filter(id=data['id'])
-
-            uuid = request.META.get('HTTP_UUID', None)
-            add_screen_flow(uuid, None, 'short_video->PUT->remove')
-
-            return Response({
-                'is_favorite': False,
-                'ids': [data['id']]
-            }, status=status.HTTP_200_OK)
-
-
-@api_view(['GET', 'PUT'])
+@api_view(['GET'])
 @renderer_classes([JSONRenderer])
-def info_card(request):
+def library_info_card(request):
     if request.method == 'GET':
 
         existing_groups = [1, 2]
@@ -392,21 +319,8 @@ def info_card(request):
             group=group
         ).order_by('-created')
 
-        user_cards = FavoriteResource.objects.filter(
-            source_type=SourceTypes.INFO_CARD,
-            user=1,
-            status=Status.ACTIVE
-        )
-
         result = []
         for card in cards:
-            is_favorite = False
-
-            for user_card in user_cards:
-                if card.id == user_card.info_card.id:
-                    is_favorite = True
-                    break
-
             sentences = ResourceSentence.objects.filter(
                 info_card=card.id,
                 status=Status.ACTIVE
@@ -423,7 +337,7 @@ def info_card(request):
                 'id': card.id,
                 'image_url': card.image_url,
                 'voice_url': card.voice_url,
-                'is_favorite': is_favorite,
+                'is_favorite': False,
                 'sentences': ResourceSentenceDetailSerializer(
                     sentences, many=True).data,
                 'collocations': collocationStringList
@@ -432,30 +346,255 @@ def info_card(request):
         random.shuffle(result)
 
         uuid = request.META.get('HTTP_UUID', None)
-        add_screen_flow(uuid, None, 'info_card->GET')
+        add_screen_flow(uuid, None, 'library_info_card->GET')
 
         return Response(result, status=status.HTTP_200_OK)
 
-    if request.method == 'PUT':
-        data = request.data.copy()
 
-        if data['is_favorite']:
-            resource_data = {
-                'user': 1,
-                'info_card': data['id'],
-                'source_type': SourceTypes.INFO_CARD,
-            }
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def user_short_video(request):
+    if request.method == 'GET':
+        try:
+            videos = ShortVideo.objects.all().order_by('-created')
+            user_videos = FavoriteResource.objects.filter(
+                source_type=SourceTypes.SHORT_VIDEO,
+                user=request.user.id,
+                status=Status.ACTIVE,
+            )
 
-            resource_serializer = FavoriteResourceModelSerializer(
-                data=resource_data)
+            result = []
+            for video in videos:
+                is_favorite = False
+                for user_vid in user_videos:
+                    if video.id == user_vid.short_video.id:
+                        is_favorite = True
 
-            resource_serializer.is_valid(raise_exception=True)
-            resource_serializer.save()
+                sentences = ResourceSentence.objects.filter(
+                    short_video=video.id,
+                    status=Status.ACTIVE
+                )
 
-            sentences = ResourceSentence.objects.filter(
-                info_card=data['id'],
+                collocations = Collocation.objects.filter(
+                    short_video=video.id,
+                    status=Status.ACTIVE
+                )
+
+                collocationStringList = [col.text for col in collocations]
+
+                result.append({
+                    'id': video.id,
+                    'cover': video.cover,
+                    'url': video.url,
+                    'is_favorite': is_favorite,
+                    'sentences': ResourceSentenceDetailSerializer(
+                        sentences, many=True).data,
+                    'collocations': collocationStringList
+                })
+
+            uuid = request.META.get('HTTP_UUID', None)
+            add_screen_flow(uuid, None, 'user_short_video->GET')
+
+            return Response(result, status=status.HTTP_200_OK)
+        except:
+            logger.error(traceback.format_exc())
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def user_info_card(request):
+    if request.method == 'GET':
+        try:
+            existing_groups = [1, 2]
+            group = random.choice(existing_groups)
+
+            cards = InfoCard.objects.filter(
+                group=group
+            ).order_by('-created')
+
+            user_cards = FavoriteResource.objects.filter(
+                source_type=SourceTypes.INFO_CARD,
+                user=request.user.id,
                 status=Status.ACTIVE
             )
+
+            result = []
+            for card in cards:
+                is_favorite = False
+
+                for user_card in user_cards:
+                    c = card.id
+                    # if user_card.info_card:
+                    #     logger.debug(user_card.id)
+                    logger.debug(user_card.id)
+                    logger.debug(user_card.info_card)
+                    u = user_card.info_card.id
+
+                    if card.id == user_card.info_card.id:
+                        is_favorite = True
+                        break
+
+                sentences = ResourceSentence.objects.filter(
+                    info_card=card.id,
+                    status=Status.ACTIVE
+                )
+
+                collocations = Collocation.objects.filter(
+                    info_card=card.id,
+                    status=Status.ACTIVE
+                )
+
+                collocationStringList = [col.text for col in collocations]
+
+                result.append({
+                    'id': card.id,
+                    'image_url': card.image_url,
+                    'voice_url': card.voice_url,
+                    'is_favorite': is_favorite,
+                    'sentences': ResourceSentenceDetailSerializer(
+                        sentences, many=True).data,
+                    'collocations': collocationStringList
+                })
+
+            random.shuffle(result)
+
+            uuid = request.META.get('HTTP_UUID', None)
+            add_screen_flow(uuid, None, 'library_info_card->GET')
+
+            return Response(result, status=status.HTTP_200_OK)
+        except:
+            logger.error(traceback.format_exc())
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET', 'POST', 'DELETE'])
+@renderer_classes([JSONRenderer])
+@permission_classes([IsAuthenticated])
+def user_favorites(request):
+    if request.method == 'GET':
+        try:
+            id = request.GET.get('id', None)
+
+            if not id:
+                favorites = FavoriteResource.objects.filter(
+                    user__id=request.user.id,
+                    status=Status.ACTIVE
+                ).order_by('-created')
+
+                result = []
+                for fav in favorites:
+                    if fav.info_card:
+                        result.append({
+                            'id': fav.id,
+                            'source_type': SourceTypes.INFO_CARD,
+                            'image_url': fav.info_card.image_url,
+                        })
+                    elif fav.short_video:
+                        result.append({
+                            'id': fav.id,
+                            'source_type': SourceTypes.SHORT_VIDEO,
+                            'image_url': fav.short_video.cover,
+                        })
+
+                return Response(result, status=status.HTTP_200_OK)
+
+            favorite = FavoriteResource.objects.get(
+                id=id,
+                user__id=request.user.id,
+                status=Status.ACTIVE
+            )
+
+            if favorite.info_card:
+                card = favorite.info_card
+                sentences = ResourceSentence.objects.filter(
+                    info_card=card.id,
+                    status=Status.ACTIVE
+                )
+
+                collocations = Collocation.objects.filter(
+                    info_card=card.id,
+                    status=Status.ACTIVE
+                )
+
+                collocationStringList = [col.text for col in collocations]
+
+                add_screen_flow(None, request.user.id, 'user_favorites->card')
+
+                return Response({
+                    'type': SourceTypes.INFO_CARD,
+                    'card': {
+                        'id': card.id,
+                        'image_url': card.image_url,
+                        'voice_url': card.voice_url,
+                        'is_favorite': True,
+                        'sentences': ResourceSentenceDetailSerializer(
+                            sentences, many=True).data,
+                        'collocations': collocationStringList
+                    }
+                }, status=status.HTTP_200_OK)
+
+            if favorite.short_video:
+                id = request.GET.get('id', -1)
+                video = favorite.short_video
+                sentences = ResourceSentence.objects.filter(
+                    short_video=video.id,
+                    status=Status.ACTIVE
+                )
+
+                collocations = Collocation.objects.filter(
+                    short_video=video.id,
+                    status=Status.ACTIVE
+                )
+
+                collocationStringList = [col.text for col in collocations]
+
+                add_screen_flow(None, request.user.id, 'user_favorites->video')
+
+                return Response({
+                    'type': SourceTypes.SHORT_VIDEO,
+                    'video': {
+                        'id': video.id,
+                        'cover': video.cover,
+                        'url': video.url,
+                        'is_favorite': True,
+                        'sentences': ResourceSentenceDetailSerializer(
+                            sentences, many=True).data,
+                        'collocations': collocationStringList
+                    }
+                }, status=status.HTTP_200_OK)
+
+        except:
+            logger.error(traceback.format_exc())
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        try:
+            is_video = request.data['source_type'] == SourceTypes.SHORT_VIDEO
+            source_key = 'short_video' if is_video else 'info_card'
+
+            new_data = {
+                source_key: request.data['id'],
+                'source_type': request.data['source_type'],
+                'user': request.user.id,
+            }
+
+            fav_serializer = FavoriteResourceModelSerializer(data=new_data)
+            fav_serializer.is_valid(raise_exception=True)
+            fav_serializer.save()
+
+            if is_video:
+                sentences = ResourceSentence.objects.filter(
+                    short_video=new_data[source_key],
+                    status=Status.ACTIVE
+                )
+            else:
+                sentences = ResourceSentence.objects.filter(
+                    info_card=new_data[source_key],
+                    status=Status.ACTIVE
+                )
 
             ids = []
             for sen in sentences:
@@ -465,156 +604,59 @@ def info_card(request):
                     'extras': sen.extras,
                     'type': sen.type,
                     'origin': SentenceOrigin.RESOURCE,
-                    'info_card': data['id'],
-                    'source_type': SourceTypes.INFO_CARD,
-                    'user': 1,
+                    'user': request.user.id,
+                    'source_type': new_data['source_type'],
+                    source_key: new_data[source_key]
                 }
 
-                user_sen_serializer = UserSentenceModelSerializer(
-                    data=sen_data)
-                user_sen_serializer.is_valid(raise_exception=True)
-                user_sen_serializer.save()
-                ids.append(user_sen_serializer.data['id'])
+                sen_serializer = UserSentenceModelSerializer(data=sen_data)
+                sen_serializer.is_valid(raise_exception=True)
+                sen_serializer.save()
+                ids.append(sen_serializer.data['id'])
 
             uuid = request.META.get('HTTP_UUID', None)
-            add_screen_flow(uuid, None, 'info_card->PUT->add')
+            add_screen_flow(uuid, None, 'short_video->POST')
 
-            return Response({
-                'is_favorite': True,
-                'ids': ids
-            }, status=status.HTTP_200_OK)
+            return Response({'sentences_ids': ids}, status=status.HTTP_200_OK)
+        except:
+            logger.error(traceback.format_exc())
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
-        else:
-            FavoriteResource.objects.filter(
-                user=request.user.id,
-                info_card=data['id']
-            ).update(status=Status.DELETED)
+    if request.method == 'DELETE':
+        try:
+            data = request.data.copy()
+            if data['source_type'] == SourceTypes.INFO_CARD:
+                FavoriteResource.objects.filter(
+                    user=request.user.id,
+                    info_card=data['id']
+                ).update(status=Status.DELETED)
 
-            UserSentence.objects.filter(
-                user=request.user.id,
-                info_card=data['id']
-            ).update(status=Status.DELETED)
+                UserSentence.objects.filter(
+                    user=request.user.id,
+                    info_card=data['id'],
+                ).update(status=Status.DELETED)
 
-            info_cards = InfoCard.objects.filter(id=data['id'])
+            if data['source_type'] == SourceTypes.SHORT_VIDEO:
+                FavoriteResource.objects.filter(
+                    user=request.user.id,
+                    short_video=data['id']
+                ).update(status=Status.DELETED)
+
+                UserSentence.objects.filter(
+                    user=request.user.id,
+                    short_video=data['id'],
+                ).update(status=Status.DELETED)
 
             uuid = request.META.get('HTTP_UUID', None)
-            add_screen_flow(uuid, None, 'info_card->PUT->remove')
+            add_screen_flow(uuid, None, 'user_favorites->DELETE')
 
             return Response({
-                'is_favorite': False,
-                'ids': [data['id']]
+                'sentences_ids': [data['id']]
             }, status=status.HTTP_200_OK)
 
-
-@api_view(['GET'])
-@renderer_classes([JSONRenderer])
-@permission_classes([IsAuthenticated])
-def user_favorites(request):
-    try:
-        id = request.GET.get('id', None)
-
-        if not id:
-            favorites = UserSentence.objects.filter(
-                (Q(info_card__isnull=False) | Q(short_video__isnull=False)) &
-                Q(status=Status.ACTIVE, user__id=request.user.id)
-            )
-
-            logger.debug(favorites)
-
-            result = []
-            video_memory = []
-            card_memory = []
-            for fav in favorites:
-                card = fav.info_card
-                video = fav.short_video
-                if card and card.id not in card_memory:
-                    card_memory.append(card.id)
-                    result.append({
-                        'id': fav.info_card.id,
-                        'source_type': SourceTypes.INFO_CARD,
-                        'image_url': fav.info_card.image_url,
-                    })
-                elif video and video.id not in video_memory:
-                    video_memory.append(video.id)
-                    result.append({
-                        'id': fav.short_video.id,
-                        'source_type': SourceTypes.SHORT_VIDEO,
-                        'image_url': fav.short_video.cover,
-                    })
-           
-            return Response(result, status=status.HTTP_200_OK)
-
-
-        favorite = FavoriteResource.objects.get(
-            id=id,
-            user__id=request.user.id,
-            status=Status.ACTIVE
-        )
-
-        if favorite.info_card:
-            card = favorite.info_card
-            sentences = ResourceSentence.objects.filter(
-                info_card=card.id,
-                status=Status.ACTIVE
-            )
-
-            collocations = Collocation.objects.filter(
-                info_card=card.id,
-                status=Status.ACTIVE
-            )
-
-            collocationStringList = [col.text for col in collocations]
-
-            add_screen_flow(None, request.user.id, 'user_favorites->card')
-
-            return Response({
-                'type': SourceTypes.INFO_CARD,
-                'card': {
-                    'id': card.id,
-                    'image_url': card.image_url,
-                    'voice_url': card.voice_url,
-                    'is_favorite': True,
-                    'sentences': ResourceSentenceDetailSerializer(
-                        sentences, many=True).data,
-                    'collocations': collocationStringList
-                }
-            }, status=status.HTTP_200_OK)
-
-        if favorite.short_video:
-            id = request.GET.get('id', -1)
-            video = favorite.short_video
-            sentences = ResourceSentence.objects.filter(
-                short_video=video.id,
-                status=Status.ACTIVE
-            )
-
-            collocations = Collocation.objects.filter(
-                short_video=video.id,
-                status=Status.ACTIVE
-            )
-
-            collocationStringList = [col.text for col in collocations]
-
-            add_screen_flow(None, request.user.id, 'user_favorites->video')
-
-            return Response({
-                'type': SourceTypes.SHORT_VIDEO,
-                'video': {
-                    'id': video.id,
-                    'cover': video.cover,
-                    'url': video.url,
-                    'is_favorite': True,
-                    'sentences': ResourceSentenceDetailSerializer(
-                        sentences, many=True).data,
-                    'collocations': collocationStringList
-                }
-            }, status=status.HTTP_200_OK)
-
-    except:
-        logger.error(traceback.format_exc())
-        logger.debug('-------------------------------')
-        logger.exception('user_favorites')
-        return Response({}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            logger.error(traceback.format_exc())
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -673,7 +715,7 @@ def user_profile_data(request):
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
-def save_local_sentences(request):
+def save_local_sens(request):
     try:
         local_sentences = request.data['local_sentences']
 
@@ -779,7 +821,7 @@ def screen_flow(request):
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def local_sentences_to_sentences(request):
+def local_sens_to_sentences(request):
     data = request.data.copy()
     local_sentences = data['local_sentences']
 
@@ -835,7 +877,7 @@ def local_sentences_to_sentences(request):
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def local_sentences_to_favorites(request):
+def local_sens_to_favorites(request):
     try:
         local_sentences = request.data['local_sentences']
         result = []
@@ -970,7 +1012,7 @@ def user_sentences(request):
 
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
-def daily_activities_limited(request):
+def activity_pack(request):
 
     data = request.data.copy()
     local_sentences = data.get('local_sentences', [])
@@ -1003,7 +1045,7 @@ def daily_activities_limited(request):
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
-def daily_activities(request):
+def user_activity_pack(request):
 
     sentences = get_sentences(request.user.id)
     questions = get_questions_per_sentence(sentences)
