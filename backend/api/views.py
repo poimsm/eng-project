@@ -6,6 +6,7 @@ import random
 import traceback
 from datetime import date
 import uuid
+from itertools import groupby
 
 
 # Framework
@@ -20,6 +21,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.serializers import ValidationError
 from django.db import transaction, IntegrityError
 from rest_framework.exceptions import AuthenticationFailed
+from django.db.models import Q
 
 
 # Data
@@ -85,7 +87,7 @@ def user_data(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except Exception as err:
-        logger.error(err)
+        logger.error(traceback.format_exc())
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -162,13 +164,32 @@ def user_sign_up(request):
         }, status=status.HTTP_201_CREATED)
 
     except Exception as err:
-        logger.error(err)
+        logger.error(traceback.format_exc())
         return Response(appMsg.UNKNOWN_ERROR, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 @renderer_classes([JSONRenderer])
 def hola(request):
+
+    favorites = FavoriteResource.objects.filter(
+        Q(info_card__isnull=False) | Q(short_video__isnull=False))
+
+    # designation_key_func = lambda member: member.designation
+    # queryset = Members.objects.all().select_related("designation")
+
+    def designation_key_func(
+        member): return member.info_card or member.short_video
+    queryset = favorites
+    maap = []
+    for designation, member_group in groupby(queryset, designation_key_func):
+        maap.append({
+            'designation': None if not designation else InfoCardModelSerializer(designation).data if designation.info_card else ShortVideoModelSerializer(designation).data,
+            'member_group': [] if not member_group else FavoriteResourceModelSerializer(list(member_group), many=True).data
+        })
+    logger.debug(maap)
+    return Response(maap, status=status.HTTP_200_OK)
+
     # favorite = FavoriteResource.objects.get(
     #     id=1,
     #     status=Status.ACTIVE
@@ -179,10 +200,10 @@ def hola(request):
     # uuid = request.META.get('HTTP_UUID', None)
     # return Response({'uuid': uuid}, status=status.HTTP_200_OK)
 
-    uuid = '0d14fbaa-8cd6-11e7-b2ed-28d244cd6e76'
-    valid = is_valid_uuid(uuid)
-    add_screen_flow(uuid, 14, 'hello-world')
-    return Response({'valid': valid}, status=status.HTTP_200_OK)
+    # uuid = '0d14fbaa-8cd6-11e7-b2ed-28d244cd6e76'
+    # valid = is_valid_uuid(uuid)
+    # add_screen_flow(uuid, 14, 'hello-world')
+    # return Response({'valid': valid}, status=status.HTTP_200_OK)
 
     # profile = UserProfile.objects.get(user__id=11)
     # profile.email = 'heeey@gmail.com'
@@ -491,14 +512,42 @@ def info_card(request):
 def user_favorites(request):
     try:
         id = request.GET.get('id', None)
-        if not id:
-            return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
-        user_id = request.user.id
+        if not id:
+            favorites = UserSentence.objects.filter(
+                (Q(info_card__isnull=False) | Q(short_video__isnull=False)) &
+                Q(status=Status.ACTIVE, user__id=request.user.id)
+            )
+
+            logger.debug(favorites)
+
+            result = []
+            video_memory = []
+            card_memory = []
+            for fav in favorites:
+                card = fav.info_card
+                video = fav.short_video
+                if card and card.id not in card_memory:
+                    card_memory.append(card.id)
+                    result.append({
+                        'id': fav.info_card.id,
+                        'source_type': SourceTypes.INFO_CARD,
+                        'image_url': fav.info_card.image_url,
+                    })
+                elif video and video.id not in video_memory:
+                    video_memory.append(video.id)
+                    result.append({
+                        'id': fav.short_video.id,
+                        'source_type': SourceTypes.SHORT_VIDEO,
+                        'image_url': fav.short_video.cover,
+                    })
+           
+            return Response(result, status=status.HTTP_200_OK)
+
 
         favorite = FavoriteResource.objects.get(
             id=id,
-            user__id=user_id,
+            user__id=request.user.id,
             status=Status.ACTIVE
         )
 
@@ -562,6 +611,9 @@ def user_favorites(request):
             }, status=status.HTTP_200_OK)
 
     except:
+        logger.error(traceback.format_exc())
+        logger.debug('-------------------------------')
+        logger.exception('user_favorites')
         return Response({}, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -569,15 +621,19 @@ def user_favorites(request):
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
 def user_stats(request):
-    videos = ShortVideo(
+    videos = UserSentence.objects.filter(
         user__id=request.user.id,
+        short_video__isnull=False,
         status=Status.ACTIVE
-    )
-    cards = InfoCard(
+    ).distinct('short_video__id')
+
+    cards = UserSentence.objects.filter(
         user__id=request.user.id,
+        info_card__isnull=False,
         status=Status.ACTIVE
-    )
-    sentences = UserSentence(
+    ).distinct('info_card__id')
+
+    sentences = UserSentence.objects.filter(
         user__id=request.user.id,
         status=Status.ACTIVE
     )
@@ -585,9 +641,10 @@ def user_stats(request):
     add_screen_flow(None, request.user.id, 'user_stats')
 
     return Response({
+        'id': request.user.id,
         'total_videos': len(videos),
         'total_cards': len(cards),
-        'total_words': len(sentences),
+        'total_sentences': len(sentences),
     }, status=status.HTTP_200_OK)
 
 
@@ -707,9 +764,9 @@ def save_local_sentences(request):
         add_screen_flow(None, request.user.id, 'save_local_sentences')
         return Response({}, status=status.HTTP_201_CREATED)
 
-    except Exception as err:
-        logger.error(err)
-        return Response(appMsg.UNKNOWN_ERROR, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        logger.error(traceback.format_exc())
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
