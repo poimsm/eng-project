@@ -41,7 +41,7 @@ class Command(BaseCommand):
                         question=Question.objects.get(id=item['question_id']),
                         voice_url=AUDIO_URL + exam['voice_file'],
                         example=read_JSON_file(exam['subtitles']),
-                        word_text=exam['word_text']
+                        sentence_text=exam['word_text']
                     ).save()
 
             console.info('Successfully completed!')

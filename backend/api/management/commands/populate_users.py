@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from api.models import (
     UserSentence, ResourceSentence, ShortVideo, InfoCard,
     SentenceOrigin, SourceTypes, FavoriteResource, Device,
+    UserProfile,
 )
 from users.models import User
 from api.helpers import console
@@ -18,12 +19,18 @@ class Command(BaseCommand):
 
         console.info('Creating fake user...')
         user = User(
-            id=1,
             username='fake user',
             email='fake@fake.com',
             password='123456'
         )
         user.save()
+
+        UserProfile(
+            verified=False,
+            screen_flow=True,
+            email='fake@fake.com',
+            user=user
+        ).save()
 
         Device(
             uuid='0d14fbaa-8cd6-11e7-b2ed-28d244cd6e76',
