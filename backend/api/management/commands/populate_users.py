@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from api.models import (
     UserSentence, ResourceSentence, ShortVideo, InfoCard,
     SentenceOrigin, SourceTypes, FavoriteResource, Device,
-    UserProfile,
+    UserProfile, EnglishLevel
 )
 from users.models import User
 from api.helpers import console
@@ -29,7 +29,8 @@ class Command(BaseCommand):
             verified=False,
             screen_flow=True,
             email='fake@fake.com',
-            user=user
+            user=user,
+            english_level=EnglishLevel.UPPER_INTERMEDIATE
         ).save()
 
         Device(

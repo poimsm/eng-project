@@ -139,6 +139,7 @@ def user_sign_up(request):
             profile_serializer = UserProfileModelSerializer(data={
                 'email': data['email'],
                 'user': user_serializer.data['id'],
+                'english_level': data['english_level'],
                 'verified': False,
                 'screen_flow': True,
             })

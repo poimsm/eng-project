@@ -29,6 +29,12 @@ class QuestionTypes(models.IntegerChoices):
     TEACHER = 2, 'You are a teacher'
 
 
+class EnglishLevel(models.IntegerChoices):
+    INTERMEDIATE = 0, 'Intermediate'
+    UPPER_INTERMEDIATE = 1, 'Upper Intermediate'
+    ADVANCED = 2, 'Advanced'
+
+
 class SentenceTypes(models.IntegerChoices):
     NORMAL = 0, 'Normal'
     GROUP = 1, 'Group'
@@ -352,6 +358,11 @@ class UserHistory(BaseModel):
 class UserProfile(BaseModel):
     verified = models.BooleanField(default=False)
     screen_flow = models.BooleanField(default=False)
+    english_level = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        choices=EnglishLevel.choices
+    )
     email = models.CharField(max_length=150, blank=False, null=False)
     user = models.OneToOneField(
         User,
